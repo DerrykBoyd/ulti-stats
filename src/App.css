@@ -1,4 +1,5 @@
 .App {
+  height: 100vh;
   text-align: center;
 }
 
@@ -35,4 +36,15 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.login-form {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hide {
+  display: none;
 }
