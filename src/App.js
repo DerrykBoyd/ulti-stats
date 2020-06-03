@@ -22,7 +22,6 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 function App() {
 
-  const [isSignedIn, setIsSignedIn] = useState(false);
   const [user, setUser] = useState(null);
 
   const uiConfig = {
@@ -35,7 +34,6 @@ function App() {
   useEffect(() => {
     // listen for auth state changes
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(user => {
-      setIsSignedIn(user)
       setUser(user)
       console.log(user)
       document.getElementById("login-form").classList.remove("hide");
@@ -47,13 +45,14 @@ function App() {
 
   return (
     <div className="App">
-      {!isSignedIn &&
+      {!user &&
         <div id="login-form" className="login-form hide">
           <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseApp.auth()} />
         </div>
       }
-      {isSignedIn && user &&
+      {user &&
         <header className="App-header">
+          <button onClick={() => firebaseApp.auth().signOut()}>Sign Out</button>
           <p>Welcome {user.displayName}</p>
           <p>
             App for tracking Ultimate statistics
