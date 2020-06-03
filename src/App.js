@@ -23,6 +23,7 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 function App() {
 
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   const uiConfig = {
     signInOptions: [
@@ -35,6 +36,8 @@ function App() {
     // listen for auth state changes
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(user => {
       setIsSignedIn(user)
+      setUser(user)
+      console.log(user)
       document.getElementById("login-form").classList.remove("hide");
     })
     // unsubscribe to the listener when unmounting
@@ -49,8 +52,9 @@ function App() {
           <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseApp.auth()} />
         </div>
       }
-      {isSignedIn &&
+      {isSignedIn && user &&
         <header className="App-header">
+          <p>Welcome {user.displayName}</p>
           <p>
             App for tracking Ultimate statistics
         </p>
