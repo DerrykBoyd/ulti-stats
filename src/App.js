@@ -14,10 +14,10 @@ import 'firebase/auth';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 // styles
-import './App.css';
+import './styles/App.css';
 
 // Components
-
+import Home from './Components/Home';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBqJvH9x13wUFJhaBjCqkxUPesQ7Fm0YXg",
@@ -30,20 +30,20 @@ const firebaseConfig = {
   measurementId: "G-ZSK5SCD0YF"
 };
 
+const uiConfig = {
+  signInOptions: [
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      firebase.auth.EmailAuthProvider.PROVIDER_ID
+  ],
+  'credentialHelper': 'none'
+}
+
 // Instantiate a Firebase app.
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 function App() {
 
   const [user, setUser] = useState(null);
-
-  const uiConfig = {
-    signInOptions: [
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      firebase.auth.EmailAuthProvider.PROVIDER_ID
-    ],
-    'credentialHelper': 'none'
-  }
 
   useEffect(() => {
     // listen for auth state changes
@@ -61,24 +61,11 @@ function App() {
     <Router>
       <Switch>
         <Route path='/' exact>
-          <div className="App">
-            <header className="App-header">
-              {user &&
-                <div>
-                  <button onClick={() => firebaseApp.auth().signOut()}>Sign Out</button>
-                  <p>Welcome {user.displayName}</p>
-                </div>
-              }
-              <p>
-                App for tracking Ultimate statistics
-              </p>
-              {!user &&
-                <div id="login-form" className="login-form">
-                  <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseApp.auth()} />
-                </div>
-              }
-            </header>
-          </div>
+          <Home 
+            user={user}
+            firebaseApp={firebaseApp}
+            uiConfig={uiConfig}
+          />
         </Route>
         <Route path='/test'>
           {user ?
@@ -91,16 +78,8 @@ function App() {
                   </div>
                 }
                 <p>
-                  TESTING ROUTER - ONLY IF LOGGED IN
+                  TESTING ROUTER - SHOULD ONLY SHOW IF LOGGED IN
               </p>
-                <a
-                  className="App-link"
-                  href="https://reactjs.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Learn React
-              </a>
                 {!user &&
                   <div id="login-form" className="login-form">
                     <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseApp.auth()} />

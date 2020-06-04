@@ -7,36 +7,40 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   version="1.1"
-   viewBox="0 0 210 297"
+   inkscape:version="1.0 (6e3e5246a0, 2020-05-07)"
+   sodipodi:docname="ult-stats-favicon.svg"
    id="svg24"
-   sodipodi:docname="UltimateStatsFavicon.svg"
-   inkscape:version="1.0 (6e3e5246a0, 2020-05-07)">
+   viewBox="0 0 65 65"
+   version="1.1"
+   height="65mm"
+   width="65mm">
   <defs
      id="defs28" />
   <sodipodi:namedview
-     inkscape:document-rotation="0"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1012"
-     id="namedview26"
-     showgrid="false"
-     inkscape:zoom="0.75633418"
-     inkscape:cx="396.85039"
-     inkscape:cy="561.25984"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     fit-margin-bottom="0"
+     fit-margin-right="0"
+     fit-margin-left="0"
+     fit-margin-top="0"
+     inkscape:current-layer="svg24"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg24" />
+     inkscape:window-y="0"
+     inkscape:window-x="1920"
+     inkscape:cy="372.96152"
+     inkscape:cx="127.44189"
+     inkscape:zoom="0.75633418"
+     showgrid="false"
+     id="namedview26"
+     inkscape:window-height="1012"
+     inkscape:window-width="1920"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     inkscape:document-rotation="0" />
   <metadata
      id="metadata2">
     <rdf:RDF>
@@ -45,69 +49,69 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(27.003 -9.1154)"
-     id="g22">
+     id="g22"
+     transform="translate(-44.278,-58.935997)">
     <circle
-       style="fill:#ffffff"
-       cx="76.778"
-       cy="91.436"
-       r="31.226"
-       fill="none"
-       stroke="#036"
+       id="circle6"
        stroke-width="2.548"
-       id="circle6" />
+       stroke="#003366"
+       fill="none"
+       r="31.226"
+       cy="91.435997"
+       cx="76.778"
+       style="fill:#ffffff" />
     <g
-       transform="matrix(1.125 0 0 1.0371 -6.7847 -.15174)"
-       id="g20">
+       id="g20"
+       transform="matrix(1.125,0,0,1.0371,-6.7847,-0.15174)">
       <g
-         transform="matrix(1.1304 0 0 1.2974 -9.6473 -20.624)"
-         id="g16">
+         id="g16"
+         transform="matrix(1.1304,0,0,1.2974,-9.6473,-20.624)">
         <rect
-           x="83.37"
-           y="69.811"
-           width="6"
-           height="26.012"
-           rx=".72101"
+           id="rect8"
            fill="#03c03c"
-           id="rect8" />
-        <rect
-           x="67.198"
-           y="77.959"
+           rx="0.72101003"
+           height="26.011999"
            width="6"
-           height="18"
-           rx=".72101"
+           y="69.810997"
+           x="83.370003" />
+        <rect
+           id="rect10"
            fill="#add6ff"
-           id="rect10" />
-        <rect
-           x="75.284"
-           y="75.959"
+           rx="0.72101003"
+           height="18"
            width="6"
-           height="20"
-           rx=".72101"
+           y="77.959"
+           x="67.197998" />
+        <rect
+           id="rect12"
            fill="#cf1020"
-           id="rect12" />
-        <rect
-           x="59.111"
-           y="82.959"
+           rx="0.72101003"
+           height="20"
            width="6"
-           height="13"
-           rx=".72101"
+           y="75.959"
+           x="75.283997" />
+        <rect
+           id="rect14"
            fill="#007fff"
-           id="rect14" />
+           rx="0.72101003"
+           height="13"
+           width="6"
+           y="82.959"
+           x="59.111" />
       </g>
       <rect
-         x="54.278"
-         y="103.18"
-         width="40"
-         height="2"
+         id="rect18"
+         fill="#003366"
          rx="1.0048"
-         fill="#036"
-         id="rect18" />
+         height="2"
+         width="40"
+         y="103.18"
+         x="54.278" />
     </g>
   </g>
 </svg>

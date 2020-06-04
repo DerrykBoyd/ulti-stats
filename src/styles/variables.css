@@ -1,0 +1,19 @@
+:root {
+    margin: auto;
+    /* Colors */
+    --primary: #0080ff;
+    --primary-dark: #0055cb;
+    --primary-light: #69afff;
+    --secondary: #003366;
+    --secondary-dark: #000c3b;
+    --secondary-light: #3f5c94;
+    --delete: #c62828;
+    --main-bg: #fafafa;
+    --app-red: #CF1020;
+    --app-green: #03C03C;
+    --app-yellow: #FFFF00;
+
+    --text-dark: rgba(0,0,0,0.87);
+
+    color: var(--text-dark);
+}
