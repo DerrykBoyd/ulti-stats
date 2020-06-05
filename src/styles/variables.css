@@ -14,6 +14,12 @@
     --app-yellow: #FFFF00;
 
     --text-dark: rgba(0,0,0,0.87);
+    --text-dark-med: rgba(0,0,0,0.6);
+    --text-dark-disabled: rgba(0,0,0,0.38);
+
+    --text-light: rgba(255,255,255,0.87);
+    --text-light-med: rgba(255,255,255,0.6);
+    --text-light-disabled: rgba(255,255,255,0.38);
 
     color: var(--text-dark);
 }

@@ -5,7 +5,7 @@ import {
   Route,
   Switch,
   Redirect,
-  NavLink
+  Link
 } from "react-router-dom";
 
 // Firebase
@@ -70,10 +70,13 @@ function App() {
         <Route path='/test'>
           {user ?
             <div className="App">
-              <header className="App-header">
+              <header className="main-content">
                 {user &&
                   <div>
-                    <button onClick={() => firebaseApp.auth().signOut()}>Sign Out</button>
+                    <button className='btn' onClick={() => firebaseApp.auth().signOut()}>Sign Out</button>
+                    <Link to='/'>
+                      <button className='btn'>Home</button>
+                    </Link>
                     <p>Welcome {user.displayName}</p>
                   </div>
                 }
