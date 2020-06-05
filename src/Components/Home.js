@@ -33,7 +33,7 @@ export default function Home(props) {
                             <div>
                                 <p className='home-primary'>Tracking statistics for Ultimate games. </p>
                                 <p className='text-dark-med home-secondary'>Ultimate Stats is a mobile friendly web app that lets you
-                                    quickly and easily track statistics during an Ultimate game.</p>
+                                    quickly and easily track statistics during Ultimate games.</p>
                             </div>
                             <div id="login-form" className="login-form">
                                 <StyledFirebaseAuth uiConfig={props.uiConfig} firebaseAuth={props.firebaseApp.auth()} />
