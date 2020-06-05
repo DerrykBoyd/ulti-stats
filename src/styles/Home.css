@@ -1,6 +1,6 @@
 .home-primary {
     font-size: 2.5rem;
-    margin: 1.5rem 0;
+    margin: 1rem 0;
 }
 
 .home-secondary {
@@ -32,6 +32,6 @@
     flex-basis: 60%;
     flex-grow: 1;
     max-width: 750px;
-    margin: 2rem;
+    margin: 1rem;
     padding: 1rem;
 }
