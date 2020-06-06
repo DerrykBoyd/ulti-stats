@@ -22,4 +22,9 @@
     --text-light-disabled: rgba(255,255,255,0.38);
 
     color: var(--text-dark);
+    background-color: var(--main-bg);
+}
+
+h1, h2 {
+    margin: 0.75rem 0;
 }

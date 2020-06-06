@@ -1,5 +1,5 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   HashRouter as Router,
   Route,
@@ -17,7 +17,12 @@ import 'firebase/firestore';
 import './styles/App.css';
 
 // Components
+import Header from './Components/Header';
 import Home from './Components/Home';
+import Teams from './Components/Teams';
+import Games from './Components/Games';
+import Stats from './Components/Stats';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBqJvH9x13wUFJhaBjCqkxUPesQ7Fm0YXg",
@@ -47,13 +52,27 @@ const db = firebaseApp.firestore();
 function App() {
 
   const [user, setUser] = useState(null);
+  const [dbUser, setDbUser] = useState(null);
+
+  const loadUser = useCallback(() => {
+    // get the user from the db and load into state
+    db.collection('users').where('uid', '==', user.uid)
+      .get()
+      .then(res => {
+        res.forEach(doc => {
+          setDbUser(doc.data());
+          console.log('User fetched')
+        });
+      })
+      .catch(error => console.log('Error loading User'))
+  }, [user])
 
   useEffect(() => {
     // listen for auth state changes
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(user => {
       if (user) {
         localStorage.setItem('user', JSON.stringify(user));
-        setUser(user);
+        setUser(user);;
         console.log(user);
       } else {
         localStorage.removeItem('user');
@@ -64,42 +83,66 @@ function App() {
     return () => unsubscribe()
   }, []);
 
-  const loadUsers = () => {
-    db.collection('users').get().then(res => {
-      res.forEach(doc => console.log(doc.data().email))
-    })
-  }
-
+  useEffect(() => {
+    if (user) {
+      loadUser();
+    }
+  }, [user, loadUser]);
 
   return (
     <Router>
       <Switch>
         <Route path='/' exact>
-          <Home
+          <Header
             user={user}
+            firebaseApp={firebaseApp}
+          />
+          <Home
             firebaseApp={firebaseApp}
             uiConfig={uiConfig}
           />
         </Route>
-        <Route path='/test'>
-          {user ?
-            <div className="App">
-              <header className="main-content">
-                {user &&
-                  <div>
-                    <button className='btn' onClick={() => firebaseApp.auth().signOut()}>Sign Out</button>
-                    <Link to='/'>
-                      <button className='btn'>Home</button>
-                    </Link>
-                    <p>Welcome {user.displayName}</p>
-                  </div>
-                }
-                <p>
-                  TESTING ROUTER - SHOULD ONLY SHOW IF LOGGED IN
-                </p>
-                <button className='btn' onClick={loadUsers}>CLG Users</button>
-              </header>
-            </div> : <Redirect to='/' />}
+        <Route path='/teams'>
+          {localStorage.getItem('user') ?
+            <>
+              <Header
+                user={user}
+                firebaseApp={firebaseApp}
+              />
+              <Teams
+                dbUser={dbUser}
+                db={db}
+              />
+            </> : <Redirect to='/' />
+          }
+        </Route>
+        <Route path='/games'>
+          {localStorage.getItem('user') ?
+            <>
+              <Header
+                user={user}
+                firebaseApp={firebaseApp}
+              />
+              <Games
+                dbUser={dbUser}
+                db={db}
+              />
+            </> : <Redirect to='/' />
+          }
+        </Route>
+        <Route path='/stats'>
+          {localStorage.getItem('user') ?
+            <>
+              <Header
+                user={user}
+                firebaseApp={firebaseApp}
+              />
+              <Stats
+                dbUser={dbUser}
+                db={db}
+              />
+            </> : <Redirect to='/' />
+          }
         </Route>
       </Switch>
     </Router>

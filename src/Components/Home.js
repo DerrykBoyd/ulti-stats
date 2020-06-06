@@ -19,10 +19,6 @@ export default function Home(props) {
 
     return (
         <div className='App'>
-            <Header
-                user={user}
-                firebaseApp={props.firebaseApp}
-            />
             <div className="home-main">
                 {user &&
                     <div className='home-btn-group'>
@@ -37,10 +33,6 @@ export default function Home(props) {
                         <Link
                             className='btn'
                             to='/stats'>Start New Game
-                                </Link>
-                        <Link
-                            className='btn'
-                            to='/test'>Test Page
                                 </Link>
                     </div>
                 }
