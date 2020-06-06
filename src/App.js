@@ -11,7 +11,7 @@ import {
 // Firebase
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import 'firebase/firestore';
 
 // styles
 import './styles/App.css';
@@ -32,15 +32,17 @@ const firebaseConfig = {
 
 const uiConfig = {
   signInOptions: [
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-      firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
   ],
-  'credentialHelper': 'none'
+  'credentialHelper': 'none',
+  'signInFlow': 'popup'
 }
 
-// Instantiate a Firebase app.
+// Instantiate a Firebase app and database
 const firebaseApp = firebase.initializeApp(firebaseConfig);
+const db = firebaseApp.firestore();
 
 function App() {
 
@@ -49,20 +51,31 @@ function App() {
   useEffect(() => {
     // listen for auth state changes
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(user => {
-      setUser(user)
-      console.log(user)
-      // document.getElementById("login-form").classList.remove("hide");
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user));
+        setUser(user);
+        console.log(user);
+      } else {
+        localStorage.removeItem('user');
+        setUser(user);
+      }
     })
     // unsubscribe to the listener when unmounting
     return () => unsubscribe()
-  }, [])
+  }, []);
+
+  const loadUsers = () => {
+    db.collection('users').get().then(res => {
+      res.forEach(doc => console.log(doc.data().email))
+    })
+  }
 
 
   return (
     <Router>
       <Switch>
         <Route path='/' exact>
-          <Home 
+          <Home
             user={user}
             firebaseApp={firebaseApp}
             uiConfig={uiConfig}
@@ -83,12 +96,8 @@ function App() {
                 }
                 <p>
                   TESTING ROUTER - SHOULD ONLY SHOW IF LOGGED IN
-              </p>
-                {!user &&
-                  <div id="login-form" className="login-form">
-                    <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseApp.auth()} />
-                  </div>
-                }
+                </p>
+                <button className='btn' onClick={loadUsers}>CLG Users</button>
               </header>
             </div> : <Redirect to='/' />}
         </Route>
