@@ -1,11 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// Styles
+// styles
 import '../styles/Home.css';
-
-// Comonents
-import Header from './Header';
 
 // images
 import screenshot from '../assets/home-screenshot.svg';

@@ -5,7 +5,6 @@ import {
   Route,
   Switch,
   Redirect,
-  Link
 } from "react-router-dom";
 
 // Firebase
@@ -65,7 +64,20 @@ function App() {
         });
       })
       .catch(error => console.log('Error loading User'))
-  }, [user])
+  }, [user]);
+
+  const saveTeams = (newTeams) => {
+    // update the User in the db from state
+    db.collection('users').doc(dbUser.uid)
+      .update({
+        teams: newTeams
+      })
+      .then(() => {
+        console.log('Teams Updated')
+        // TODO - Add toast msg for successful save
+      })
+      .catch(e => console.log('Error updating teams', e))
+  }
 
   useEffect(() => {
     // listen for auth state changes
@@ -94,24 +106,26 @@ function App() {
       <Switch>
         <Route path='/' exact>
           <Header
-            user={user}
             firebaseApp={firebaseApp}
+            user={user}
           />
           <Home
             firebaseApp={firebaseApp}
             uiConfig={uiConfig}
           />
         </Route>
-        <Route path='/teams'>
+        <Route path='/teams' exact>
           {localStorage.getItem('user') ?
             <>
               <Header
-                user={user}
                 firebaseApp={firebaseApp}
+                user={user}
               />
               <Teams
-                dbUser={dbUser}
                 db={db}
+                dbUser={dbUser}
+                saveTeams={saveTeams}
+                setDbUser={setDbUser}
               />
             </> : <Redirect to='/' />
           }
@@ -120,12 +134,12 @@ function App() {
           {localStorage.getItem('user') ?
             <>
               <Header
-                user={user}
                 firebaseApp={firebaseApp}
+                user={user}
               />
               <Games
-                dbUser={dbUser}
                 db={db}
+                dbUser={dbUser}
               />
             </> : <Redirect to='/' />
           }
@@ -134,12 +148,12 @@ function App() {
           {localStorage.getItem('user') ?
             <>
               <Header
-                user={user}
                 firebaseApp={firebaseApp}
+                user={user}
               />
               <Stats
-                dbUser={dbUser}
                 db={db}
+                dbUser={dbUser}
               />
             </> : <Redirect to='/' />
           }
