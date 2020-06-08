@@ -27,10 +27,7 @@ const TeamCards = (props) => {
 
 export default function Teams(props) {
 
-    const db = props.db;
     const dbUser = props.dbUser;
-    const localUser = JSON.parse(localStorage.getItem('user'));
-    const dbUserRef = db.collection('users').doc(localUser.uid);
 
     // set state
     const [teamName, setTeamName] = useState('');
@@ -94,7 +91,6 @@ export default function Teams(props) {
                     {showEditTeam &&
                         <Team
                             currentEditTeam={currentEditTeam}
-                            db={db}
                             dbUser={dbUser}
                             saveTeams={props.saveTeams}
                             setCurrentEditTeam={setCurrentEditTeam}

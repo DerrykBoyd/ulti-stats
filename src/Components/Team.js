@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 // import styles
@@ -59,7 +59,7 @@ const PlayerList = (props) => {
                     value={props.dbUser.teams[props.currentEditTeam].players[index].lastName || ''}
                     onChange={(e) => handlePlayerChange(index, e)}
                 />
-                <i 
+                <i
                     className='material-icons text-del'
                     onClick={() => {
                         if (window.confirm(`Delete Player (${player.firstName} ${player.lastName})`)) {
@@ -74,10 +74,7 @@ const PlayerList = (props) => {
 
 export default function Team(props) {
 
-    const db = props.db;
     const dbUser = props.dbUser;
-    const localUser = JSON.parse(localStorage.getItem('user'));
-    const dbUserRef = db.collection('users').doc(localUser.uid);
 
     // set state
     const [showAddPlayer, setShowAddPlayer] = useState(false);
@@ -166,17 +163,19 @@ export default function Team(props) {
                         }}>Cancel</button>
                     </div>
                     <h2>Team Roster</h2>
-                    {showAddPlayer &&
-                        <form className='add-player-form' onSubmit={addPlayer}>
-                            <input className='player-num-input' placeholder='##' name='player-number' onChange={handleInputChange} value={newPlayerNumber} />
-                            <input name='player-first-name' placeholder='First Name' onChange={handleInputChange} value={newPlayerFirstName} />
-                            <input name='player-last-name' placeholder='Last Name' onChange={handleInputChange} value={newPlayerLastName} />
-                            <div className='add-player-btns'>
-                                <button className='btn' onClick={addPlayer}>Add</button>
-                                <button className='btn nmt' onClick={() => setShowAddPlayer(false)}>Cancel</button>
-                            </div>
-                        </form>
-                    }
+                    <form className='add-player-form'>
+                        {showAddPlayer &&
+                            <>
+                                <input className='player-num-input' placeholder='##' name='player-number' onChange={handleInputChange} value={newPlayerNumber} />
+                                <input name='player-first-name' placeholder='First Name' onChange={handleInputChange} value={newPlayerFirstName} />
+                                <input name='player-last-name' placeholder='Last Name' onChange={handleInputChange} value={newPlayerLastName} />
+                                <div className='add-player-btns'>
+                                    <button type='submit' className='btn' onClick={addPlayer}>Add</button>
+                                    <button className='btn nmt' onClick={() => setShowAddPlayer(false)}>Cancel</button>
+                                </div>
+                            </>
+                        }
+                    </form>
                     {!showAddPlayer && <button className='btn' onClick={() => setShowAddPlayer(true)}>Add Player</button>}
                     <div className='player-list'>
                         <PlayerList

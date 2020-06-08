@@ -1,12 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 
 export default function Teams(props) {
 
     const dbUser = props.dbUser;
-    const localUser = JSON.parse(localStorage.getItem('user'));
 
     // set state
-    const [teamList, setTeamList] = useState([]);
 
     return (
         <div className='App'>
