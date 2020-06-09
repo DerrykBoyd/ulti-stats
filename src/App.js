@@ -6,6 +6,7 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
+import { ToastContainer, toast, Slide } from 'react-toastify';
 
 // Firebase
 import firebase from 'firebase/app';
@@ -14,6 +15,7 @@ import 'firebase/firestore';
 
 // styles
 import './styles/App.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Components
 import Header from './Components/Header';
@@ -61,7 +63,8 @@ function App() {
       })
       .then(() => {
         console.log('Team Deleted');
-        //TODO add toast for successful delete
+        // Toast for successful delete
+        toast.error('Team Deleted');
       })
       .catch(e => console.log('Error deleting team', e))
   }
@@ -76,7 +79,7 @@ function App() {
           console.log('User fetched')
         });
       })
-      .catch(error => console.log('Error loading User'))
+      .catch(error => console.log('Error loading User', error))
   }, [user]);
 
   const saveTeam = (newTeam, teamID) => {
@@ -87,7 +90,8 @@ function App() {
       })
       .then(() => {
         console.log('Teams Updated')
-        // TODO - Add toast msg for successful save
+        // Toast msg for successful save
+        toast.success('Team Saved');
       })
       .catch(e => console.log('Error updating teams', e))
   }
@@ -116,6 +120,12 @@ function App() {
 
   return (
     <Router>
+      <ToastContainer
+        autoClose={1000}
+        hideProgressBar
+        position='top-center'
+        transition={Slide}
+      />
       <Switch>
         <Route path='/' exact>
           <Header
