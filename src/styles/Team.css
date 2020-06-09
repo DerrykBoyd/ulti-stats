@@ -23,6 +23,13 @@
     align-items: center;
 }
 
+.player-list-options {
+    display: flex;
+    min-width: 300px;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .player-list {
     margin: 1rem;
 }

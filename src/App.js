@@ -53,6 +53,19 @@ function App() {
   const [user, setUser] = useState(null);
   const [dbUser, setDbUser] = useState(null);
 
+  // db functions
+  const delTeam = (teamID) => {
+    db.collection('users').doc(dbUser.uid)
+      .update({
+        [`teams.${teamID}`]: firebase.firestore.FieldValue.delete()
+      })
+      .then(() => {
+        console.log('Team Deleted');
+        //TODO add toast for successful delete
+      })
+      .catch(e => console.log('Error deleting team', e))
+  }
+
   const loadUser = useCallback(() => {
     // get the user from the db and load into state
     db.collection('users').where('uid', '==', user.uid)
@@ -66,11 +79,11 @@ function App() {
       .catch(error => console.log('Error loading User'))
   }, [user]);
 
-  const saveTeams = (newTeams) => {
-    // update the User in the db from state
+  const saveTeam = (newTeam, teamID) => {
+    // update the User in the db from local state
     db.collection('users').doc(dbUser.uid)
       .update({
-        teams: newTeams
+        [`teams.${teamID}`]: newTeam
       })
       .then(() => {
         console.log('Teams Updated')
@@ -124,7 +137,8 @@ function App() {
               <Teams
                 db={db}
                 dbUser={dbUser}
-                saveTeams={saveTeams}
+                delTeam={delTeam}
+                saveTeam={saveTeam}
                 setDbUser={setDbUser}
               />
             </> : <Redirect to='/' />

@@ -3,27 +3,8 @@ import { v4 as uuid } from 'uuid';
 
 import '../styles/Teams.css';
 
+import TeamCards from './TeamCards';
 import Team from './Team';
-
-const TeamCards = (props) => {
-
-    const teams = props.teamList.map((team, ind) =>
-        <div
-            className='card team-card'
-            key={ind}
-            ind={ind}
-        >
-            <h2>{team.name}</h2>
-            <button className='btn' onClick={() => {
-                props.setCurrentEditTeam(ind);
-                props.setShowEditTeam(true);
-            }}>Edit</button>
-        </div>
-    );
-    return (
-        <div className='team-list'>{teams}</div>
-    )
-}
 
 export default function Teams(props) {
 
@@ -40,15 +21,19 @@ export default function Teams(props) {
         setShowAddTeam(false);
         // add team to state
         let newDbUser = { ...dbUser };
-        newDbUser.teams.unshift({
-            uid: uuid(),
+        let teamID = uuid();
+        let newTeam = {
+            createdOn: new Date(),
             name: teamName,
-            players: []
-        });
+            players: {},
+            playerSortOrder: 'Number',
+            teamID: teamID,
+        }
+        newDbUser.teams[`${teamID}`] = newTeam;
         props.setDbUser(newDbUser);
         setTeamName('');
         // add team to DB
-        props.saveTeams(newDbUser.teams);
+        props.saveTeam(newTeam, teamID);
     }
 
     const handleInputChange = (e) => {
@@ -71,16 +56,18 @@ export default function Teams(props) {
                             {!showAddTeam &&
                                 <button className='btn' onClick={() => setShowAddTeam(true)}>Add Team</button>
                             }
+                            <form className='add-team-form' onSubmit={addTeam}>
                             {showAddTeam &&
-                                <form className='add-team-form' onSubmit={addTeam}>
-                                    <label htmlFor='team-name'>Team Name: </label>
-                                    <input name='team-name' onChange={handleInputChange} value={teamName} />
-                                    <div>
-                                        <button className='btn' onClick={addTeam}>Save</button>
-                                        <button className='btn nmt' onClick={() => setShowAddTeam(false)}>Cancel</button>
-                                    </div>
-                                </form>
+                                    <>
+                                        <label htmlFor='team-name'>Team Name: </label>
+                                        <input name='team-name' onChange={handleInputChange} value={teamName} />
+                                        <div>
+                                            <button className='btn' onClick={addTeam}>Save</button>
+                                            <button className='btn nmt' onClick={() => setShowAddTeam(false)}>Cancel</button>
+                                        </div>
+                                    </>
                             }
+                            </form>
                             <TeamCards
                                 teamList={dbUser.teams}
                                 setCurrentEditTeam={setCurrentEditTeam}
@@ -91,8 +78,10 @@ export default function Teams(props) {
                     {showEditTeam &&
                         <Team
                             currentEditTeam={currentEditTeam}
+                            db={props.db}
                             dbUser={dbUser}
-                            saveTeams={props.saveTeams}
+                            delTeam={props.delTeam}
+                            saveTeam={props.saveTeam}
                             setCurrentEditTeam={setCurrentEditTeam}
                             setDbUser={props.setDbUser}
                             setShowEditTeam={setShowEditTeam}

@@ -17,7 +17,7 @@ exports.createUserRecord = functions.auth.user().onCreate((user) => {
         email: user.email,
         uid: user.uid,
         creationTime: user.metadata.creationTime,
-        teams: [],
+        teams: {}
     }
 
     return admin.firestore().collection('users').doc(user.uid).set(userRecord);

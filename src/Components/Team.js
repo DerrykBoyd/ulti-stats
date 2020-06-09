@@ -1,80 +1,16 @@
 import React, { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
+// Components
+import PlayerList from './PlayerList';
+
 // import styles
 import '../styles/Team.css';
-
-const PlayerList = (props) => {
-
-    const deletePlayer = (index) => {
-        let newDbUser = { ...props.dbUser };
-        newDbUser.teams[props.currentEditTeam].players.splice(index, 1);
-        props.setDbUser(newDbUser);
-    }
-
-    const handlePlayerChange = (index, e) => {
-        e.preventDefault();
-        let newDbUser = { ...props.dbUser };
-        switch (e.target.name) {
-            case 'player-number':
-                newDbUser.teams[props.currentEditTeam].players[index].number = e.target.value;
-                props.setDbUser(newDbUser)
-                break;
-            case 'player-first-name':
-                newDbUser.teams[props.currentEditTeam].players[index].firstName = e.target.value;
-                props.setDbUser(newDbUser)
-                break;
-            case 'player-last-name':
-                newDbUser.teams[props.currentEditTeam].players[index].lastName = e.target.value;
-                props.setDbUser(newDbUser)
-                break;
-            default:
-                console.log('State not updated!');
-        }
-    }
-
-    return (
-        props.players.map((player, index) => (
-            <form
-                className='player-list-item'
-                key={index}
-            >
-                <input
-                    className='player-num-input'
-                    name='player-number'
-                    value={props.dbUser.teams[props.currentEditTeam].players[index].number}
-                    onChange={(e) => handlePlayerChange(index, e)}
-                />
-                <input
-                    className='player-name-input'
-                    name='player-first-name'
-                    placeholder='First Name'
-                    value={props.dbUser.teams[props.currentEditTeam].players[index].firstName || ''}
-                    onChange={(e) => handlePlayerChange(index, e)}
-                />
-                <input
-                    className='player-name-input'
-                    name='player-last-name'
-                    placeholder='Last Name'
-                    value={props.dbUser.teams[props.currentEditTeam].players[index].lastName || ''}
-                    onChange={(e) => handlePlayerChange(index, e)}
-                />
-                <i
-                    className='material-icons text-del'
-                    onClick={() => {
-                        if (window.confirm(`Delete Player (${player.firstName} ${player.lastName})`)) {
-                            deletePlayer(index);
-                        }
-                    }}
-                >delete</i>
-            </form>
-        ))
-    )
-}
 
 export default function Team(props) {
 
     const dbUser = props.dbUser;
+    const currentEditTeam = props.currentEditTeam;
 
     // set state
     const [showAddPlayer, setShowAddPlayer] = useState(false);
@@ -82,16 +18,23 @@ export default function Team(props) {
     const [newPlayerLastName, setNewPlayerLastName] = useState('');
     const [newPlayerNumber, setNewPlayerNumber] = useState('');
 
+    const sortOrderOptions = [
+        <option value='Number' key='Number'>Number</option>,
+        <option value='First Name' key='First Name'>First Name</option>,
+        <option value='Last Name' key='Last Name'>Last Name</option>
+    ]
+
     // helper functions
     const addPlayer = () => {
+        let playerID = uuid();
         const newPlayer = {
-            uid: uuid(),
             firstName: newPlayerFirstName,
             lastName: newPlayerLastName,
-            number: newPlayerNumber
+            number: newPlayerNumber,
+            playerID: playerID,
         }
         let newDbUser = { ...dbUser };
-        newDbUser.teams[props.currentEditTeam].players.unshift(newPlayer);
+        newDbUser.teams[currentEditTeam].players[`${playerID}`] = newPlayer;
         props.setDbUser(newDbUser);
         setNewPlayerFirstName('');
         setNewPlayerLastName('');
@@ -100,19 +43,19 @@ export default function Team(props) {
     }
 
     const delTeam = (e) => {
-        // remove team from state
-        let newDbUser = { ...dbUser };
-        let newTeams = [...dbUser.teams];
-        let teamInd = props.currentEditTeam;
-        newTeams.splice(teamInd, 1);
-        newDbUser.teams = newTeams;
-        props.setDbUser(newDbUser);
-        props.setShowEditTeam(false);
-        props.setCurrentEditTeam(null);
-        // update the DB
-        props.saveTeams(newTeams);
-        // redirect to the teams page adter delete
-        window.location.href = '/#/teams';
+        let teamName = dbUser.teams[`${currentEditTeam}`].name;
+        if (window.confirm(`Delete Team (${teamName})?`)) {
+            // remove team from state
+            let newDbUser = { ...dbUser };
+            delete newDbUser.teams[`${currentEditTeam}`];
+            props.setDbUser(newDbUser);
+            props.setShowEditTeam(false);
+            props.setCurrentEditTeam(null);
+            // update the DB
+            props.delTeam(currentEditTeam);
+            // redirect to the teams page adter delete
+            window.location.href = '/#/teams';
+        }
     }
 
     const handleInputChange = (e) => {
@@ -120,7 +63,7 @@ export default function Team(props) {
         let newDbUser = { ...dbUser };
         switch (e.target.name) {
             case 'team-name':
-                newDbUser.teams[props.currentEditTeam].name = e.target.value;
+                newDbUser.teams[currentEditTeam].name = e.target.value;
                 props.setDbUser(newDbUser);
                 break;
             case 'player-number':
@@ -137,10 +80,17 @@ export default function Team(props) {
         }
     }
 
+    const handleSortChange = (e) => {
+        console.log(e.target.value)
+        let newDbUser = { ...dbUser };
+        newDbUser.teams[currentEditTeam].playerSortOrder = e.target.value;
+        props.setDbUser(newDbUser);
+    }
+
     const saveChanges = () => {
         props.setShowEditTeam(false);
-        let newTeams = [...dbUser.teams];
-        props.saveTeams(newTeams);
+        let newTeam = { ...dbUser.teams[currentEditTeam] };
+        props.saveTeam(newTeam, newTeam.teamID);
     }
 
     return (
@@ -151,7 +101,7 @@ export default function Team(props) {
                         <input
                             className='team-name-input'
                             name={'team-name'}
-                            value={dbUser.teams[props.currentEditTeam].name}
+                            value={dbUser.teams[currentEditTeam].name}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -176,13 +126,25 @@ export default function Team(props) {
                             </>
                         }
                     </form>
-                    {!showAddPlayer && <button className='btn' onClick={() => setShowAddPlayer(true)}>Add Player</button>}
+                    {!showAddPlayer &&
+                        <div className='player-list-options'>
+                            <button className='btn' onClick={() => setShowAddPlayer(true)}>Add Player</button>
+                            <div>
+                                <label htmlFor='sort-order'>Sort</label>
+                                <select
+                                    name='sort-order'
+                                    value={dbUser.teams[currentEditTeam].playerSortOrder}
+                                    onChange={handleSortChange}
+                                >{sortOrderOptions}</select>
+                            </div>
+                        </div>
+                    }
                     <div className='player-list'>
                         <PlayerList
-                            currentEditTeam={props.currentEditTeam}
+                            currentEditTeam={currentEditTeam}
                             dbUser={dbUser}
                             setDbUser={props.setDbUser}
-                            players={dbUser.teams[props.currentEditTeam].players}
+                            players={dbUser.teams[currentEditTeam].players}
                         />
                     </div>
                 </>
