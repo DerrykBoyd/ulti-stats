@@ -16,7 +16,6 @@
 
 .App {
   text-align: center;
-  background-color: var(--main-bg);
   max-width: 1600px;
   margin: auto;
 }
@@ -144,12 +143,18 @@
 }
 
 input, select {
-  border-radius: 4px;
-  height: 1.5rem;
-  border: 1px solid var(--primary-light);
-  padding: 0.2rem 0.5rem;
-  text-align: center;
-  margin: 0.25rem;
-  max-width: 280px;
   background-color: white;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+  max-width: 280px;
+  min-height: 32px;
+  text-align: center;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary);
 }

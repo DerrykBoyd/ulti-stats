@@ -1,54 +1,66 @@
 .team-title-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 90%;
-    margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  margin: 0;
 }
 
-.team-title-container > i {
-    position: relative;
-    right: -2rem;
+.team-title-container>i {
+  position: relative;
+  right: -2rem;
 }
 
 .team-name-input {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1rem;
 }
 
 .add-player-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .player-list-options {
-    display: flex;
-    min-width: 300px;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sort-select {
+  display: flex;
+  align-items: center;
+}
+
+.sort-select > span {
+  margin: 0 0.25rem 0 0.5rem;
 }
 
 .player-list {
-    margin: 1rem;
+  margin: 1rem;
 }
 
 .player-list-item {
-    margin: 0.5rem;
-    display: flex;
-    align-items: center;
-    max-width: 95vw;
+  margin: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  max-width: 95vw;
 }
 
-.player-list-item > i {
-    margin: 0 0.5rem;
+.player-list-item>i {
+  margin: 0.25rem;
+}
+
+.player-input {
+  margin: 0.25rem 0.5rem;
 }
 
 .player-num-input {
-    width: 2rem;
+  width: 2rem;
 }
 
 .player-name-input {
-    min-width: 5rem;
+  min-width: 5rem;
 }

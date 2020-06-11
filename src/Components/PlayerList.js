@@ -71,14 +71,14 @@ export default function PlayerList(props) {
                     onChange={(e) => handlePlayerChange(player.playerID, e)}
                 />
                 <input
-                    className='player-name-input'
+                    className='player-name-input player-input'
                     name='player-first-name'
                     placeholder='First Name'
                     value={currentEditTeam.players[`${player.playerID}`].firstName}
                     onChange={(e) => handlePlayerChange(player.playerID, e)}
                 />
                 <input
-                    className='player-name-input'
+                    className='player-name-input player-input'
                     name='player-last-name'
                     placeholder='Last Name'
                     value={currentEditTeam.players[`${player.playerID}`].lastName}
