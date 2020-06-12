@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
+import * as db from '../Utils/db';
+
 import '../styles/Teams.css';
 
 import TeamCards from './TeamCards';
@@ -33,7 +35,7 @@ export default function Teams(props) {
     props.setDbUser(newDbUser);
     setTeamName('');
     // add team to DB
-    props.saveTeam(newTeam, teamID);
+    db.saveTeam(newDbUser.uid, newTeam, teamID);
   }
 
   const handleInputChange = (e) => {
@@ -80,8 +82,6 @@ export default function Teams(props) {
               currentEditTeam={currentEditTeam}
               db={props.db}
               dbUser={dbUser}
-              delTeam={props.delTeam}
-              saveTeam={props.saveTeam}
               setCurrentEditTeam={setCurrentEditTeam}
               setDbUser={props.setDbUser}
               setShowEditTeam={setShowEditTeam}

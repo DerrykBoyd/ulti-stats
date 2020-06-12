@@ -10,6 +10,10 @@
   color: var(--delete);
 }
 
+.text-dis {
+  color: var(--text-dark-disabled)
+}
+
 .point {
   cursor: pointer;
 }
@@ -157,4 +161,8 @@ input, select {
 
 input:focus, select:focus {
   border-color: var(--primary);
+}
+
+.rs-title {
+  margin: 1rem 0 0.5rem 0;
 }

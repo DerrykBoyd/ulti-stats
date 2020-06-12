@@ -11,3 +11,23 @@
   width: 30rem;
   max-width: 90vw;
 }
+
+.rs-options-2 {
+  display: flex;
+  width: 100%;
+}
+
+.rs-options-2-1 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 50%;
+}
+
+.rs-left {
+  padding-right: 0.5rem;
+}
+
+.rs-right {
+  padding-left: 0.5rem;
+}

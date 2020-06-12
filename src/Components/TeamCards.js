@@ -1,7 +1,7 @@
 import React from 'react';
 
 // helper functions
-import { sortTeams } from '../utils';
+import { sortTeams } from '../Utils/utils';
 
 export default function TeamCards(props) {
 

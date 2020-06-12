@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import Select from 'react-select';
 
+// helper functions
+import * as db from '../Utils/db';
+
 // Components
 import PlayerList from './PlayerList';
 
@@ -60,7 +63,7 @@ export default function Team(props) {
       props.setShowEditTeam(false);
       props.setCurrentEditTeam(null);
       // update the DB
-      props.delTeam(currentEditTeam);
+      db.delTeam(newDbUser.uid, currentEditTeam);
       // redirect to the teams page adter delete
       window.location.href = '/#/teams';
     }
@@ -98,7 +101,7 @@ export default function Team(props) {
   const saveChanges = () => {
     props.setShowEditTeam(false);
     let newTeam = { ...dbUser.teams[currentEditTeam] };
-    props.saveTeam(newTeam, newTeam.teamID);
+    db.saveTeam(dbUser.uid, newTeam, newTeam.teamID);
   }
 
   return (
