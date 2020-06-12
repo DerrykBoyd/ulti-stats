@@ -33,6 +33,7 @@ export default function Teams(props) {
     }
     newDbUser.teams[`${teamID}`] = newTeam;
     props.setDbUser(newDbUser);
+    props.resetTeamOptions(newDbUser.teams);
     setTeamName('');
     // add team to DB
     db.saveTeam(newDbUser.uid, newTeam, teamID);
@@ -82,6 +83,7 @@ export default function Teams(props) {
               currentEditTeam={currentEditTeam}
               db={props.db}
               dbUser={dbUser}
+              resetTeamOptions={props.resetTeamOptions}
               setCurrentEditTeam={setCurrentEditTeam}
               setDbUser={props.setDbUser}
               setShowEditTeam={setShowEditTeam}

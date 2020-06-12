@@ -116,6 +116,20 @@ function App() {
     }
   }, [user, loadUser]);
 
+  const resetTeamOptions = (newTeams) => {
+    let newTeamOptions = [];
+    for (let team of Object.values(newTeams)) {
+      newTeamOptions.push({ value: team.name, label: team.name, teamID: team.teamID });
+    };
+    newTeamOptions.sort((a, b) => {
+      return sortTeams(a.value, b.value)
+    });
+    setTeamOptions(newTeamOptions);
+    let newGameOptions = { ...gameOptionsRef.current };
+    newGameOptions.statTeam = newTeamOptions[0];
+    setGameOptions(newGameOptions);
+  }
+
   return (
     <Router>
       <ToastContainer
@@ -145,6 +159,7 @@ function App() {
               <Teams
                 db={db}
                 dbUser={dbUser}
+                resetTeamOptions={resetTeamOptions}
                 setDbUser={setDbUser}
               />
             </> : <Redirect to='/' />

@@ -94,11 +94,19 @@ export default function NewGame(props) {
                   <span className='text-dis'> (Type to search or add)</span></h4>
                 <CreatableSelect
                   isClearable
-                  defaultValue={gameOptions.opponent ? 
-                  {
-                    value: gameOptions.opponent,
-                    label: gameOptions.opponent,
-                  } : ''}
+                  defaultValue={gameOptions.opponent ?
+                    {
+                      value: gameOptions.opponent,
+                      label: gameOptions.opponent,
+                    } : ''}
+                  onMenuOpen={() => {
+                    setTimeout(() => {
+                      window.scroll({
+                        top: 290,
+                        behavior: 'smooth'
+                      })
+                    }, 300);
+                  }}
                   onChange={(newValue => {
                     if (!newValue) {
                       let newGameOptions = { ...gameOptions };
@@ -133,17 +141,18 @@ export default function NewGame(props) {
                     value: 7,
                     label: '7 v 7'
                   }}
+                  isSearchable={false}
                   onChange={(newValue => {
                     let newGameOptions = { ...gameOptions };
                     newGameOptions.gameFormat = newValue;
                     setGameOptions(newGameOptions);
                   })}
                   options={[
-                    {value: 7, label: `7 v 7`},
-                    {value: 6, label: `6 v 6`},
-                    {value: 5, label: `5 v 5`},
-                    {value: 4, label: `4 v 4`},
-                    {value: 3, label: `3 v 3`},
+                    { value: 7, label: `7 v 7` },
+                    { value: 6, label: `6 v 6` },
+                    { value: 5, label: `5 v 5` },
+                    { value: 4, label: `4 v 4` },
+                    { value: 3, label: `3 v 3` },
                   ]}
                   styles={rsStyles}
                 ></Select>

@@ -62,6 +62,8 @@ export default function Team(props) {
       props.setDbUser(newDbUser);
       props.setShowEditTeam(false);
       props.setCurrentEditTeam(null);
+      // update the teamOptions and gameOptions
+      props.resetTeamOptions(newDbUser.teams);
       // update the DB
       db.delTeam(newDbUser.uid, currentEditTeam);
       // redirect to the teams page adter delete
