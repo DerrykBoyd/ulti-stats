@@ -35,6 +35,7 @@ export default function NewGame(props) {
                 <h4 className='rs-title'>Team</h4>
                 <Select
                   defaultValue={gameOptions.statTeam || teamOptions[0]}
+                  isSearchable={false}
                   onChange={(newValue => {
                     let newGameOptions = { ...gameOptions };
                     newGameOptions.statTeam = newValue;
@@ -146,6 +147,12 @@ export default function NewGame(props) {
                   ]}
                   styles={rsStyles}
                 ></Select>
+                <div className='game-opt-btn-container'>
+                  <button
+                    className='btn'
+                    onClick={() => console.log(`Finish setup clicked`)}
+                  >Finish Setup</button>
+                </div>
               </>
               :
               <p>You must create at least one team before starting a new game.</p>

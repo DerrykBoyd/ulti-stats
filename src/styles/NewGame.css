@@ -31,3 +31,10 @@
 .rs-right {
   padding-left: 0.5rem;
 }
+
+.game-opt-btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}

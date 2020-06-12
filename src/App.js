@@ -1,5 +1,5 @@
 // React
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   HashRouter as Router,
   Route,
@@ -65,6 +65,9 @@ function App() {
     gameFormat: { value: 7, label: `7 v 7` },
   })
 
+  // store ref of gameOptions
+  let gameOptionsRef = useRef(gameOptions);
+
   const loadUser = useCallback(() => {
     // get the user from the db and load into state
     db.collection('users').where('uid', '==', user.uid)
@@ -82,7 +85,7 @@ function App() {
             return sortTeams(a.value, b.value)
           });
           setTeamOptions(newTeamOptions);
-          let newGameOptions = { ...gameOptions };
+          let newGameOptions = { ...gameOptionsRef.current };
           newGameOptions.statTeam = newTeamOptions[0];
           setGameOptions(gameOptions => newGameOptions);
           console.log('Team Options Set');
