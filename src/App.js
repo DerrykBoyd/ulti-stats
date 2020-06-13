@@ -133,7 +133,7 @@ function App() {
   return (
     <Router>
       <ToastContainer
-        autoClose={1000}
+        autoClose={2000}
         hideProgressBar
         position='top-center'
         transition={Slide}

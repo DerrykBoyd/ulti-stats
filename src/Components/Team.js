@@ -21,22 +21,55 @@ export default function Team(props) {
   const [newPlayerFirstName, setNewPlayerFirstName] = useState('');
   const [newPlayerLastName, setNewPlayerLastName] = useState('');
   const [newPlayerNumber, setNewPlayerNumber] = useState('');
+  const [formError, setFormError] = useState({
+    isError: false,
+    message: '',
+    type: '',
+  })
+
+  const unsavedChanges = dbUser.teams[currentEditTeam].unsavedChanges;
+
+  const setUnsaved = (value) => {
+    let newDbUser = { ...dbUser };
+    newDbUser.teams[currentEditTeam].unsavedChanges = value;
+    props.setDbUser(newDbUser);
+  }
 
   const sortOrderOptions = [
-    {value:'Number', label:'Number'},
-    {value:'First Name', label:'First Name'},
-    {value:'Last Name', label:'Last Name'}
+    { value: 'Number', label: 'Number' },
+    { value: 'First Name', label: 'First Name' },
+    { value: 'Last Name', label: 'Last Name' }
   ];
 
   const rsStyles = {
     container: (provided) => ({
       ...provided,
-      'min-width': '140px',
+      'minWidth': '140px',
     })
   }
 
   // helper functions
-  const addPlayer = () => {
+  const addPlayer = (e) => {
+    e.preventDefault();
+    // reset the error messages
+    resetFormError();
+    let newFormError = { ...formError };
+    // set error for number field
+    if (parseInt(newPlayerNumber) < 0 || parseInt(newPlayerNumber) > 999) {
+      newFormError.isError = true;
+      newFormError.type = 'addPlayer';
+      newFormError.message = 'Jersey # must be between 0 - 999';
+      setFormError(newFormError);
+      return;
+    };
+    // set error for name fields
+    if (!newPlayerFirstName || !newPlayerLastName) {
+      newFormError.isError = true;
+      newFormError.type = 'addPlayer';
+      newFormError.message = 'Must provide first and last name';
+      setFormError(newFormError);
+      return;
+    }
     let playerID = uuid();
     const newPlayer = {
       firstName: newPlayerFirstName,
@@ -46,6 +79,7 @@ export default function Team(props) {
     }
     let newDbUser = { ...dbUser };
     newDbUser.teams[currentEditTeam].players[`${playerID}`] = newPlayer;
+    newDbUser.teams[currentEditTeam].unsavedChanges = true;
     props.setDbUser(newDbUser);
     setNewPlayerFirstName('');
     setNewPlayerLastName('');
@@ -77,6 +111,7 @@ export default function Team(props) {
     switch (e.target.name) {
       case 'team-name':
         newDbUser.teams[currentEditTeam].name = e.target.value;
+        newDbUser.teams[currentEditTeam].unsavedChanges = true;
         props.setDbUser(newDbUser);
         break;
       case 'player-number':
@@ -94,14 +129,26 @@ export default function Team(props) {
   }
 
   const handleSortChange = (newValue) => {
-    console.log(newValue)
     let newDbUser = { ...dbUser };
     newDbUser.teams[currentEditTeam].playerSortOrder = newValue.value;
+    newDbUser.teams[currentEditTeam].unsavedChanges = true;
     props.setDbUser(newDbUser);
   }
 
+  const resetFormError = () => {
+    setFormError({ isError: false, message: '', type: '' })
+  }
+
+  const addFormError = () => {
+    let newFormError = { ...formError };
+    newFormError.isError = true;
+    setFormError(newFormError);
+  }
+
   const saveChanges = () => {
+    if (!unsavedChanges) return;
     props.setShowEditTeam(false);
+    setUnsaved(false);
     let newTeam = { ...dbUser.teams[currentEditTeam] };
     db.saveTeam(dbUser.uid, newTeam, newTeam.teamID);
   }
@@ -120,7 +167,7 @@ export default function Team(props) {
           </div>
           <div className='team-btns'>
             <button className='btn btn-del' onClick={delTeam}>Delete</button>
-            <button className='btn' onClick={saveChanges}>Save Changes</button>
+            <button className={unsavedChanges ? 'btn' : 'btn btn-inactive'} onClick={saveChanges}>Save Changes</button>
             <button className='btn' onClick={() => {
               props.setShowEditTeam(false)
             }}>Cancel</button>
@@ -129,12 +176,18 @@ export default function Team(props) {
           <form className='add-player-form'>
             {showAddPlayer &&
               <>
-                <input className='player-num-input' placeholder='##' name='player-number' onChange={handleInputChange} value={newPlayerNumber} />
+                <input type='number' className='player-input player-num-input' placeholder='##' name='player-number' onChange={handleInputChange} value={newPlayerNumber} />
                 <input className='player-input' name='player-first-name' placeholder='First Name' onChange={handleInputChange} value={newPlayerFirstName} />
                 <input className='player-input' name='player-last-name' placeholder='Last Name' onChange={handleInputChange} value={newPlayerLastName} />
+                {formError.type === 'addPlayer' &&
+                  <div className='form-error'>{formError.message}</div>
+                }
                 <div className='add-player-btns'>
                   <button type='submit' className='btn' onClick={addPlayer}>Add</button>
-                  <button className='btn nmt' onClick={() => setShowAddPlayer(false)}>Cancel</button>
+                  <button className='btn nmt' onClick={() => {
+                    setShowAddPlayer(false);
+                    resetFormError();
+                  }}>Cancel</button>
                 </div>
               </>
             }
@@ -144,7 +197,7 @@ export default function Team(props) {
               <button className='btn' onClick={() => setShowAddPlayer(true)}>Add Player</button>
               <div className='sort-select'>
                 <span>Sort</span>
-                <Select 
+                <Select
                   defaultValue={{
                     value: dbUser.teams[currentEditTeam].playerSortOrder,
                     label: dbUser.teams[currentEditTeam].playerSortOrder,
@@ -154,20 +207,23 @@ export default function Team(props) {
                   options={sortOrderOptions}
                   styles={rsStyles}
                 />
-                {/* <select
-                  className='player-input'
-                  name='sort-order'
-                  value={dbUser.teams[currentEditTeam].playerSortOrder}
-                  onChange={handleSortChange}
-                >{sortOrderOptions}</select> */}
               </div>
             </div>
           }
           <div className='player-list'>
+            <div className='player-list-item player-list-headers'>
+              <div className='player-num-header'>##</div>
+              <div className='player-name-header'>First Name</div>
+              <div className='player-name-header'>Last Name</div>
+              <div className='i-placeholder'></div>
+            </div>
             <PlayerList
+              addFormError={addFormError}
               currentEditTeam={currentEditTeam}
               dbUser={dbUser}
+              formError={formError}
               setDbUser={props.setDbUser}
+              setUnsaved={setUnsaved}
               players={dbUser.teams[currentEditTeam].players}
             />
           </div>

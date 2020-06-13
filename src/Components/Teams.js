@@ -30,6 +30,7 @@ export default function Teams(props) {
       players: {},
       playerSortOrder: 'Number',
       teamID: teamID,
+      unsavedChanges: false,
     }
     newDbUser.teams[`${teamID}`] = newTeam;
     props.setDbUser(newDbUser);

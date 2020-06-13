@@ -10,6 +10,10 @@
   color: var(--delete);
 }
 
+.text-sec-light {
+  color: var(--secondary-light);
+}
+
 .text-dis {
   color: var(--text-dark-disabled)
 }
@@ -113,6 +117,7 @@
 .btn-inactive, .btn-inactive:hover, .btn-inactive:focus {
   background-color: #bdbdbd;
   box-shadow: none;
+  cursor: default;
 }
 
 .card {
