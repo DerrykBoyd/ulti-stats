@@ -14,8 +14,9 @@ admin.initializeApp();
 exports.createUserRecord = functions.auth.user().onCreate((user) => {
 
     const userRecord = {
-        email: user.email,
         creationTime: user.metadata.creationTime,
+        email: user.email,
+        name: user.name || '',
         opponents: [],
         teams: {},
         uid: user.uid,

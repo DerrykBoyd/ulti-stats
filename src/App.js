@@ -20,9 +20,10 @@ import 'react-toastify/dist/ReactToastify.css';
 // Components
 import Header from './Components/Header';
 import Home from './Components/Home';
-import Teams from './Components/Teams';
 import Games from './Components/Games';
 import NewGame from './Components/NewGame';
+import Stats from './Components/Stats';
+import Teams from './Components/Teams';
 
 // helper functions
 import { sortTeams } from './Utils/utils';
@@ -54,16 +55,18 @@ export const db = firebaseApp.firestore();
 
 function App() {
 
-  const [user, setUser] = useState(null);
+  // set state (global)
+  const [currentGame, setCurrentGame] = useState({});
   const [dbUser, setDbUser] = useState(null);
-  const [teamOptions, setTeamOptions] = useState([]);
   const [gameOptions, setGameOptions] = useState({
     statTeam: '',
     jerseyColour: 'Light',
     startingOn: 'Offence',
     opponent: '',
     gameFormat: { value: 7, label: `7 v 7` },
-  })
+  });
+  const [teamOptions, setTeamOptions] = useState([]);
+  const [user, setUser] = useState(null);
 
   // store ref of gameOptions
   let gameOptionsRef = useRef(gameOptions);
@@ -165,7 +168,7 @@ function App() {
             </> : <Redirect to='/' />
           }
         </Route>
-        <Route path='/games'>
+        <Route path='/games' exact>
           {localStorage.getItem('user') ?
             <>
               <Header
@@ -179,7 +182,7 @@ function App() {
             </> : <Redirect to='/' />
           }
         </Route>
-        <Route path='/newgame'>
+        <Route path='/newgame' exact>
           {localStorage.getItem('user') ?
             <>
               <Header
@@ -187,14 +190,31 @@ function App() {
                 user={user}
               />
               <NewGame
+                currentGame={currentGame}
                 db={db}
                 dbUser={dbUser}
                 gameOptions={gameOptions}
+                setCurrentGame={setCurrentGame}
                 setDbUser={setDbUser}
                 setGameOptions={setGameOptions}
                 teamOptions={teamOptions}
               />
             </> : <Redirect to='/' />
+          }
+        </Route>
+        <Route path='/stats' exact>
+          {currentGame.gameID ?
+            <>
+              <Header
+                firebaseApp={firebaseApp}
+                user={user}
+              />
+              <Stats
+                db={db}
+                dbUser={dbUser}
+                currentGame={currentGame}
+              />
+            </> : <Redirect to='/newgame' />
           }
         </Route>
       </Switch>

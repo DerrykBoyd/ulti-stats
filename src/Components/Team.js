@@ -100,7 +100,7 @@ export default function Team(props) {
       props.resetTeamOptions(newDbUser.teams);
       // update the DB
       db.delTeam(newDbUser.uid, currentEditTeam);
-      // redirect to the teams page adter delete
+      // redirect to the teams page after delete
       window.location.href = '/#/teams';
     }
   }

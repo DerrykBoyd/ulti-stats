@@ -39,5 +39,15 @@ export function addOpponent (userID, teamID, opponent) {
       console.log('New Opponent Added');
       toast.success('New Opponenet Added')
     })
-    .catch(e => console.log('Error adding opponent', e))
+    .catch(e => console.log('Error adding opponent', e));
+}
+
+export function addGame (game) {
+  db.collection('users').doc(game.createdBy).collection('games')
+    .add(game)
+    .then(_ => {
+      console.log('New game added');
+      toast.success('New game added to the database');
+    })
+    .catch(e => console.log('Error adding game', e));
 }
