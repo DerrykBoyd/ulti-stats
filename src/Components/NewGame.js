@@ -36,7 +36,10 @@ export default function NewGame(props) {
       })
       return;
     }
+    let isOffence = false;
+    if (gameOptions.startingOn === 'Offence') isOffence = true;
     let newGame = {
+      activePoint: false,
       createdBy: dbUser.uid,
       createdTime: new Date(),
       creatorEmail: dbUser.email,
@@ -45,6 +48,7 @@ export default function NewGame(props) {
       gameID: uuid(),
       gameFormat: gameOptions.gameFormat,
       gameHistory: [],
+      isOffence: isOffence,
       jerseyColour: gameOptions.jerseyColour,
       opponent: gameOptions.opponent,
       playerStats: [],

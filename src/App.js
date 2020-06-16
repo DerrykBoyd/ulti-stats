@@ -110,6 +110,8 @@ function App() {
       } else {
         localStorage.removeItem('user');
         setUser(user);
+        localStorage.removeItem('currentGame');
+        setCurrentGame(null);
       }
     })
     // unsubscribe to the listener when unmounting
