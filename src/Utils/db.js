@@ -13,7 +13,7 @@ export function delTeam(userID, teamID) {
       // Toast for successful delete
       toast.error('Team Deleted');
     })
-    .catch(e => console.log('Error deleting team', e))
+    .catch(e => console.error('Error deleting team', e))
 }
 
 export function saveTeam (userID, newTeam, teamID) {
@@ -27,7 +27,7 @@ export function saveTeam (userID, newTeam, teamID) {
       // Toast msg for successful save
       toast.success('Team Saved');
     })
-    .catch(e => console.log('Error updating teams', e))
+    .catch(e => console.error('Error updating teams', e))
 }
 
 export function addOpponent (userID, teamID, opponent) {
@@ -39,7 +39,7 @@ export function addOpponent (userID, teamID, opponent) {
       console.log('New Opponent Added');
       toast.success('New Opponenet Added')
     })
-    .catch(e => console.log('Error adding opponent', e));
+    .catch(e => console.error('Error adding opponent', e));
 }
 
 export function addGame (game) {
@@ -49,5 +49,5 @@ export function addGame (game) {
       console.log('New game added');
       toast.success('New game added to the database');
     })
-    .catch(e => console.log('Error adding game', e));
+    .catch(e => console.error('Error adding game', e));
 }

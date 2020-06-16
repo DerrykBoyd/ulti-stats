@@ -65,7 +65,7 @@ export default function NewGame(props) {
 
   return (
     <>
-      {props.currentGame.gameID ?
+      {props.currentGame ?
         <Redirect to='/stats'></Redirect>
         :
         <div className='App'>

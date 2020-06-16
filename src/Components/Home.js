@@ -27,10 +27,11 @@ export default function Home(props) {
               className='btn'
               to='/games'>My Games
                                 </Link>
-            <Link
-              className='btn'
-              to='/newgame'>Start New Game
-                                </Link>
+            {!localStorage.getItem('currentGame') &&
+              <Link
+                className='btn'
+                to='/newgame'>Start New Game
+                                </Link>}
           </div>
         }
         {!user &&

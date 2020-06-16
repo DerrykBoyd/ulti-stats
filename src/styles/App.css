@@ -22,6 +22,10 @@
   cursor: pointer;
 }
 
+.drop-shadow {
+  box-shadow: 0 6px 10px rgba(0,0,0,.08), 0 0 6px rgba(0,0,0,.05);
+}
+
 .App {
   text-align: center;
   max-width: 1600px;
@@ -104,6 +108,10 @@
   background-color: var(--delete);
 }
 
+.btn-green, .btn-green:hover {
+  background-color: var(--app-green);
+}
+
 .btn:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--secondary);
@@ -170,4 +178,31 @@ input:focus, select:focus {
 
 .rs-title {
   margin: 1rem 0 0.5rem 0;
+}
+
+.ongoing-game {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  padding: 0.5rem;
+  background-color: var(--primary-dark);
+  color: var(--text-light);
+}
+
+@media (min-width: 600px) {
+  .ongoing-game {
+    width: 450px;
+    left: 50%;
+    bottom: 2rem;
+    border-radius: 8px;
+    transform: translateX(-50%);
+  }
+}
+
+.ongoing-game-title {
+  margin: 1rem 0;
 }

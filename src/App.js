@@ -21,6 +21,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Header from './Components/Header';
 import Home from './Components/Home';
 import Games from './Components/Games';
+import OngoingGame from './Components/OngoingGame';
 import NewGame from './Components/NewGame';
 import Stats from './Components/Stats';
 import Teams from './Components/Teams';
@@ -56,7 +57,7 @@ export const db = firebaseApp.firestore();
 function App() {
 
   // set state (global)
-  const [currentGame, setCurrentGame] = useState({});
+  const [currentGame, setCurrentGame] = useState(null);
   const [dbUser, setDbUser] = useState(null);
   const [gameOptions, setGameOptions] = useState({
     statTeam: '',
@@ -98,6 +99,8 @@ function App() {
   }, [user]);
 
   useEffect(() => {
+    // set the unsaved game if there is one
+    setCurrentGame(JSON.parse(localStorage.getItem('currentGame')) || null);
     // listen for auth state changes
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(user => {
       if (user) {
@@ -118,6 +121,12 @@ function App() {
       loadUser();
     }
   }, [user, loadUser]);
+
+  useEffect(() => {
+    if (currentGame) {
+      localStorage.setItem('currentGame', JSON.stringify(currentGame));
+    }
+  }, [currentGame]);
 
   const resetTeamOptions = (newTeams) => {
     let newTeamOptions = [];
@@ -151,6 +160,10 @@ function App() {
             firebaseApp={firebaseApp}
             uiConfig={uiConfig}
           />
+          <OngoingGame
+            currentGame={currentGame}
+            setCurrentGame={setCurrentGame}
+          />
         </Route>
         <Route path='/teams' exact>
           {localStorage.getItem('user') ?
@@ -165,6 +178,10 @@ function App() {
                 resetTeamOptions={resetTeamOptions}
                 setDbUser={setDbUser}
               />
+              <OngoingGame
+                currentGame={currentGame}
+                setCurrentGame={setCurrentGame}
+              />
             </> : <Redirect to='/' />
           }
         </Route>
@@ -178,6 +195,10 @@ function App() {
               <Games
                 db={db}
                 dbUser={dbUser}
+              />
+              <OngoingGame
+                currentGame={currentGame}
+                setCurrentGame={setCurrentGame}
               />
             </> : <Redirect to='/' />
           }
@@ -203,7 +224,7 @@ function App() {
           }
         </Route>
         <Route path='/stats' exact>
-          {currentGame.gameID ?
+          {currentGame ?
             <>
               <Header
                 firebaseApp={firebaseApp}
