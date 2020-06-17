@@ -19,6 +19,11 @@
   --text-light-disabled: rgba(255, 255, 255, 0.38);
   --input-border: rgb(204, 204, 204);
   color: var(--text-dark);
+
+  /* widths */
+  --phone: 320px;
+  --tablet: 600px;
+  --laptop: 1024px;
 }
 
 h1, h2 {

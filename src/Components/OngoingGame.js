@@ -5,6 +5,7 @@ export default function OngoingGame(props) {
   const discardGame = () => {
     localStorage.removeItem('currentGame');
     props.setCurrentGame(null);
+    // TODO Delete the game from the database
   }
 
   return (

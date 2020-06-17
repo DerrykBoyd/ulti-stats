@@ -79,7 +79,7 @@ function App() {
       .then(res => {
         res.forEach(doc => {
           setDbUser(doc.data());
-          console.log('User fetched')
+          console.log('User fetched from database')
           // set the possible team options from the db
           let newTeamOptions = [];
           for (let team of Object.values(doc.data().teams)) {
@@ -92,7 +92,6 @@ function App() {
           let newGameOptions = { ...gameOptionsRef.current };
           newGameOptions.statTeam = newTeamOptions[0];
           setGameOptions(gameOptions => newGameOptions);
-          console.log('Team Options Set');
         });
       })
       .catch(error => console.log('Error loading User', error))
@@ -106,7 +105,6 @@ function App() {
       if (user) {
         localStorage.setItem('user', JSON.stringify(user));
         setUser(user);;
-        console.log(user);
       } else {
         localStorage.removeItem('user');
         setUser(user);
@@ -175,6 +173,7 @@ function App() {
                 user={user}
               />
               <Teams
+                currentGame={currentGame}
                 db={db}
                 dbUser={dbUser}
                 resetTeamOptions={resetTeamOptions}
@@ -195,6 +194,7 @@ function App() {
                 user={user}
               />
               <Games
+                currentGame={currentGame}
                 db={db}
                 dbUser={dbUser}
               />
@@ -233,9 +233,9 @@ function App() {
                 user={user}
               />
               <Stats
+                currentGame={currentGame}
                 db={db}
                 dbUser={dbUser}
-                currentGame={currentGame}
               />
             </> : <Redirect to='/newgame' />
           }

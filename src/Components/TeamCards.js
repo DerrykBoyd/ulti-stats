@@ -24,6 +24,6 @@ export default function TeamCards(props) {
   );
 
   return (
-    <div className='team-list'>{teams}</div>
+    <div className={`team-list ${props.currentGame && 'pad-btm-alert'}`}>{teams}</div>
   )
 }

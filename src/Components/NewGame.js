@@ -51,13 +51,12 @@ export default function NewGame(props) {
       isOffence: isOffence,
       jerseyColour: gameOptions.jerseyColour,
       opponent: gameOptions.opponent,
-      playerStats: [],
+      playerStats: {},
       score: {
-        [gameOptions.teamName]: 0,
-        [gameOptions.opponent]: 0
+        [gameOptions.statTeam.value]: 0,
+        [gameOptions.opponent]: 0,
       },
       startingOn: gameOptions.startingOn,
-      subHistory: [],
       teamName: gameOptions.statTeam.value,
       teamID: gameOptions.statTeam.teamID,
     }

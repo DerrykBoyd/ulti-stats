@@ -65,7 +65,6 @@ export default function Teams(props) {
   const handleInputChange = (e) => {
     setFormErr({});
     if (!validateUnique(e.target.value)) {
-      console.log('duplicate');
       setFormErr({
         message: 'Team name already in use.',
         type: 'duplicate-name'
@@ -113,6 +112,7 @@ export default function Teams(props) {
                 }
               </form>
               <TeamCards
+                currentGame={props.currentGame}
                 teamList={dbUser.teams}
                 setCurrentEditTeam={setCurrentEditTeam}
                 setShowEditTeam={setShowEditTeam}
