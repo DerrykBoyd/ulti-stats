@@ -30,8 +30,16 @@ export default function Teams(props) {
 
   const addTeam = (e) => {
     e.preventDefault();
-    if (formErr.message) {
-      toast.error('Team name already in use.');
+    let newFormErr = { ...formErr };
+    if (!teamName) {
+      newFormErr = {
+        message: 'Team name must be provided.',
+        type: 'empty-form'
+      }
+      setFormErr(newFormErr);
+    }
+    if (newFormErr.message) {
+      toast.error(formErr.message);
       return;
     };
     setShowAddTeam(false);
@@ -86,15 +94,15 @@ export default function Teams(props) {
                 {showAddTeam &&
                   <>
                     <div>
-                    	<label htmlFor='team-name'>Team Name: </label>
-                    	<input className='player-input' name='team-name' onChange={handleInputChange} value={teamName} />
+                      <label htmlFor='team-name'>Team Name: </label>
+                      <input className='player-input' name='team-name' onChange={handleInputChange} value={teamName} />
                     </div>
                     {formErr.message && <div className='form-error'>{formErr.message}</div>}
                     <div>
                       {formErr.message ?
-                      <button className='btn btn-inactive' onClick={addTeam}>Save</button>
-                      :
-                      <button className='btn' onClick={addTeam}>Save</button>}
+                        <button className='btn btn-inactive' onClick={addTeam}>Save</button>
+                        :
+                        <button className='btn' onClick={addTeam}>Save</button>}
                       <button className='btn nmt' onClick={() => {
                         setFormErr({});
                         setTeamName('');
