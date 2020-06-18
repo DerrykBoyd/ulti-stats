@@ -30,7 +30,7 @@ export default function Stats(props) {
   useEffect(() => {
     if (props.dbUser) {
       let teamData = Object.values(props.dbUser.teams).find((team) => {
-        return team.name === currentGame.teamName;
+        return team.teamID === currentGame.teamID;
       });
       let newTeamRoster = Object.values(teamData.players);
       newTeamRoster.sort((a, b) => {
@@ -64,12 +64,15 @@ export default function Stats(props) {
       {/* Component for choosing lineup at start of point */}
       {!currentGame.activePoint ?
         <>
-          <h3>{`Choose ${currentGame.gameFormat.value} players to start on ${currentGame.isOffence ? 'Offence' : 'Defence'}`}</h3>
+          {lineUp.length === currentGame.gameFormat.value ?
+            <button className='btn btn-green'>Confirm Lineup</button>
+            :
+            <h3>{`Choose ${currentGame.gameFormat.value - lineUp.length} more players for ${currentGame.isOffence ? 'Offence' : 'Defence'}`}</h3>
+          }
           <p>Choose Lineup here from list of players</p>
           {teamRoster && teamRoster.map((player) => (
             <div key={player.playerID}>{`${player.number}, ${player.firstName}, ${player.lastName}`}</div>
           ))}
-          <p>TODO Add Player to roster here</p>
           <form>
             {showAddPlayer ?
               <AddPlayerForm
@@ -102,9 +105,6 @@ export default function Stats(props) {
           </form>
           <p>TODO Check number of selected players is equal to the game format</p>
           <div>confirm lineup btn when correct number of players is selected</div>
-          {lineUp.length === currentGame.gameFormat.value &&
-            <button className='btn btn-green'>Confirm Lineup</button>
-          }
         </>
         :
         // Take stats when there is an active point.

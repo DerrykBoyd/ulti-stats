@@ -10,11 +10,11 @@ export default function Scoreboard(props) {
     <>
       <div className='game-info'>
         <div className={`score-card ${!isLightJersy ? 'dark' : ''}`}>
-          <div>{currentGame.teamName}</div>
+          <div className='score-team'>{currentGame.teamName}</div>
           <div className='score-text'>{currentGame.score[currentGame.teamName]}</div>
         </div>
         <div className={`score-card ${isLightJersy ? 'dark' : ''}`}>
-          <div>{currentGame.opponent}</div>
+          <div className='score-team'>{currentGame.opponent}</div>
           <div className='score-text'>{currentGame.score[currentGame.opponent]}</div>
         </div>
       </div>
