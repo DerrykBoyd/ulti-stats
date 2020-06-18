@@ -7,6 +7,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import { ToastContainer, Slide } from 'react-toastify';
+import Timer from 'easytimer.js';
 
 // Firebase
 import firebase from 'firebase/app';
@@ -58,6 +59,8 @@ function App() {
 
   // set state (global)
   const [currentGame, setCurrentGame] = useState(null);
+  const [currentGameTimer, setCurrentGameTimer] = useState(new Timer());
+  const [currentPointLineUp, setCurrentPointLineUp] = useState([]);
   const [dbUser, setDbUser] = useState(null);
   const [gameOptions, setGameOptions] = useState({
     statTeam: '',
@@ -214,6 +217,7 @@ function App() {
               />
               <NewGame
                 currentGame={currentGame}
+                currentGameTimer={currentGameTimer}
                 db={db}
                 dbUser={dbUser}
                 gameOptions={gameOptions}
@@ -234,8 +238,12 @@ function App() {
               />
               <Stats
                 currentGame={currentGame}
+                currentGameTimer={currentGameTimer}
+                currentPointLineUp={currentPointLineUp}
                 db={db}
                 dbUser={dbUser}
+                setCurrentGame={setCurrentGame}
+                setDbUser={setDbUser}
               />
             </> : <Redirect to='/newgame' />
           }

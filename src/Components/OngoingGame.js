@@ -1,11 +1,14 @@
 import React from 'react'
 
+import { delGame } from '../Utils/db';
+
 export default function OngoingGame(props) {
 
   const discardGame = () => {
     localStorage.removeItem('currentGame');
+    // Delete the game from the database
+    delGame(props.currentGame);
     props.setCurrentGame(null);
-    // TODO Delete the game from the database
   }
 
   return (

@@ -7,7 +7,7 @@ export default function Teams(props) {
     // set state
 
     return (
-        <div className='App'>
+        <div className={`App ${props.currentGame && 'pad-btm-alert'}`}>
             <h1>Games</h1>
             { dbUser && <h2>{dbUser.email}</h2>}
         </div>

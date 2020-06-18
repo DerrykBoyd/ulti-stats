@@ -52,3 +52,14 @@ export function addGame (game) {
     })
     .catch(e => console.error('Error adding game', e));
 }
+
+export function delGame (game) {
+  db.collection('users').doc(game.createdBy).collection('games')
+    .doc(game.gameID)
+    .delete()
+    .then(() => {
+      console.log('Game deleted');
+      toast.error('Game deleted form the database');
+    })
+    .catch(e => console.log('Error deleting game', e));
+}

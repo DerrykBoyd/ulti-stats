@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import Select from 'react-select';
 
 // helper functions
 import * as db from '../Utils/db';
+import {sortOrderOptions} from '../Utils/utils';
 
 // Components
 import PlayerList from './PlayerList';
 
 // import styles
 import '../styles/Team.css';
+import AddPlayerForm from './AddPlayerForm';
+import { toast } from 'react-toastify';
 
 export default function Team(props) {
 
@@ -18,14 +20,8 @@ export default function Team(props) {
 
   // set state
   const [showAddPlayer, setShowAddPlayer] = useState(false);
-  const [newPlayerFirstName, setNewPlayerFirstName] = useState('');
-  const [newPlayerLastName, setNewPlayerLastName] = useState('');
-  const [newPlayerNumber, setNewPlayerNumber] = useState('');
-  const [formError, setFormError] = useState({
-    isError: false,
-    message: '',
-    type: '',
-  })
+  const [formError, setFormError] = useState({ message: '' });
+  const [newTeamName, setNewTeamName] = useState(dbUser.teams[currentEditTeam].name);
 
   const unsavedChanges = dbUser.teams[currentEditTeam].unsavedChanges;
 
@@ -35,12 +31,6 @@ export default function Team(props) {
     props.setDbUser(newDbUser);
   }
 
-  const sortOrderOptions = [
-    { value: 'Number', label: 'Number' },
-    { value: 'First Name', label: 'First Name' },
-    { value: 'Last Name', label: 'Last Name' }
-  ];
-
   const rsStyles = {
     container: (provided) => ({
       ...provided,
@@ -49,44 +39,6 @@ export default function Team(props) {
   }
 
   // helper functions
-  const addPlayer = (e) => {
-    e.preventDefault();
-    // reset the error messages
-    resetFormError();
-    let newFormError = { ...formError };
-    // set error for number field
-    if (parseInt(newPlayerNumber) < 0 || parseInt(newPlayerNumber) > 999) {
-      newFormError.isError = true;
-      newFormError.type = 'addPlayer';
-      newFormError.message = 'Jersey # must be between 0 - 999';
-      setFormError(newFormError);
-      return;
-    };
-    // set error for name fields
-    if (!newPlayerFirstName || !newPlayerLastName) {
-      newFormError.isError = true;
-      newFormError.type = 'addPlayer';
-      newFormError.message = 'Must provide first and last name';
-      setFormError(newFormError);
-      return;
-    }
-    let playerID = uuid();
-    const newPlayer = {
-      firstName: newPlayerFirstName,
-      lastName: newPlayerLastName,
-      number: newPlayerNumber,
-      playerID: playerID,
-    }
-    let newDbUser = { ...dbUser };
-    newDbUser.teams[currentEditTeam].players[`${playerID}`] = newPlayer;
-    newDbUser.teams[currentEditTeam].unsavedChanges = true;
-    props.setDbUser(newDbUser);
-    setNewPlayerFirstName('');
-    setNewPlayerLastName('');
-    setNewPlayerNumber('');
-    setShowAddPlayer(false);
-  }
-
   const delTeam = (e) => {
     let teamName = dbUser.teams[`${currentEditTeam}`].name;
     if (window.confirm(`Delete Team (${teamName})?`)) {
@@ -105,26 +57,13 @@ export default function Team(props) {
     }
   }
 
-  const handleInputChange = (e) => {
+  const handleTeamNameChange = (e) => {
     e.preventDefault();
-    let newDbUser = { ...dbUser };
-    switch (e.target.name) {
-      case 'team-name':
-        newDbUser.teams[currentEditTeam].name = e.target.value;
-        newDbUser.teams[currentEditTeam].unsavedChanges = true;
-        props.setDbUser(newDbUser);
-        break;
-      case 'player-number':
-        setNewPlayerNumber(e.target.value)
-        break;
-      case 'player-first-name':
-        setNewPlayerFirstName(e.target.value)
-        break;
-      case 'player-last-name':
-        setNewPlayerLastName(e.target.value)
-        break;
-      default:
-        console.log('State not updated!');
+    setFormError({ message: '' });
+    setNewTeamName(e.target.value);
+    setUnsaved(true);
+    if (!e.target.value) {
+      setFormError({ message: 'Name cannot be blank.' });
     }
   }
 
@@ -135,21 +74,21 @@ export default function Team(props) {
     props.setDbUser(newDbUser);
   }
 
-  const resetFormError = () => {
-    setFormError({ isError: false, message: '', type: '' })
-  }
-
-  const addFormError = () => {
-    let newFormError = { ...formError };
-    newFormError.isError = true;
-    setFormError(newFormError);
-  }
-
   const saveChanges = () => {
     if (!unsavedChanges) return;
+    if (formError.message) {
+      toast.error('Please fix form errors before saving.');
+      return;
+    }
     props.setShowEditTeam(false);
     setUnsaved(false);
+    // update the team name in state
+    let newDbUser = {...dbUser};
+    newDbUser.teams[currentEditTeam].name = newTeamName;
+    props.setDbUser(newDbUser);
+    // save changes to the database
     let newTeam = { ...dbUser.teams[currentEditTeam] };
+    newTeam.name = newTeamName;
     db.saveTeam(dbUser.uid, newTeam, newTeam.teamID);
   }
 
@@ -161,10 +100,11 @@ export default function Team(props) {
             <input
               className='team-name-input'
               name={'team-name'}
-              value={dbUser.teams[currentEditTeam].name}
-              onChange={handleInputChange}
+              value={newTeamName}
+              onChange={handleTeamNameChange}
             />
           </div>
+          {formError.message && <div className='form-error'>{formError.message}</div>}
           <div className='team-btns'>
             <button className='btn btn-del' onClick={delTeam}>Delete</button>
             <button className={unsavedChanges ? 'btn' : 'btn btn-inactive'} onClick={saveChanges}>Save Changes</button>
@@ -173,26 +113,14 @@ export default function Team(props) {
             }}>Cancel</button>
           </div>
           <h2>Team Roster</h2>
-          <form className='add-player-form'>
-            {showAddPlayer &&
-              <>
-                <input type='number' className='player-input player-num-input' placeholder='##' name='player-number' onChange={handleInputChange} value={newPlayerNumber} />
-                <input className='player-input' name='player-first-name' placeholder='First Name' onChange={handleInputChange} value={newPlayerFirstName} />
-                <input className='player-input' name='player-last-name' placeholder='Last Name' onChange={handleInputChange} value={newPlayerLastName} />
-                {formError.type === 'addPlayer' &&
-                  <div className='form-error'>{formError.message}</div>
-                }
-                <div className='add-player-btns'>
-                  <button type='submit' className='btn' onClick={addPlayer}>Add</button>
-                  <button className='btn nmt' onClick={() => {
-                    setShowAddPlayer(false);
-                    resetFormError();
-                  }}>Cancel</button>
-                </div>
-              </>
-            }
-          </form>
-          {!showAddPlayer &&
+          {showAddPlayer ?
+            <AddPlayerForm
+              currentEditTeam={currentEditTeam}
+              dbUser={dbUser}
+              setDbUser={props.setDbUser}
+              setShowAddPlayer={setShowAddPlayer}
+            />
+            :
             <div className='player-list-options'>
               <button className='btn' onClick={() => setShowAddPlayer(true)}>Add Player</button>
               <div className='sort-select'>
@@ -218,10 +146,8 @@ export default function Team(props) {
               <div className='i-placeholder'></div>
             </div>
             <PlayerList
-              addFormError={addFormError}
               currentEditTeam={currentEditTeam}
               dbUser={dbUser}
-              formError={formError}
               setDbUser={props.setDbUser}
               setUnsaved={setUnsaved}
               players={dbUser.teams[currentEditTeam].players}

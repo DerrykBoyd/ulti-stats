@@ -80,7 +80,7 @@ export default function Teams(props) {
   }
 
   return (
-    <div className='App teams-main'>
+    <div className={`App teams-main ${props.currentGame && 'pad-btm-alert'}`}>
       {dbUser &&
         <>
           {!showEditTeam &&

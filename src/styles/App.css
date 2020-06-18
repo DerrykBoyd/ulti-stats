@@ -147,18 +147,6 @@
   object-fit: contain;
 }
 
-.score-card {
-  display: flex;
-  flex: 1 0 100px;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  padding: 0.5rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .05);
-}
-
 input, select {
   background-color: white;
   border: 1px solid var(--input-border);
