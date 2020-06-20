@@ -48,6 +48,7 @@ export default function NewGame(props) {
       gameID: uuid(),
       gameFormat: gameOptions.gameFormat,
       gameHistory: [],
+      gameTime: '00:00',
       isOffence: isOffence,
       jerseyColour: gameOptions.jerseyColour,
       opponent: gameOptions.opponent,

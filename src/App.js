@@ -58,9 +58,8 @@ export const db = firebaseApp.firestore();
 function App() {
 
   // set state (global)
-  const [currentGame, setCurrentGame] = useState(null);
-  const [currentGameTimer, setCurrentGameTimer] = useState(new Timer());
-  const [currentPointLineUp, setCurrentPointLineUp] = useState([]);
+  const [currentGame, setCurrentGame] = useState(JSON.parse(localStorage.getItem('currentGame')) || null);
+  const [currentPointLineUp, setCurrentPointLineUp] = useState(new Set());
   const [dbUser, setDbUser] = useState(null);
   const [gameOptions, setGameOptions] = useState({
     statTeam: '',
@@ -71,6 +70,14 @@ function App() {
   });
   const [teamOptions, setTeamOptions] = useState([]);
   const [user, setUser] = useState(null);
+
+  const gameTimer = useRef(new Timer({
+    callback: (timer) => {
+      let newCurGame = {...currentGame};
+      newCurGame.gameTime = (timer.getTimeValues().toString(['minutes', 'seconds']));
+      setCurrentGame(newCurGame);
+    }
+  }))
 
   // store ref of gameOptions
   let gameOptionsRef = useRef(gameOptions);
@@ -101,8 +108,6 @@ function App() {
   }, [user]);
 
   useEffect(() => {
-    // set the unsaved game if there is one
-    setCurrentGame(JSON.parse(localStorage.getItem('currentGame')) || null);
     // listen for auth state changes
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(user => {
       if (user) {
@@ -217,7 +222,7 @@ function App() {
               />
               <NewGame
                 currentGame={currentGame}
-                currentGameTimer={currentGameTimer}
+                gameTimer={gameTimer.current}
                 db={db}
                 dbUser={dbUser}
                 gameOptions={gameOptions}
@@ -238,11 +243,12 @@ function App() {
               />
               <Stats
                 currentGame={currentGame}
-                currentGameTimer={currentGameTimer}
+                gameTimer={gameTimer.current}
                 currentPointLineUp={currentPointLineUp}
                 db={db}
                 dbUser={dbUser}
                 setCurrentGame={setCurrentGame}
+                setCurrentPointLineUp={setCurrentPointLineUp}
                 setDbUser={setDbUser}
               />
             </> : <Redirect to='/newgame' />

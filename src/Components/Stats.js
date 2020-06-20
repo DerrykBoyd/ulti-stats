@@ -7,6 +7,7 @@ import AddPlayerForm from './AddPlayerForm';
 import Scoreboard from './Scoreboard';
 
 import '../styles/Stats.css';
+import RosterList from './RosterList';
 
 export default function Stats(props) {
 
@@ -55,24 +56,45 @@ export default function Stats(props) {
     props.setCurrentGame(newGameSort);
   }
 
+  const startPoint = () => {
+    // TODO start point when roster confirmed (pull released)
+    // set active point to true
+    // record start of point in game history
+  }
+
+  const togglePlayer = (player) => {
+    let newTeamRoster = [...teamRoster];
+    let newPointLineUp = new Set([...props.currentPointLineUp]);
+    let selected = newTeamRoster.find(i => i.playerID === player.playerID).selected;
+    selected ? newPointLineUp.delete(player) : newPointLineUp.add(player);
+    newTeamRoster.find(i => i.playerID === player.playerID).selected = !selected;
+    props.setCurrentPointLineUp(newPointLineUp);
+    setTeamRoster(newTeamRoster);
+  }
+
   return (
-    <div className='App'>
+    <div className='App teams-main'>
       <Scoreboard
         currentGame={currentGame}
-        currentGameTimer={props.currentGameTimer}
+        setCurrentGame={props.setCurrentGame}
+        gameTimer={props.gameTimer}
       />
       {/* Component for choosing lineup at start of point */}
       {!currentGame.activePoint ?
         <>
-          {lineUp.length === currentGame.gameFormat.value ?
-            <button className='btn btn-green'>Confirm Lineup</button>
+          {lineUp.size === currentGame.gameFormat.value ?
+            <button
+              className='btn btn-green'
+              onClick={startPoint}
+            >Confirm Lineup</button>
             :
-            <h3>{`Choose ${currentGame.gameFormat.value - lineUp.length} more players for ${currentGame.isOffence ? 'Offence' : 'Defence'}`}</h3>
+            <h3>{`${lineUp.size} out of ${currentGame.gameFormat.value} players selected for ${currentGame.isOffence ? 'Offence' : 'Defence'}`}</h3>
           }
-          <p>Choose Lineup here from list of players</p>
-          {teamRoster && teamRoster.map((player) => (
-            <div key={player.playerID}>{`${player.number}, ${player.firstName}, ${player.lastName}`}</div>
-          ))}
+          <div>TODO - start point when roster selected</div>
+          <RosterList
+            teamRoster={teamRoster}
+            togglePlayer={togglePlayer}
+          />
           <form>
             {showAddPlayer ?
               <AddPlayerForm
@@ -103,13 +125,11 @@ export default function Stats(props) {
               </div>
             }
           </form>
-          <p>TODO Check number of selected players is equal to the game format</p>
-          <div>confirm lineup btn when correct number of players is selected</div>
         </>
         :
         // Take stats when there is an active point.
         <div>Take stats when there is an active point.</div>
       }
-    </div>
+    </div >
   )
 }
