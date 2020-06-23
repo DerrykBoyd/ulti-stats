@@ -166,7 +166,6 @@ export default function Stats(props) {
             :
             <h3>{`${lineUp.size} out of ${currentGame.gameFormat.value} players selected for ${props.isOffence ? 'Offence' : 'Defence'}`}</h3>
           }
-          <div>TODO - start point when roster selected</div>
           <RosterList
             teamRoster={teamRoster}
             togglePlayer={togglePlayer}
