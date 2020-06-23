@@ -2,9 +2,23 @@ import React from 'react'
 import OffenseButtons from './OffenceButtons';
 import DefenceButtons from './DefenceButtons';
 
+import {sortByName} from '../Utils/utils';
+
 export default function StatPlayerList(props) {
 
-  const playerStats = props.playerStats;
+  const playerStats = props.playerStats.sort((a, b) => {
+    switch (localStorage.getItem('currentSort')) {
+      case 'Number':
+        return a.number - b.number
+      case 'First Name':
+        return sortByName(a.firstName, b.firstName)
+      case 'Last Name':
+        return sortByName(a.lastName, b.lastName)
+      default:
+        return a.number - b.number
+    }
+  });
+
   const timer = props.gameTimer;
 
   const handleStatClick = (e, playerID, turnOver = false) => {

@@ -31,20 +31,20 @@ export default function OffenseButtons(props) {
                 Point
                     <div className='score-badge'>{props.player.point}</div>
             </button>
-            {noDrop && <button
-                className={`btn stat-btn t-away-btn ${mustTouch || noThrowaway ? 'btn-inactive' : ''}`}
-                name='T-Away'
-                onClick={(e) => props.handleStatClick(e, props.player.playerID, true)}>
-                T-Away
-                    <div className='score-badge'>{props.player.throwAway}</div>
-            </button>}
-            {noThrowaway && <button
+            <button
                 className={`btn stat-btn ${mustTouch || noDrop ? 'btn-inactive' : ''}`}
                 name='Drop'
                 onClick={(e) => props.handleStatClick(e, props.player.playerID, true)}>
                 Drop
                     <div className='score-badge'>{props.player.drop}</div>
-            </button>}
+            </button>
+            <button
+                className={`btn stat-btn t-away-btn ${mustTouch || noThrowaway ? 'btn-inactive' : 'btn-del'}`}
+                name='T-Away'
+                onClick={(e) => props.handleStatClick(e, props.player.playerID, true)}>
+                T-Away
+                    <div className='score-badge'>{props.player.throwAway}</div>
+            </button>
         </div>
     )
 }

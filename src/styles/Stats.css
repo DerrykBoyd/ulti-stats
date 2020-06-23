@@ -93,8 +93,10 @@
   position: relative;
 }
 
-.t-away-btn {
-  background-color: var(--delete);
+@media (max-width: 350px) {
+  .t-away-btn {
+    font-size: 12px;
+  }
 }
 
 .btn:disabled {

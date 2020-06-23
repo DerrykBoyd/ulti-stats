@@ -39,6 +39,7 @@ export default function Stats(props) {
       let teamData = Object.values(dbUser.teams).find((team) => {
         return team.teamID === currentGame.teamID;
       });
+      localStorage.setItem('currentSort', teamData.playerSortOrder);
       let newTeamRoster = Object.values(teamData.players);
       newTeamRoster.sort((a, b) => {
         switch (teamData.playerSortOrder) {
@@ -206,6 +207,12 @@ export default function Stats(props) {
         :
         // Take stats when there is an active point.
         <>
+          {/* temp btn to reverse active point while dev stats page */}
+          <button className='btn' onClick={() => {
+            addHistoryEntry('point-finished');
+            props.setIsOffence(!props.isOffence);
+          }}
+          >Toggle Active Point</button>
           <StatPlayerList
             activePlayers={props.currentPointLineUp}
             gameTimer={props.gameTimer}
@@ -217,12 +224,6 @@ export default function Stats(props) {
             timeStr={timeStr}
             setTimerPaused={setTimerPaused}
           />
-          {/* temp btn to reverse active point while dev stats page */}
-          <button className='btn' onClick={() => {
-            addHistoryEntry('point-finished');
-            props.setIsOffence(!props.isOffence);
-          }}
-          >Toggle Active Point</button>
         </>
       }
     </div >
