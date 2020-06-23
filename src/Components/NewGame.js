@@ -38,8 +38,25 @@ export default function NewGame(props) {
     }
     let isOffence = false;
     if (gameOptions.startingOn === 'Offence') isOffence = true;
+    props.setIsOffence(isOffence);
+    let stats = {};
+    for (let player of Object.values(dbUser.teams[gameOptions.statTeam.teamID].players)) {
+      stats[player.playerID] = {
+        firstName: player.firstName,
+        lastName: player.lastName,
+        number: player.number,
+        playerID: player.playerID,
+        pointsPlayed: [],
+        assist: 0,
+        dError: 0,
+        dPlay: 0,
+        drop: 0,
+        point: 0,
+        throwAway: 0,
+        touch: 0,
+      }
+    }
     let newGame = {
-      activePoint: false,
       createdBy: dbUser.uid,
       createdTime: new Date(),
       creatorEmail: dbUser.email,
@@ -48,11 +65,10 @@ export default function NewGame(props) {
       gameID: uuid(),
       gameFormat: gameOptions.gameFormat,
       gameHistory: [],
-      gameTime: '00:00',
-      isOffence: isOffence,
       jerseyColour: gameOptions.jerseyColour,
       opponent: gameOptions.opponent,
-      playerStats: {},
+      playerStats: stats,
+      pointHistory: {},
       score: {
         [gameOptions.statTeam.value]: 0,
         [gameOptions.opponent]: 0,

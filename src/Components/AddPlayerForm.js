@@ -49,6 +49,18 @@ export default function AddPlayerForm(props) {
     }
     newDbUser.teams[props.currentEditTeam].unsavedChanges = true;
     props.setDbUser(newDbUser);
+    if (props.currentGame) {
+      let newCurGame = {...props.currentGame};
+      newPlayer.pointsPlayed = [];
+      newPlayer.assist = 0;
+      newPlayer.dError = 0;
+      newPlayer.dPlay = 0;
+      newPlayer.drop = 0;
+      newPlayer.point = 0;
+      newPlayer.touch = 0;
+      newCurGame.playerStats[playerID] = newPlayer;
+      props.setCurrentGame(newCurGame);
+    }
     setNewPlayerFirstName('');
     setNewPlayerLastName('');
     setNewPlayerNumber('');

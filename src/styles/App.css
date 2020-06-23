@@ -124,6 +124,7 @@
 
 .btn-inactive, .btn-inactive:hover, .btn-inactive:focus {
   background-color: #bdbdbd;
+  color: var(--text-dark-disabled);
   box-shadow: none;
   cursor: default;
 }

@@ -8,13 +8,18 @@ import Scoreboard from './Scoreboard';
 
 import '../styles/Stats.css';
 import RosterList from './RosterList';
+import StatPlayerList from './StatPlayerList';
 
 export default function Stats(props) {
 
   let currentGame = props.currentGame;
   let currentEditTeam = props.currentGame.teamID;
+  let currentPoint = props.currentPoint;
   let dbUser = props.dbUser;
+  let gameTimer = props.gameTimer;
   let lineUp = props.currentPointLineUp;
+  let timer = props.gameTimer;
+  let timeStr = props.currentGameTime || '00:00';
 
   const rsStyles = {
     container: (provided) => ({
@@ -26,16 +31,17 @@ export default function Stats(props) {
   // set state
   const [teamRoster, setTeamRoster] = useState(null);
   const [showAddPlayer, setShowAddPlayer] = useState(false);
+  const [timerPaused, setTimerPaused] = useState(true);
 
   // update state when user data updated
   useEffect(() => {
-    if (props.dbUser) {
-      let teamData = Object.values(props.dbUser.teams).find((team) => {
+    if (dbUser) {
+      let teamData = Object.values(dbUser.teams).find((team) => {
         return team.teamID === currentGame.teamID;
       });
       let newTeamRoster = Object.values(teamData.players);
       newTeamRoster.sort((a, b) => {
-        switch (currentGame.playerSortOrder) {
+        switch (teamData.playerSortOrder) {
           case 'Number':
             return a.number - b.number
           case 'First Name':
@@ -48,18 +54,82 @@ export default function Stats(props) {
       })
       setTeamRoster(newTeamRoster);
     }
-  }, [props.dbUser, currentGame])
+  }, [dbUser, currentGame])
+
+  const addHistoryEntry = (action, player = {}, turnover = false) => {
+    let newCurGame = { ...currentGame };
+    let gameTimeSecs = gameTimer.getTotalTimeValues().seconds;
+    let entry = {
+      timeStamp: new Date(),
+      gameTime: props.currentGameTime,
+      gameTimeSecs: gameTimeSecs,
+      action: action,
+    }
+    if (player.playerID) {
+      entry.playerID = player.playerID;
+      entry.playerName = `${player.firstName} ${player.lastName}`;
+    }
+    newCurGame.gameHistory.push(entry);
+    // update the pointHistory and playerStats
+    switch (action) {
+      case 'point-started':
+        newCurGame.pointHistory[currentPoint] = {
+          start: gameTimeSecs,
+          isOffence: props.isOffence,
+        }
+        for (let player of props.currentPointLineUp) {
+          newCurGame.playerStats[player.playerID].pointsPlayed.push(currentPoint);
+        }
+        break;
+      case 'point-finished':
+        newCurGame.pointHistory[currentPoint].end = gameTimeSecs;
+        props.setActivePoint(false);
+        let newCurPoint = props.currentPoint;
+        newCurPoint++;
+        props.setCurrentPoint(newCurPoint);
+        toggleAllOff();
+        break;
+      default:
+        break;
+    }
+    // update the player stats
+    // TODO other actions
+    props.setCurrentGame(newCurGame);
+  }
 
   const handleSortChange = (newValue) => {
-    let newGameSort = { ...currentGame };
-    newGameSort.playerSortOrder = newValue.value;
-    props.setCurrentGame(newGameSort);
+    let newDbUser = { ...dbUser };
+    newDbUser.teams[currentEditTeam].playerSortOrder = newValue.value;
+    props.setDbUser(newDbUser);
   }
 
   const startPoint = () => {
     // TODO start point when roster confirmed (pull released)
+    let newCurGame = { ...currentGame };
+    console.log(JSON.stringify(newCurGame).length);
     // set active point to true
+    props.setActivePoint(true);
     // record start of point in game history
+    addHistoryEntry('point-started');
+    // set new state
+    props.setCurrentGame(newCurGame);
+    // start timer if not started already
+    if (timerPaused) {
+      timer.start({
+        startValues: {
+          minutes: parseInt(timeStr.split(':')[0]),
+          seconds: parseInt(timeStr.split(':')[1]),
+        }
+      });
+      setTimerPaused(false);
+    }
+  }
+
+  const toggleAllOff = () => {
+    let newTeamRoster = [...teamRoster];
+    for (let player of newTeamRoster) player.selected = false;
+    props.setCurrentPointLineUp(new Set());
+    setTeamRoster(newTeamRoster);
   }
 
   const togglePlayer = (player) => {
@@ -75,20 +145,25 @@ export default function Stats(props) {
   return (
     <div className='App teams-main'>
       <Scoreboard
+        addHistoryEntry={addHistoryEntry}
         currentGame={currentGame}
-        setCurrentGame={props.setCurrentGame}
+        currentGameTime={props.currentGameTime}
         gameTimer={props.gameTimer}
+        setCurrentGame={props.setCurrentGame}
+        setCurrentGameTime={props.setCurrentGameTime}
+        setTimerPaused={setTimerPaused}
+        timerPaused={timerPaused}
       />
       {/* Component for choosing lineup at start of point */}
-      {!currentGame.activePoint ?
+      {!props.activePoint ?
         <>
           {lineUp.size === currentGame.gameFormat.value ?
             <button
               className='btn btn-green'
               onClick={startPoint}
-            >Confirm Lineup</button>
+            >Start Point</button>
             :
-            <h3>{`${lineUp.size} out of ${currentGame.gameFormat.value} players selected for ${currentGame.isOffence ? 'Offence' : 'Defence'}`}</h3>
+            <h3>{`${lineUp.size} out of ${currentGame.gameFormat.value} players selected for ${props.isOffence ? 'Offence' : 'Defence'}`}</h3>
           }
           <div>TODO - start point when roster selected</div>
           <RosterList
@@ -99,8 +174,10 @@ export default function Stats(props) {
             {showAddPlayer ?
               <AddPlayerForm
                 currentEditTeam={currentEditTeam}
+                currentGame={currentGame}
                 dbUser={dbUser}
                 saveToDb={true}
+                setCurrentGame={props.setCurrentGame}
                 setDbUser={props.setDbUser}
                 setShowAddPlayer={setShowAddPlayer}
               />
@@ -109,7 +186,7 @@ export default function Stats(props) {
                 <button className='btn' onClick={() => setShowAddPlayer(true)}>Add Player</button>
                 <div className='sort-select'>
                   <span>Sort</span>
-                  {dbUser &&
+                  {dbUser && currentEditTeam &&
                     <Select
                       defaultValue={{
                         value: dbUser.teams[currentEditTeam].playerSortOrder,
@@ -128,7 +205,25 @@ export default function Stats(props) {
         </>
         :
         // Take stats when there is an active point.
-        <div>Take stats when there is an active point.</div>
+        <>
+          <StatPlayerList
+            activePlayers={props.currentPointLineUp}
+            gameTimer={props.gameTimer}
+            handleStatClick={addHistoryEntry}
+            offence={props.isOffence}
+            playerStats={Object.values(currentGame.playerStats)}
+            prevEntry={props.prevEntry}
+            timerPaused={timerPaused}
+            timeStr={timeStr}
+            setTimerPaused={setTimerPaused}
+          />
+          {/* temp btn to reverse active point while dev stats page */}
+          <button className='btn' onClick={() => {
+            addHistoryEntry('point-finished');
+            props.setIsOffence(!props.isOffence);
+          }}
+          >Toggle Active Point</button>
+        </>
       }
     </div >
   )

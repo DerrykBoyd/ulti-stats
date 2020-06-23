@@ -59,7 +59,13 @@ function App() {
 
   // set state (global)
   const [currentGame, setCurrentGame] = useState(JSON.parse(localStorage.getItem('currentGame')) || null);
-  const [currentPointLineUp, setCurrentPointLineUp] = useState(new Set());
+  const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
+  const [activePoint, setActivePoint] = useState(localStorage.getItem('activePoint') === 'true');
+  const [currentGameTime, setCurrentGameTime] = useState(localStorage.getItem('currentGameTime') || '00:00');
+  const [currentPoint, setCurrentPoint] = useState(parseInt(localStorage.getItem('currentPoint')) || 1);
+  const [currentPointLineUp, setCurrentPointLineUp] = useState(
+    new Set(JSON.parse(localStorage.getItem('currentPointLineUp'))) || new Set()
+  );
   const [dbUser, setDbUser] = useState(null);
   const [gameOptions, setGameOptions] = useState({
     statTeam: '',
@@ -68,14 +74,20 @@ function App() {
     opponent: '',
     gameFormat: { value: 7, label: `7 v 7` },
   });
+  const [prevEntry, setPrevEntry] = useState({
+    action: '',
+    player: '',
+    turnover: false
+  });
   const [teamOptions, setTeamOptions] = useState([]);
   const [user, setUser] = useState(null);
 
   const gameTimer = useRef(new Timer({
     callback: (timer) => {
-      let newCurGame = {...currentGame};
-      newCurGame.gameTime = (timer.getTimeValues().toString(['minutes', 'seconds']));
-      setCurrentGame(newCurGame);
+      let newTime = { ...currentGameTime };
+      newTime = (timer.getTimeValues().toString(['minutes', 'seconds']));
+      localStorage.setItem('currentGameTime', newTime);
+      setCurrentGameTime(newTime);
     }
   }))
 
@@ -130,11 +142,14 @@ function App() {
     }
   }, [user, loadUser]);
 
+  // save game variables to localstorage to allow continuation of games on page reload
   useEffect(() => {
-    if (currentGame) {
-      localStorage.setItem('currentGame', JSON.stringify(currentGame));
-    }
-  }, [currentGame]);
+    if (currentGame) localStorage.setItem('currentGame', JSON.stringify(currentGame));
+    localStorage.setItem('isOffence', isOffence);
+    localStorage.setItem('activePoint', activePoint);
+    localStorage.setItem('currentPoint', currentPoint);
+    localStorage.setItem('currentPointLineUp', JSON.stringify(Array.from(currentPointLineUp)));
+  }, [currentGame, isOffence, activePoint, currentPoint, currentPointLineUp]);
 
   const resetTeamOptions = (newTeams) => {
     let newTeamOptions = [];
@@ -148,6 +163,15 @@ function App() {
     let newGameOptions = { ...gameOptionsRef.current };
     newGameOptions.statTeam = newTeamOptions[0];
     setGameOptions(newGameOptions);
+  }
+
+  const resetGame = () => {
+    gameTimer.current.stop();
+    setActivePoint(false);
+    setCurrentGame(null);
+    setCurrentGameTime('00:00');
+    setCurrentPoint(1);
+    setCurrentPointLineUp(new Set());
   }
 
   return (
@@ -170,7 +194,7 @@ function App() {
           />
           <OngoingGame
             currentGame={currentGame}
-            setCurrentGame={setCurrentGame}
+            resetGame={resetGame}
           />
         </Route>
         <Route path='/teams' exact>
@@ -189,7 +213,7 @@ function App() {
               />
               <OngoingGame
                 currentGame={currentGame}
-                setCurrentGame={setCurrentGame}
+                resetGame={resetGame}
               />
             </> : <Redirect to='/' />
           }
@@ -229,6 +253,7 @@ function App() {
                 setCurrentGame={setCurrentGame}
                 setDbUser={setDbUser}
                 setGameOptions={setGameOptions}
+                setIsOffence={setIsOffence}
                 teamOptions={teamOptions}
               />
             </> : <Redirect to='/' />
@@ -242,14 +267,24 @@ function App() {
                 user={user}
               />
               <Stats
+                activePoint={activePoint}
                 currentGame={currentGame}
-                gameTimer={gameTimer.current}
+                currentGameTime={currentGameTime}
+                currentPoint={currentPoint}
                 currentPointLineUp={currentPointLineUp}
+                gameTimer={gameTimer.current}
                 db={db}
                 dbUser={dbUser}
+                isOffence={isOffence}
+                prevEntry={prevEntry}
+                setActivePoint={setActivePoint}
                 setCurrentGame={setCurrentGame}
+                setCurrentGameTime={setCurrentGameTime}
+                setCurrentPoint={setCurrentPoint}
                 setCurrentPointLineUp={setCurrentPointLineUp}
                 setDbUser={setDbUser}
+                setIsOffence={setIsOffence}
+                setPrevEntry={setPrevEntry}
               />
             </> : <Redirect to='/newgame' />
           }

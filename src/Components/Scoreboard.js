@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 export default function Scoreboard(props) {
 
   let currentGame = props.currentGame;
-  let timeStr = currentGame.gameTime || '00:00';
+  let timeStr = props.currentGameTime || '00:00';
   let timer = props.gameTimer;
-  let isLightJersy = currentGame.jerseyColour === 'Light';
+  let timerPaused = props.timerPaused;
+  let setTimerPaused = props.setTimerPaused;
 
-  let [timerPaused, setTimerPaused] = useState(true);
+  let isLightJersy = currentGame.jerseyColour === 'Light';
 
   return (
     <>
@@ -21,19 +22,22 @@ export default function Scoreboard(props) {
           <div className='score-text'>{currentGame.score[currentGame.opponent]}</div>
         </div>
       </div>
-      <h1>{`${timeStr}`}</h1>
       <div className='timer-controls'>
-        {!currentGame.started && timerPaused &&
+        {!currentGame.started && timerPaused ?
           <button className='btn btn-del' onClick={() => {
-            let newGame = { ...currentGame };
-            newGame.gameTime = '00:00';
-            props.setCurrentGame(newGame);
-          }}>Reset Time</button>}
-        <button className='btn' onClick={() => {
+            props.setCurrentGameTime('00:00');
+            localStorage.setItem('currentGameTime', '00:00');
+            props.addHistoryEntry('clock-reset');
+          }}>Reset Time</button>
+          :
+          <button className='btn btn-inactive'>Reset Time</button>}
+        <h1 className='game-clock'>{`${timeStr}`}</h1>
+        <button className={`btn`} onClick={() => {
           if (timer.isRunning()) {
             setTimerPaused(true);
             timer.stop();
-            console.log('Timer stop')
+            console.log('Timer stop');
+            props.addHistoryEntry('clock-paused');
           } else {
             setTimerPaused(false);
             timer.start({
@@ -42,7 +46,8 @@ export default function Scoreboard(props) {
                 seconds: parseInt(timeStr.split(':')[1]),
               }
             });
-            console.log('Timer start')
+            console.log('Timer start');
+            props.addHistoryEntry('clock-started');
           }
         }}
         >{timerPaused ? 'Start Time' : 'Pause Time'}</button>
