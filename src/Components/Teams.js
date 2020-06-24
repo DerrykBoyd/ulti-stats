@@ -47,7 +47,7 @@ export default function Teams(props) {
     let newDbUser = { ...dbUser };
     let teamID = uuid();
     let newTeam = {
-      createdOn: new Date(),
+      createdOn: Date.now(),
       name: teamName,
       players: {},
       playerSortOrder: 'Number',

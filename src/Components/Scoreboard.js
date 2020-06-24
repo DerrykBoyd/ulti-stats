@@ -27,7 +27,7 @@ export default function Scoreboard(props) {
           <button className='btn btn-del' onClick={() => {
             props.setCurrentGameTime('00:00');
             localStorage.setItem('currentGameTime', '00:00');
-            props.addHistoryEntry('clock-reset');
+            props.addTimerEntry('timer-reset');
           }}>Reset Time</button>
           :
           <button className='btn btn-inactive'>Reset Time</button>}
@@ -36,8 +36,7 @@ export default function Scoreboard(props) {
           if (timer.isRunning()) {
             setTimerPaused(true);
             timer.stop();
-            console.log('Timer stop');
-            props.addHistoryEntry('clock-paused');
+            props.addTimerEntry('timer-paused');
           } else {
             setTimerPaused(false);
             timer.start({
@@ -46,8 +45,7 @@ export default function Scoreboard(props) {
                 seconds: parseInt(timeStr.split(':')[1]),
               }
             });
-            console.log('Timer start');
-            props.addHistoryEntry('clock-started');
+            props.addTimerEntry('timer-started');
           }
         }}
         >{timerPaused ? 'Start Time' : 'Pause Time'}</button>

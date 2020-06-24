@@ -6,7 +6,7 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import { ToastContainer, Slide } from 'react-toastify';
+import { ToastContainer, cssTransition } from 'react-toastify';
 import Timer from 'easytimer.js';
 
 // Firebase
@@ -29,6 +29,12 @@ import Teams from './Components/Teams';
 
 // helper functions
 import { sortTeams } from './Utils/utils';
+
+const Slide = cssTransition({
+  enter: 'toast-in',
+  exit: 'toast-out',
+  duration: [500, 100]
+})
 
 const firebaseConfig = {
   apiKey: "AIzaSyBqJvH9x13wUFJhaBjCqkxUPesQ7Fm0YXg",
@@ -76,7 +82,7 @@ function App() {
   });
   const [prevEntry, setPrevEntry] = useState({
     action: '',
-    player: '',
+    playerID: '',
     turnover: false
   });
   const [teamOptions, setTeamOptions] = useState([]);
@@ -177,8 +183,9 @@ function App() {
   return (
     <Router>
       <ToastContainer
-        autoClose={2000}
+        autoClose={false}
         hideProgressBar
+        newestOnTop={false}
         position='top-center'
         transition={Slide}
       />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+import { toast } from 'react-toastify';
 
 import { sortByName, sortOrderOptions } from '../Utils/utils';
 
@@ -17,7 +18,9 @@ export default function Stats(props) {
   let currentPoint = props.currentPoint;
   let dbUser = props.dbUser;
   let gameTimer = props.gameTimer;
+  let isOffence = props.isOffence;
   let lineUp = props.currentPointLineUp;
+  let prevEntry = props.prevEntry;
   let timer = props.gameTimer;
   let timeStr = props.currentGameTime || '00:00';
 
@@ -58,44 +61,119 @@ export default function Stats(props) {
   }, [dbUser, currentGame])
 
   const addHistoryEntry = (action, player = {}, turnover = false) => {
-    let newCurGame = { ...currentGame };
+    // remove any active toast messages
+    toast.dismiss();
+    // start timer if not started already
+    startTimer();
     let gameTimeSecs = gameTimer.getTotalTimeValues().seconds;
+    // make copy of the current game for updating
+    let newCurGame = { ...currentGame };
+    // set the last two entries for Assists and validations
+    let lastEntry = newCurGame.gameHistory[newCurGame.gameHistory.length - 1] || '';
+    let secLastEntry = newCurGame.gameHistory[newCurGame.gameHistory.length - 2] || '';
+    // Validate first action of a possession is a touch
+    if (isOffence && action !== 'touch' && (lastEntry.turnover || !newCurGame.gameHistory.length)) {
+      toast.error('First action of a possession must be a touch');
+      return;
+    }
+    // Validate cannot touch twice in a row
+    if (action === 'touch' && lastEntry.playerID === player.playerID && !lastEntry.turnover) {
+      toast.error('Cannot touch the disc twice in a row');
+      return;
+    }
+    // Validate cannot drop own throw
+    if (action === 'drop' && lastEntry.playerID === player.playerID) {
+      toast.error('Cannot drop own throw');
+      return;
+    }
+    // Validate throwaway was by lastPlayer
+    if (action === 'throwAway') {
+      if (lastEntry.action !== 'touch') {
+        toast.error('Throwaway can only be recorded following a touch');
+        return;
+      } else if (lastEntry.playerID !== player.playerID) {
+        console.log(lastEntry.player)
+        toast.error(`Only player in possession can throwaway`);
+        return;
+      }
+    }
+    // set the score for points
+    if (action === 'point') {
+      newCurGame.score[newCurGame.teamName]++;
+      finishPoint(true);
+    }
+    if (action === 'oppPoint') {
+      newCurGame.score[newCurGame.opponent]++;
+      finishPoint(false);
+    }
+    // create a new historyEntry
     let entry = {
-      timeStamp: new Date(),
+      timeStamp: Date.now(),
       gameTime: props.currentGameTime,
       gameTimeSecs: gameTimeSecs,
       action: action,
+      [`${newCurGame.teamName}_score`]: newCurGame.score[newCurGame.teamName],
+      [`${newCurGame.opponent}_score`]: newCurGame.score[newCurGame.opponent],
+      turnover: turnover,
     }
     if (player.playerID) {
       entry.playerID = player.playerID;
       entry.playerName = `${player.firstName} ${player.lastName}`;
+      entry.playerNum = `${player.number}`;
     }
     newCurGame.gameHistory.push(entry);
-    // update the pointHistory and playerStats
-    switch (action) {
-      case 'point-started':
-        newCurGame.pointHistory[currentPoint] = {
-          start: gameTimeSecs,
-          isOffence: props.isOffence,
-        }
-        for (let player of props.currentPointLineUp) {
-          newCurGame.playerStats[player.playerID].pointsPlayed.push(currentPoint);
-        }
-        break;
-      case 'point-finished':
-        newCurGame.pointHistory[currentPoint].end = gameTimeSecs;
-        props.setActivePoint(false);
-        let newCurPoint = props.currentPoint;
-        newCurPoint++;
-        props.setCurrentPoint(newCurPoint);
-        toggleAllOff();
-        break;
-      default:
-        break;
+    // update the playerStats
+    if (player.playerID) {
+      // add stat from button click
+      newCurGame.playerStats[player.playerID][action]++;
+      // add a touch for a drop
+      if (action === 'drop') newCurGame.playerStats[player.playerID].touch++;
+      // add touch for a point if not added by user
+      if (action === 'point' && lastEntry.playerID !== player.playerID) {
+        newCurGame.playerStats[player.playerID].touch++;
+      }
+      // give assist to lastPlayer or player for callahan goal
+      if (action === 'point' && (lastEntry.playerID !== player.playerID ||
+        (secLastEntry.turnover || !secLastEntry))) newCurGame.playerStats[lastEntry.playerID].assist++;
+      // give assist to secondLast player in case of user pressing touch before point
+      else if (action === 'point' && lastEntry.playerID === player.playerID) {
+        newCurGame.playerStats[secLastEntry.playerID].assist++;
+      }
     }
-    // update the player stats
-    // TODO other actions
+    // log entry to console
+    console.log(`${player.playerID ? `#${player.number}` : ''}: ${action}: time: ${gameTimeSecs} seconds`);
+    toast.success(`Last Entry: ${action} ${player.playerID ? '- #' + player.number : ''}`)
+    props.setPrevEntry({ action: action, playerID: player.playerID, turnover: turnover });
+    if (turnover) props.setIsOffence(!isOffence);
+    // set new state
     props.setCurrentGame(newCurGame);
+  }
+
+  const addTimerEntry = (action) => {
+    // create a new timerEntry
+    let entry = {
+      timeStamp: Date.now(),
+      gameTime: props.currentGameTime,
+      action: action,
+    }
+    let newCurGame = { ...currentGame };
+    newCurGame.timerHistory.push(entry);
+    props.setCurrentGame(newCurGame);
+  }
+
+  const finishPoint = (scored) => {
+    // start timer if not started already
+    startTimer();
+    // TODO finish point when point scored
+    let gameTimeSecs = gameTimer.getTotalTimeValues().seconds;
+    let newCurGame = { ...currentGame };
+    newCurGame.pointHistory[currentPoint].end = gameTimeSecs;
+    newCurGame.pointHistory[currentPoint].scored = scored;
+    props.setActivePoint(false);
+    let newCurPoint = props.currentPoint;
+    newCurPoint++;
+    props.setCurrentPoint(newCurPoint);
+    toggleAllOff();
   }
 
   const handleSortChange = (newValue) => {
@@ -105,15 +183,28 @@ export default function Stats(props) {
   }
 
   const startPoint = () => {
+    // start timer if not started already
+    startTimer();
     // TODO start point when roster confirmed (pull released)
+    let gameTimeSecs = gameTimer.getTotalTimeValues().seconds;
     let newCurGame = { ...currentGame };
+    //check size of currentGame Object - REMOVE
     console.log(JSON.stringify(newCurGame).length);
     // set active point to true
     props.setActivePoint(true);
     // record start of point in game history
-    addHistoryEntry('point-started');
+    newCurGame.pointHistory[currentPoint] = {
+      start: gameTimeSecs,
+      isOffence: props.isOffence,
+    }
+    for (let player of props.currentPointLineUp) {
+      newCurGame.playerStats[player.playerID].pointsPlayed.push(currentPoint);
+    }
     // set new state
     props.setCurrentGame(newCurGame);
+  }
+
+  const startTimer = () => {
     // start timer if not started already
     if (timerPaused) {
       timer.start({
@@ -123,6 +214,7 @@ export default function Stats(props) {
         }
       });
       setTimerPaused(false);
+      addTimerEntry('timer-started');
     }
   }
 
@@ -146,7 +238,7 @@ export default function Stats(props) {
   return (
     <div className='App teams-main'>
       <Scoreboard
-        addHistoryEntry={addHistoryEntry}
+        addTimerEntry={addTimerEntry}
         currentGame={currentGame}
         currentGameTime={props.currentGameTime}
         gameTimer={props.gameTimer}
@@ -206,19 +298,17 @@ export default function Stats(props) {
         :
         // Take stats when there is an active point.
         <>
-          {/* temp btn to reverse active point while dev stats page */}
-          <button className='btn' onClick={() => {
-            addHistoryEntry('point-finished');
-            props.setIsOffence(!props.isOffence);
+          {/* btn to record opposition point */}
+          {!isOffence && <button className='btn' onClick={() => {
+            addHistoryEntry('oppPoint', {}, true);
           }}
-          >Toggle Active Point</button>
+          >Opposition Score</button>}
           <StatPlayerList
             activePlayers={props.currentPointLineUp}
-            gameTimer={props.gameTimer}
-            handleStatClick={addHistoryEntry}
+            addHistoryEntry={addHistoryEntry}
             offence={props.isOffence}
             playerStats={Object.values(currentGame.playerStats)}
-            prevEntry={props.prevEntry}
+            prevEntry={prevEntry}
             timerPaused={timerPaused}
             timeStr={timeStr}
             setTimerPaused={setTimerPaused}

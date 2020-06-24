@@ -1,10 +1,12 @@
 import React from 'react'
+import {toast} from 'react-toastify';
 
 import { delGame } from '../Utils/db';
 
 export default function OngoingGame(props) {
 
   const discardGame = () => {
+    toast.dismiss();
     localStorage.removeItem('currentGame');
     localStorage.removeItem('currentGameTime');
     localStorage.removeItem('activePoint');

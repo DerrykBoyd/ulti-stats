@@ -7,7 +7,7 @@ export default function OffenseButtons(props) {
     let noDrop = false;
 
     if (!props.prevEntry.action || props.prevEntry.turnover) mustTouch = true;
-    if (!props.prevEntry.turnover && props.prevEntry.player === props.player.name) {
+    if (!props.prevEntry.turnover && props.prevEntry.playerID === props.player.playerID) {
         noTouch = true;
         noThrowaway = false;
         noDrop = true;
@@ -17,31 +17,31 @@ export default function OffenseButtons(props) {
         <div className='stat-btns'>
             <button
                 className={`btn stat-btn ${noTouch ? 'btn-inactive' : ''}`}
-                name='Touch'
-                onClick={(e) => props.handleStatClick(e, props.player.playerID, false)}>
+                name='touch'
+                onClick={(e) => props.handleStatClick(e, props.player, false)}>
                 Touch
                     <div className='score-badge'>{props.player.touch}</div>
                 {props.player.assist !== 0 &&
-                    <div className='score-badge assist'>{`${props.player.Assist}-A`}</div>}
+                    <div className='score-badge assist'>{`${props.player.assist}-A`}</div>}
             </button>
             <button
                 className={`btn stat-btn ${mustTouch ? 'btn-inactive' : ''}`}
-                name='Point'
-                onClick={(e) => props.handleStatClick(e, props.player.playerID, true)}>
+                name='point'
+                onClick={(e) => props.handleStatClick(e, props.player, true)}>
                 Point
                     <div className='score-badge'>{props.player.point}</div>
             </button>
             <button
                 className={`btn stat-btn ${mustTouch || noDrop ? 'btn-inactive' : ''}`}
-                name='Drop'
-                onClick={(e) => props.handleStatClick(e, props.player.playerID, true)}>
+                name='drop'
+                onClick={(e) => props.handleStatClick(e, props.player, true)}>
                 Drop
                     <div className='score-badge'>{props.player.drop}</div>
             </button>
             <button
                 className={`btn stat-btn t-away-btn ${mustTouch || noThrowaway ? 'btn-inactive' : 'btn-del'}`}
-                name='T-Away'
-                onClick={(e) => props.handleStatClick(e, props.player.playerID, true)}>
+                name='throwAway'
+                onClick={(e) => props.handleStatClick(e, props.player, true)}>
                 T-Away
                     <div className='score-badge'>{props.player.throwAway}</div>
             </button>

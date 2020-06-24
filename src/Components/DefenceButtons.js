@@ -6,15 +6,15 @@ export default function DefenceButtons(props) {
         <div className='stat-btns'>
             <button
                 className='btn stat-btn'
-                name='D-Play'
-                onClick={(e) => props.handleStatClick(e, props.player.playerID)}>
+                name='dPlay'
+                onClick={(e) => props.handleStatClick(e, props.player, true)}>
                 D-Play
                     <div className='score-badge'>{props.player.dPlay}</div>
             </button>
             <button
                 className='btn stat-btn'
-                name='D-Error'
-                onClick={(e) => props.handleStatClick(e, props.player.playerID)}>
+                name='dError'
+                onClick={(e) => props.handleStatClick(e, props.player)}>
                 D-Error
                     <div className='score-badge'>{props.player.dError}</div>
             </button>

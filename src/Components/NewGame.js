@@ -58,7 +58,7 @@ export default function NewGame(props) {
     }
     let newGame = {
       createdBy: dbUser.uid,
-      createdTime: new Date(),
+      createdTime: Date.now(),
       creatorEmail: dbUser.email,
       creatorName: dbUser.name || '',
       finished: false,
@@ -76,6 +76,7 @@ export default function NewGame(props) {
       startingOn: gameOptions.startingOn,
       teamName: gameOptions.statTeam.value,
       teamID: gameOptions.statTeam.teamID,
+      timerHistory: [],
     }
     // add new game to firestore
     db.addGame(newGame);

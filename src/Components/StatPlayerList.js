@@ -19,21 +19,10 @@ export default function StatPlayerList(props) {
     }
   });
 
-  const timer = props.gameTimer;
-
-  const handleStatClick = (e, playerID, turnOver = false) => {
+  const handleStatClick = (e, player, turnOver = false) => {
     let action = e.currentTarget.name;
-    console.log(action, playerID, turnOver)
-    // start timer if not started already
-    if (props.timerPaused) {
-      timer.start({
-        startValues: {
-          minutes: parseInt(props.timeStr.split(':')[0]),
-          seconds: parseInt(props.timeStr.split(':')[1]),
-        }
-      });
-      props.setTimerPaused(false);
-    }
+    // use props.addhistoryentry after validation
+    props.addHistoryEntry(action, player, turnOver);
   }
 
   const list = playerStats.map(player =>
