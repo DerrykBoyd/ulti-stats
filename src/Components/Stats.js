@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { toast } from 'react-toastify';
 
 import { sortByName, sortOrderOptions } from '../Utils/utils';
+import * as db from '../Utils/db';
 
 import AddPlayerForm from './AddPlayerForm';
 import Scoreboard from './Scoreboard';
@@ -21,6 +22,7 @@ export default function Stats(props) {
   let isOffence = props.isOffence;
   let lineUp = props.currentPointLineUp;
   let prevEntry = props.prevEntry;
+  let setCurrentPointLineUp = props.setCurrentPointLineUp;
   let timer = props.gameTimer;
   let timeStr = props.currentGameTime || '00:00';
 
@@ -32,8 +34,8 @@ export default function Stats(props) {
   }
 
   // set state
-  const [teamRoster, setTeamRoster] = useState(null);
   const [showAddPlayer, setShowAddPlayer] = useState(false);
+  const [teamRoster, setTeamRoster] = useState([]);
   const [timerPaused, setTimerPaused] = useState(true);
 
   // update state when user data updated
@@ -100,11 +102,13 @@ export default function Stats(props) {
     // set the score for points
     if (action === 'point') {
       newCurGame.score[newCurGame.teamName]++;
-      finishPoint(true);
+      newCurGame = finishPoint(true, newCurGame);
+      localStorage.setItem('prevLineUp', JSON.stringify(props.currentPointLineUp));
     }
     if (action === 'oppPoint') {
       newCurGame.score[newCurGame.opponent]++;
-      finishPoint(false);
+      newCurGame = finishPoint(false, newCurGame);
+      localStorage.setItem('prevLineUp', JSON.stringify(props.currentPointLineUp));
     }
     // create a new historyEntry
     let entry = {
@@ -120,6 +124,7 @@ export default function Stats(props) {
       entry.playerID = player.playerID;
       entry.playerName = `${player.firstName} ${player.lastName}`;
       entry.playerNum = `${player.number}`;
+      if (action === 'point') entry.assistID = lastEntry.playerID;
     }
     newCurGame.gameHistory.push(entry);
     // update the playerStats
@@ -141,7 +146,7 @@ export default function Stats(props) {
       }
     }
     // log entry to console
-    console.log(`${player.playerID ? `#${player.number}` : ''}: ${action}: time: ${gameTimeSecs} seconds`);
+    console.log(`${player.playerID ? `#${player.number}: ` : ''}${action}: time: ${gameTimeSecs} seconds`);
     toast.success(`Last Entry: ${action} ${player.playerID ? '- #' + player.number : ''}`)
     props.setPrevEntry({ action: action, playerID: player.playerID, turnover: turnover });
     if (turnover) props.setIsOffence(!isOffence);
@@ -161,19 +166,34 @@ export default function Stats(props) {
     props.setCurrentGame(newCurGame);
   }
 
-  const finishPoint = (scored) => {
+  const finishPoint = (scored, game) => {
     // start timer if not started already
     startTimer();
     // TODO finish point when point scored
     let gameTimeSecs = gameTimer.getTotalTimeValues().seconds;
-    let newCurGame = { ...currentGame };
-    newCurGame.pointHistory[currentPoint].end = gameTimeSecs;
-    newCurGame.pointHistory[currentPoint].scored = scored;
+    game.pointHistory[currentPoint].end = gameTimeSecs;
+    game.pointHistory[currentPoint].scored = scored;
     props.setActivePoint(false);
     let newCurPoint = props.currentPoint;
     newCurPoint++;
     props.setCurrentPoint(newCurPoint);
     toggleAllOff();
+    return game;
+  }
+
+  const undoFinishPoint = (game) => {
+    // decrement the current point
+    let newCurPoint = props.currentPoint;
+    newCurPoint--;
+    game.pointHistory[newCurPoint].end = '';
+    game.pointHistory[newCurPoint].scored = '';
+    props.setActivePoint(true);
+    props.setCurrentPoint(newCurPoint);
+    return game;
+  }
+
+  const finishGame = () => {
+    console.log('TODO - Finish and save game to the db')
   }
 
   const handleSortChange = (newValue) => {
@@ -197,11 +217,12 @@ export default function Stats(props) {
       start: gameTimeSecs,
       isOffence: props.isOffence,
     }
-    for (let player of props.currentPointLineUp) {
+    for (let player of lineUp) {
       newCurGame.playerStats[player.playerID].pointsPlayed.push(currentPoint);
     }
     // set new state
     props.setCurrentGame(newCurGame);
+    props.setChangingLineUp(false);
   }
 
   const startTimer = () => {
@@ -219,20 +240,81 @@ export default function Stats(props) {
   }
 
   const toggleAllOff = () => {
-    let newTeamRoster = [...teamRoster];
-    for (let player of newTeamRoster) player.selected = false;
-    props.setCurrentPointLineUp(new Set());
-    setTeamRoster(newTeamRoster);
+    let newRoster = [...teamRoster];
+    for (let player of newRoster) {
+      player.selected = false;
+    }
+    setTeamRoster(newRoster);
+    setCurrentPointLineUp([]);
   }
 
   const togglePlayer = (player) => {
-    let newTeamRoster = [...teamRoster];
-    let newPointLineUp = new Set([...props.currentPointLineUp]);
-    let selected = newTeamRoster.find(i => i.playerID === player.playerID).selected;
-    selected ? newPointLineUp.delete(player) : newPointLineUp.add(player);
-    newTeamRoster.find(i => i.playerID === player.playerID).selected = !selected;
-    props.setCurrentPointLineUp(newPointLineUp);
-    setTeamRoster(newTeamRoster);
+    let newRoster = [...teamRoster]
+    // update roster and return
+    // toggle selected variable in teamRoster
+    let selected = newRoster.find(el => el.playerID === player.playerID).selected;
+    newRoster.find(el => el.playerID === player.playerID).selected = !selected;
+    // add or remove from pointLineUp
+    let newPointLineUp = [...lineUp];
+    if (selected) {
+      // remove from newPointLineup if deselected
+      let ind = newPointLineUp.findIndex(el => el.playerID === player.playerID);
+      newPointLineUp.splice(ind, 1);
+    } else {
+      // add to newPointLineUp if not already included
+      if (!newPointLineUp.find(el => el.playerID === player.playerID)) newPointLineUp.push(player);
+    }
+    setCurrentPointLineUp(newPointLineUp);
+  }
+
+  const undoAction = () => {
+    console.log('TODO - Undo last action');
+    toast.dismiss();
+    let newGame = { ...currentGame };
+    // remove last entry from gameHistory
+    let undoEntry = newGame.gameHistory.pop();
+    if (!undoEntry) {
+      toast.info('Nothing to undo');
+      return;
+    }
+    // undo the playerStats counts
+    if (undoEntry.playerID) {
+      // remove last action
+      newGame.playerStats[undoEntry.playerID][undoEntry.action]--;
+      // remove extra touch for drop
+      if (undoEntry.action === 'drop' || undoEntry.action === 'point') {
+        newGame.playerStats[undoEntry.playerID].touch--;
+      };
+      // remove assist for point
+      if (undoEntry.action === 'point') {
+        newGame.playerStats[undoEntry.assistID].assist--;
+        newGame.score[newGame.teamName]--;
+        newGame = undoFinishPoint(newGame);
+        setCurrentPointLineUp(JSON.parse(localStorage.getItem('prevLineUp')));
+      }
+    }
+    if (undoEntry.action === 'oppPoint') {
+      newGame.score[newGame.opponent]--;
+      newGame = undoFinishPoint(newGame);
+      setCurrentPointLineUp(JSON.parse(localStorage.getItem('prevLineUp')));
+    }
+    // toggle offence for turnover
+    if (undoEntry.turnover) {
+      props.setIsOffence(!isOffence);
+    }
+    toast.info(`UNDO: ${undoEntry.action}`);
+    // set the prevEntry for button state
+    if (!newGame.gameHistory.length) props.setPrevEntry({ action: '', playerID: '', turnover: false });
+    else {
+      let newPrevEntry = newGame.gameHistory[newGame.gameHistory.length - 1];
+      props.setPrevEntry({
+        action: newPrevEntry.action,
+        playerID: newPrevEntry.playerID,
+        turnover: newPrevEntry.turnover,
+      })
+    }
+    // update the game in state
+    props.setCurrentGame(newGame);
   }
 
   return (
@@ -241,24 +323,29 @@ export default function Stats(props) {
         addTimerEntry={addTimerEntry}
         currentGame={currentGame}
         currentGameTime={props.currentGameTime}
+        finishGame={finishGame}
         gameTimer={props.gameTimer}
         setCurrentGame={props.setCurrentGame}
         setCurrentGameTime={props.setCurrentGameTime}
         setTimerPaused={setTimerPaused}
         timerPaused={timerPaused}
+        undoAction={undoAction}
       />
       {/* Component for choosing lineup at start of point */}
       {!props.activePoint ?
         <>
-          {lineUp.size === currentGame.gameFormat.value ?
-            <button
-              className='btn btn-green'
-              onClick={startPoint}
-            >Start Point</button>
-            :
-            <h3>{`${lineUp.size} out of ${currentGame.gameFormat.value} players selected for ${props.isOffence ? 'Offence' : 'Defence'}`}</h3>
-          }
+          <div className='roster-list-header'>
+            {lineUp.length === currentGame.gameFormat.value ?
+              <button
+                className='btn btn-green'
+                onClick={startPoint}
+              >{props.changingLineUp ? `Resume Point` : `Start Point`}</button>
+              :
+              <h3>{`${lineUp.length} out of ${currentGame.gameFormat.value} players selected for ${props.isOffence ? 'Offence' : 'Defence'}`}</h3>
+            }
+          </div>
           <RosterList
+            lineUp={lineUp}
             teamRoster={teamRoster}
             togglePlayer={togglePlayer}
           />
@@ -303,8 +390,9 @@ export default function Stats(props) {
             addHistoryEntry('oppPoint', {}, true);
           }}
           >Opposition Score</button>}
+
           <StatPlayerList
-            activePlayers={props.currentPointLineUp}
+            activePlayers={lineUp}
             addHistoryEntry={addHistoryEntry}
             offence={props.isOffence}
             playerStats={Object.values(currentGame.playerStats)}
@@ -313,6 +401,13 @@ export default function Stats(props) {
             timeStr={timeStr}
             setTimerPaused={setTimerPaused}
           />
+          <button
+            className='btn'
+            onClick={() => {
+              props.setActivePoint(false);
+              props.setChangingLineUp(true);
+            }}
+          >Change Lineup</button>
         </>
       }
     </div >

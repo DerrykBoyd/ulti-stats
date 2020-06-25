@@ -12,6 +12,20 @@ export default function Scoreboard(props) {
 
   return (
     <>
+      <div className='btn-container'>
+        <button
+          className='btn'
+          onClick={props.finishGame}
+        >Finish & Save</button>
+        <button
+          className='btn'
+          onClick={() => console.log('TODO - Timeout!')}
+        >TimeOut</button>
+        <button
+          className='btn'
+          onClick={props.undoAction}
+        >Undo<span className='material-icons md-18'>undo</span></button>
+      </div>
       <div className='game-info'>
         <div className={`score-card ${!isLightJersy ? 'dark' : ''}`}>
           <div className='score-team'>{currentGame.teamName}</div>

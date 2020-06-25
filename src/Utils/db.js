@@ -61,6 +61,16 @@ export function addGame (game) {
     .catch(e => console.error('Error adding game', e));
 }
 
+export function saveGame (game) {
+  db.collection('users').doc(game.createdBy).collection('games')
+    .doc(game.gameID)
+    .set(game)
+    .then(_ => {
+      console.log('Game saved');
+      toast.success('Game saved to the database', {autoClose: 3000});
+    })
+}
+
 export function delGame (game) {
   db.collection('users').doc(game.createdBy).collection('games')
     .doc(game.gameID)

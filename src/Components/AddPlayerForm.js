@@ -96,7 +96,7 @@ export default function AddPlayerForm(props) {
         {formError.type === 'addPlayer' &&
           <div className='form-error'>{formError.message}</div>
         }
-        <div className='add-player-btns'>
+        <div className='add-player-btns btn-container'>
           <button type='submit' className='btn' onClick={addPlayer}>Add</button>
           <button className='btn nmt' onClick={() => {
             props.setShowAddPlayer(false);

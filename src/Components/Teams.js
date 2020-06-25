@@ -97,7 +97,7 @@ export default function Teams(props) {
                       <input className='player-input' name='team-name' onChange={handleInputChange} value={teamName} />
                     </div>
                     {formErr.message && <div className='form-error'>{formErr.message}</div>}
-                    <div>
+                    <div className='btn-container'>
                       {formErr.message ?
                         <button className='btn btn-inactive' onClick={addTeam}>Save</button>
                         :

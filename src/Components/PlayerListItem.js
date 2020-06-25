@@ -114,7 +114,7 @@ export default function PlayerListItem(props) {
             <div className='i-placeholder'></div>
           </form>
           {editing && playerFormError.message && <div className='form-error'>{playerFormError.message}</div>}
-          <div className='player-edit-btns'>
+          <div className='player-edit-btns btn-container'>
             <button
               className='btn btn-del'
               onClick={() => {

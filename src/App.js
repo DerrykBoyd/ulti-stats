@@ -67,11 +67,10 @@ function App() {
   const [currentGame, setCurrentGame] = useState(JSON.parse(localStorage.getItem('currentGame')) || null);
   const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
   const [activePoint, setActivePoint] = useState(localStorage.getItem('activePoint') === 'true');
+  const [changingLineUp, setChangingLineUp] = useState(localStorage.getItem('changingLineUp') === 'true');
   const [currentGameTime, setCurrentGameTime] = useState(localStorage.getItem('currentGameTime') || '00:00');
   const [currentPoint, setCurrentPoint] = useState(parseInt(localStorage.getItem('currentPoint')) || 1);
-  const [currentPointLineUp, setCurrentPointLineUp] = useState(
-    new Set(JSON.parse(localStorage.getItem('currentPointLineUp'))) || new Set()
-  );
+  const [currentPointLineUp, setCurrentPointLineUp] = useState(JSON.parse(localStorage.getItem('currentPointLineUp')) || []);
   const [dbUser, setDbUser] = useState(null);
   const [gameOptions, setGameOptions] = useState({
     statTeam: '',
@@ -80,11 +79,7 @@ function App() {
     opponent: '',
     gameFormat: { value: 7, label: `7 v 7` },
   });
-  const [prevEntry, setPrevEntry] = useState({
-    action: '',
-    playerID: '',
-    turnover: false
-  });
+  const [prevEntry, setPrevEntry] = useState(JSON.parse(localStorage.getItem('prevEntry')) || {});
   const [teamOptions, setTeamOptions] = useState([]);
   const [user, setUser] = useState(null);
 
@@ -154,8 +149,18 @@ function App() {
     localStorage.setItem('isOffence', isOffence);
     localStorage.setItem('activePoint', activePoint);
     localStorage.setItem('currentPoint', currentPoint);
-    localStorage.setItem('currentPointLineUp', JSON.stringify(Array.from(currentPointLineUp)));
-  }, [currentGame, isOffence, activePoint, currentPoint, currentPointLineUp]);
+    localStorage.setItem('currentPointLineUp', JSON.stringify(currentPointLineUp));
+    localStorage.setItem('prevEntry', JSON.stringify(prevEntry));
+    localStorage.setItem('changingLineUp', changingLineUp);
+  }, [
+      currentGame,
+      isOffence,
+      activePoint,
+      currentPoint,
+      currentPointLineUp,
+      prevEntry,
+      changingLineUp,
+    ]);
 
   const resetTeamOptions = (newTeams) => {
     let newTeamOptions = [];
@@ -177,13 +182,15 @@ function App() {
     setCurrentGame(null);
     setCurrentGameTime('00:00');
     setCurrentPoint(1);
-    setCurrentPointLineUp(new Set());
+    setCurrentPointLineUp([]);
+    setPrevEntry({});
+    setChangingLineUp(false);
   }
 
   return (
     <Router>
       <ToastContainer
-        autoClose={false}
+        autoClose={4000}
         hideProgressBar
         newestOnTop={false}
         position='top-center'
@@ -275,6 +282,7 @@ function App() {
               />
               <Stats
                 activePoint={activePoint}
+                changingLineUp={changingLineUp}
                 currentGame={currentGame}
                 currentGameTime={currentGameTime}
                 currentPoint={currentPoint}
@@ -285,6 +293,7 @@ function App() {
                 isOffence={isOffence}
                 prevEntry={prevEntry}
                 setActivePoint={setActivePoint}
+                setChangingLineUp={setChangingLineUp}
                 setCurrentGame={setCurrentGame}
                 setCurrentGameTime={setCurrentGameTime}
                 setCurrentPoint={setCurrentPoint}

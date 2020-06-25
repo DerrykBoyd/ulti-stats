@@ -21,7 +21,7 @@ export default function OngoingGame(props) {
       {props.currentGame && localStorage.getItem('user') &&
         <div className='ongoing-game drop-shadow'>
           <h4 className='ongoing-game-title'>You have an unsaved game</h4>
-          <div>
+          <div className='btn-container'>
             <button className='btn btn-green' onClick={() => {
               window.location.href = '/#/stats';
             }}>Resume</button>

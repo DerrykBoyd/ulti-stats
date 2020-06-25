@@ -44,6 +44,13 @@
   padding-left: 1rem;
 }
 
+.roster-list-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 4rem;
+}
+
 .selected {
   background-color: var(--primary-select);
 }

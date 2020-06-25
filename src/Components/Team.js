@@ -105,7 +105,7 @@ export default function Team(props) {
             />
           </div>
           {formError.message && <div className='form-error'>{formError.message}</div>}
-          <div className='team-btns'>
+          <div className='btn-container'>
             <button className='btn btn-del' onClick={delTeam}>Delete</button>
             <button className={unsavedChanges ? 'btn' : 'btn btn-inactive'} onClick={saveChanges}>Save Changes</button>
             <button className='btn' onClick={() => {
