@@ -185,6 +185,7 @@ function App() {
     setCurrentPointLineUp([]);
     setPrevEntry({});
     setChangingLineUp(false);
+    localStorage.removeItem('prevLineUp');
   }
 
   return (
