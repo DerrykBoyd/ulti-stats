@@ -107,6 +107,7 @@
 
 .player-num-input {
   width: 2.5rem;
+  margin-left: 0.5rem;
 }
 
 .player-num-input::-webkit-inner-spin-button,

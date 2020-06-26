@@ -6,7 +6,7 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import { ToastContainer, cssTransition } from 'react-toastify';
+import { ToastContainer, cssTransition, toast } from 'react-toastify';
 import Timer from 'easytimer.js';
 
 // Firebase
@@ -64,11 +64,12 @@ export const db = firebaseApp.firestore();
 function App() {
 
   // set state (global)
-  const [currentGame, setCurrentGame] = useState(JSON.parse(localStorage.getItem('currentGame')) || null);
-  const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
   const [activePoint, setActivePoint] = useState(localStorage.getItem('activePoint') === 'true');
+  const [activeTimeOut, setActiveTimeOut] = useState(localStorage.getItem('activeTimeOut') === 'true');
+  const [currentGame, setCurrentGame] = useState(JSON.parse(localStorage.getItem('currentGame')) || null);
   const [changingLineUp, setChangingLineUp] = useState(localStorage.getItem('changingLineUp') === 'true');
   const [currentGameTime, setCurrentGameTime] = useState(localStorage.getItem('currentGameTime') || '00:00');
+  const [currentGameTimeSecs, setCurrentGameTimeSecs] = useState(localStorage.getItem('curTimeSecs') || 0);
   const [currentPoint, setCurrentPoint] = useState(parseInt(localStorage.getItem('currentPoint')) || 1);
   const [currentPointLineUp, setCurrentPointLineUp] = useState(JSON.parse(localStorage.getItem('currentPointLineUp')) || []);
   const [dbUser, setDbUser] = useState(null);
@@ -79,16 +80,19 @@ function App() {
     opponent: '',
     gameFormat: { value: 7, label: `7 v 7` },
   });
+  const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
   const [prevEntry, setPrevEntry] = useState(JSON.parse(localStorage.getItem('prevEntry')) || {});
   const [teamOptions, setTeamOptions] = useState([]);
   const [user, setUser] = useState(null);
 
   const gameTimer = useRef(new Timer({
     callback: (timer) => {
-      let newTime = { ...currentGameTime };
-      newTime = (timer.getTimeValues().toString(['minutes', 'seconds']));
+      let newTime = (timer.getTimeValues().toString(['minutes', 'seconds']));
+      let newTimeSecs = (timer.getTotalTimeValues().seconds);
       localStorage.setItem('currentGameTime', newTime);
+      localStorage.setItem('curTimeSecs', newTimeSecs);
       setCurrentGameTime(newTime);
+      setCurrentGameTimeSecs(newTimeSecs);
     }
   }))
 
@@ -129,12 +133,14 @@ function App() {
       } else {
         localStorage.removeItem('user');
         setUser(user);
-        localStorage.removeItem('currentGame');
-        setCurrentGame(null);
+        setDbUser(null);
+        setTeamOptions([]);
+        removeLocalGame();
       }
     })
     // unsubscribe to the listener when unmounting
     return () => unsubscribe()
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -145,22 +151,38 @@ function App() {
 
   // save game variables to localstorage to allow continuation of games on page reload
   useEffect(() => {
-    if (currentGame) localStorage.setItem('currentGame', JSON.stringify(currentGame));
-    localStorage.setItem('isOffence', isOffence);
     localStorage.setItem('activePoint', activePoint);
+    localStorage.setItem('activeTimeOut', activeTimeOut);
+    localStorage.setItem('changingLineUp', changingLineUp);
+    localStorage.setItem('currentGame', JSON.stringify(currentGame));
     localStorage.setItem('currentPoint', currentPoint);
     localStorage.setItem('currentPointLineUp', JSON.stringify(currentPointLineUp));
+    localStorage.setItem('isOffence', isOffence);
     localStorage.setItem('prevEntry', JSON.stringify(prevEntry));
-    localStorage.setItem('changingLineUp', changingLineUp);
   }, [
-      currentGame,
-      isOffence,
-      activePoint,
-      currentPoint,
-      currentPointLineUp,
-      prevEntry,
-      changingLineUp,
-    ]);
+    activePoint,
+    activeTimeOut,
+    changingLineUp,
+    currentGame,
+    currentPoint,
+    currentPointLineUp,
+    isOffence,
+    prevEntry,
+  ]);
+
+  const removeLocalGame = () => {
+    toast.dismiss();
+    localStorage.removeItem('activePoint');
+    localStorage.removeItem('activeTimeOut');
+    localStorage.removeItem('currentGame');
+    localStorage.removeItem('currentGameTime');
+    localStorage.removeItem('currentPoint');
+    localStorage.removeItem('curTimeSecs');
+    localStorage.removeItem('prevLineUp');
+    localStorage.setItem('timerPaused', 'true');
+    // reset the state variables
+    resetGame();
+  }
 
   const resetTeamOptions = (newTeams) => {
     let newTeamOptions = [];
@@ -185,16 +207,16 @@ function App() {
     setCurrentPointLineUp([]);
     setPrevEntry({});
     setChangingLineUp(false);
-    localStorage.removeItem('prevLineUp');
   }
 
   return (
     <Router>
       <ToastContainer
         autoClose={4000}
+        draggable={false}
         hideProgressBar
         newestOnTop={false}
-        position='top-center'
+        position='top-right'
         transition={Slide}
       />
       <Switch>
@@ -209,6 +231,7 @@ function App() {
           />
           <OngoingGame
             currentGame={currentGame}
+            removeLocalGame={removeLocalGame}
             resetGame={resetGame}
           />
         </Route>
@@ -228,6 +251,7 @@ function App() {
               />
               <OngoingGame
                 currentGame={currentGame}
+                removeLocalGame={removeLocalGame}
                 resetGame={resetGame}
               />
             </> : <Redirect to='/' />
@@ -247,7 +271,8 @@ function App() {
               />
               <OngoingGame
                 currentGame={currentGame}
-                setCurrentGame={setCurrentGame}
+                removeLocalGame={removeLocalGame}
+                resetGame={resetGame}
               />
             </> : <Redirect to='/' />
           }
@@ -283,9 +308,11 @@ function App() {
               />
               <Stats
                 activePoint={activePoint}
+                activeTimeOut={activeTimeOut}
                 changingLineUp={changingLineUp}
                 currentGame={currentGame}
                 currentGameTime={currentGameTime}
+                currentGameTimeSecs={currentGameTimeSecs}
                 currentPoint={currentPoint}
                 currentPointLineUp={currentPointLineUp}
                 gameTimer={gameTimer.current}
@@ -293,7 +320,9 @@ function App() {
                 dbUser={dbUser}
                 isOffence={isOffence}
                 prevEntry={prevEntry}
+                removeLocalGame={removeLocalGame}
                 setActivePoint={setActivePoint}
+                setActiveTimeOut={setActiveTimeOut}
                 setChangingLineUp={setChangingLineUp}
                 setCurrentGame={setCurrentGame}
                 setCurrentGameTime={setCurrentGameTime}

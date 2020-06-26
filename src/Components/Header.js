@@ -25,7 +25,11 @@ export default function Header(props) {
                     <span className='material-icons md-36 profile-img'>account_circle</span>
                 }
                 {props.user &&
-                    <button className='btn header-btn' onClick={() => props.firebaseApp.auth().signOut()}>Sign Out</button>
+                    <button className='btn header-btn' onClick={() => {
+                      // TODO - Confirmation Modal for Logout if there is an active game
+                      // game will be lost
+                      props.firebaseApp.auth().signOut();
+                  }}>Sign Out</button>
                 }
             </div>
         </header>

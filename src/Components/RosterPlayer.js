@@ -14,7 +14,10 @@ export default function RosterPlayer(props) {
   return (
     <div
       className={`player-list-item ${selected ? 'selected' : ''}`}
-      onClick={() => props.togglePlayer(player)}
+      onClick={() => {
+        console.log('clicked')
+        props.togglePlayer(player, selected)
+      }}
     >
       <div className='player-num-header'>{player.number}</div>
       <div className='player-name-header'>{player.firstName}</div>

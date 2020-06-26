@@ -76,10 +76,12 @@ export default function NewGame(props) {
       startingOn: gameOptions.startingOn,
       teamName: gameOptions.statTeam.value,
       teamID: gameOptions.statTeam.teamID,
+      timeOuts: {
+        [gameOptions.statTeam.value]: [],
+        [gameOptions.opponent]: [],
+      },
       timerHistory: [],
     }
-    // add new game to firestore
-    db.addGame(newGame);
     // set the current game to the new game
     props.setCurrentGame(newGame);
   }
@@ -108,53 +110,7 @@ export default function NewGame(props) {
                       options={teamOptions}
                       styles={rsStyles}
                     ></Select>
-                    <div className='rs-options-2'>
-                      <div className='rs-options-2-1 rs-left'>
-                        <h4 className='rs-title'>Jersey Colour</h4>
-                        <Select
-                          defaultValue={{
-                            value: gameOptions.jerseyColour,
-                            label: gameOptions.jerseyColour,
-                          }}
-                          isSearchable={false}
-                          onChange={(newValue => {
-                            let newGameOptions = { ...gameOptions };
-                            newGameOptions.jerseyColour = newValue.value;
-                            setGameOptions(newGameOptions);
-                          })}
-                          options={
-                            [
-                              { value: 'Light', label: 'Light' },
-                              { value: 'Dark', label: 'Dark' }
-                            ]
-                          }
-                          styles={rsStyles}
-                        ></Select>
-                      </div>
-                      <div className='rs-options-2-1 rs-right'>
-                        <h4 className='rs-title'>Starting On</h4>
-                        <Select
-                          defaultValue={{
-                            value: gameOptions.startingOn,
-                            label: gameOptions.startingOn,
-                          }}
-                          isSearchable={false}
-                          onChange={(newValue => {
-                            let newGameOptions = { ...gameOptions };
-                            newGameOptions.startingOn = newValue.value;
-                            setGameOptions(newGameOptions);
-                          })}
-                          options={
-                            [
-                              { value: 'Offence', label: 'Offence' },
-                              { value: 'Defence', label: 'Defence' }
-                            ]
-                          }
-                          styles={rsStyles}
-                        ></Select>
-                      </div>
-                    </div>
-                    <h4 className='rs-title'>Opponent
+                                        <h4 className='rs-title'>Opponent
                   <span className='text-dis'> (Type to search or add)</span></h4>
                     <CreatableSelect
                       isClearable
@@ -201,6 +157,52 @@ export default function NewGame(props) {
                       styles={rsStyles}
                     ></CreatableSelect>
                     {formErr.message && <div className='form-error'>{formErr.message}</div>}
+                    <div className='rs-options-2'>
+                      <div className='rs-options-2-1 rs-left'>
+                        <h4 className='rs-title'>Jersey Colour</h4>
+                        <Select
+                          defaultValue={{
+                            value: gameOptions.jerseyColour,
+                            label: gameOptions.jerseyColour,
+                          }}
+                          isSearchable={false}
+                          onChange={(newValue => {
+                            let newGameOptions = { ...gameOptions };
+                            newGameOptions.jerseyColour = newValue.value;
+                            setGameOptions(newGameOptions);
+                          })}
+                          options={
+                            [
+                              { value: 'Light', label: 'Light' },
+                              { value: 'Dark', label: 'Dark' }
+                            ]
+                          }
+                          styles={rsStyles}
+                        ></Select>
+                      </div>
+                      <div className='rs-options-2-1 rs-right'>
+                        <h4 className='rs-title'>Starting On</h4>
+                        <Select
+                          defaultValue={{
+                            value: gameOptions.startingOn,
+                            label: gameOptions.startingOn,
+                          }}
+                          isSearchable={false}
+                          onChange={(newValue => {
+                            let newGameOptions = { ...gameOptions };
+                            newGameOptions.startingOn = newValue.value;
+                            setGameOptions(newGameOptions);
+                          })}
+                          options={
+                            [
+                              { value: 'Offence', label: 'Offence' },
+                              { value: 'Defence', label: 'Defence' }
+                            ]
+                          }
+                          styles={rsStyles}
+                        ></Select>
+                      </div>
+                    </div>
                     <h4 className='rs-title'>Game Format</h4>
                     <Select
                       defaultValue={gameOptions.gameFormat || {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export default function Scoreboard(props) {
 
@@ -19,23 +19,16 @@ export default function Scoreboard(props) {
         >Finish & Save</button>
         <button
           className='btn'
-          onClick={() => console.log('TODO - Timeout!')}
-        >TimeOut</button>
+          onClick={() => {
+            props.setActiveTimeOut(!props.activeTimeOut);
+          }}
+        >Start TimeOut</button>
         <button
           className='btn'
           onClick={props.undoAction}
         >Undo<span className='material-icons md-18'>undo</span></button>
       </div>
-      <div className='game-info'>
-        <div className={`score-card ${!isLightJersy ? 'dark' : ''}`}>
-          <div className='score-team'>{currentGame.teamName}</div>
-          <div className='score-text'>{currentGame.score[currentGame.teamName]}</div>
-        </div>
-        <div className={`score-card ${isLightJersy ? 'dark' : ''}`}>
-          <div className='score-team'>{currentGame.opponent}</div>
-          <div className='score-text'>{currentGame.score[currentGame.opponent]}</div>
-        </div>
-      </div>
+      
       <div className='timer-controls'>
         {!currentGame.started && timerPaused ?
           <button className='btn btn-del' onClick={() => {
@@ -63,6 +56,16 @@ export default function Scoreboard(props) {
           }
         }}
         >{timerPaused ? 'Start Time' : 'Pause Time'}</button>
+      </div>
+      <div className='game-info'>
+        <div className={`score-card ${!isLightJersy ? 'dark' : ''}`}>
+          <div className='score-team'>{currentGame.teamName}</div>
+          <div className='score-text'>{currentGame.score[currentGame.teamName]}</div>
+        </div>
+        <div className={`score-card ${isLightJersy ? 'dark' : ''}`}>
+          <div className='score-team'>{currentGame.opponent}</div>
+          <div className='score-text'>{currentGame.score[currentGame.opponent]}</div>
+        </div>
       </div>
     </>
   )
