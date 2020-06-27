@@ -209,9 +209,15 @@ export default function Stats(props) {
   }
 
   const finishGame = () => {
-    db.saveGame({...currentGame});
+    let newGame = {...currentGame};
+    db.saveGame(newGame);
+    if (props.fetchedGames && props.fetchedGames.length) {
+      let newGameList = [...props.fetchedGames];
+      newGameList.unshift(newGame);
+      props.setFetchedGames(newGameList);
+    }
     props.removeLocalGame();
-    history.push('/');
+    history.push('/games');
   }
 
   const handleSortChange = (newValue) => {

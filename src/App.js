@@ -74,6 +74,7 @@ function App() {
   const [currentPoint, setCurrentPoint] = useState(parseInt(localStorage.getItem('currentPoint')) || 1);
   const [currentPointLineUp, setCurrentPointLineUp] = useState(JSON.parse(localStorage.getItem('currentPointLineUp')) || []);
   const [dbUser, setDbUser] = useState(null);
+  const [fetchedGames, setFetchedGames] = useState([]);
   const [gameOptions, setGameOptions] = useState({
     statTeam: '',
     jerseyColour: 'Light',
@@ -82,6 +83,7 @@ function App() {
     gameFormat: { value: 7, label: `7 v 7` },
   });
   const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
+  const [lastGameDoc, setLastGameDoc] = useState(null);
   const [logOutWarning, setLogOutWarning] = useState(false);
   const [pendingDel, setPendingDel] = useState(false);
   const [prevEntry, setPrevEntry] = useState(JSON.parse(localStorage.getItem('prevEntry')) || {});
@@ -275,8 +277,12 @@ function App() {
             <>
               <Games
                 currentGame={currentGame}
+                fetchedGames={fetchedGames}
                 db={db}
                 dbUser={dbUser}
+                lastGameDoc={lastGameDoc}
+                setFetchedGames={setFetchedGames}
+                setLastGameDoc={setLastGameDoc}
               />
               <OngoingGame
                 currentGame={currentGame}
@@ -318,6 +324,7 @@ function App() {
                 currentGameTimeSecs={currentGameTimeSecs}
                 currentPoint={currentPoint}
                 currentPointLineUp={currentPointLineUp}
+                fetchedGames={fetchedGames}
                 gameTimer={gameTimer.current}
                 db={db}
                 dbUser={dbUser}
@@ -332,6 +339,7 @@ function App() {
                 setCurrentPoint={setCurrentPoint}
                 setCurrentPointLineUp={setCurrentPointLineUp}
                 setDbUser={setDbUser}
+                setFetchedGames={setFetchedGames}
                 setIsOffence={setIsOffence}
                 setPrevEntry={setPrevEntry}
               />

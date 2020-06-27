@@ -146,7 +146,7 @@ export default function NewGame(props) {
                           });
                           props.setDbUser(newDbUser);
                           // add to the db
-                          db.addOpponent(props.dbUser.uid, gameOptions.statTeam.teamID, {
+                          db.addOpponent(props.dbUser.uid, {
                             value: newValue.value, label: newValue.label
                           });
                         }
