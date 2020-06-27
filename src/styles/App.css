@@ -28,7 +28,7 @@
 
 .App {
   text-align: center;
-  max-width: 1600px;
+  max-width: 1650px;
   margin: auto;
 }
 
@@ -140,9 +140,20 @@ a.btn {
   border: solid 1px var(--input-border);
 }
 
+.btn-light {
+  background-color: var(--primary-light);
+  color: var(--text-light)
+}
+
+.btn-light:hover {
+  background-color: var(--secondary-light);
+}
+
 .btn-dark, .btn-dark:hover {
   background-color: var(--secondary-dark);
+  color: var(--text-light)
 }
+
 
 .btn:focus {
   outline: none;

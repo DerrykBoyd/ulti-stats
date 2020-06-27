@@ -61,7 +61,6 @@ export default function NewGame(props) {
       createdTime: Date.now(),
       creatorEmail: dbUser.email,
       creatorName: dbUser.name || '',
-      finished: false,
       gameID: uuid(),
       gameFormat: gameOptions.gameFormat,
       gameHistory: [],

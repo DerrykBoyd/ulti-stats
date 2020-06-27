@@ -85,7 +85,7 @@ export default function Teams(props) {
         <>
           {!showEditTeam &&
             <>
-              <h1>My Teams</h1>
+              <h1>Teams</h1>
               {!showAddTeam &&
                 <button className='btn' onClick={() => setShowAddTeam(true)}>Add Team</button>
               }

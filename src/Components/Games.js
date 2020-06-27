@@ -1,4 +1,7 @@
 import React, { useEffect } from 'react';
+import GameCard from './GameCard';
+
+import '../styles/Games.css';
 
 export default function Games(props) {
 
@@ -28,7 +31,7 @@ export default function Games(props) {
           for (let doc of snapshot.docs) games.push(doc.data());
           setFetchedGames(games);
           if (snapshot.docs.length === 10) setLastGameDoc(snapshot.docs[snapshot.docs.length - 1]);
-          console.log('Games Fetched');
+          console.log('Games fetched from database');
         })
         .catch(e => console.error('Error getting games', e))
     }
@@ -47,13 +50,13 @@ export default function Games(props) {
         setFetchedGames(games);
         if (snapshot.docs.length === 10) setLastGameDoc(snapshot.docs[snapshot.docs.length - 1]);
         else (setLastGameDoc(null));
-        console.log('Additional Games Fetched');
+        console.log('Additional games fetched from database');
       })
       .catch(e => console.error('Error getting games', e))
   }
 
   return (
-    <div className={`App ${props.currentGame && 'pad-btm-alert'}`}>
+    <div className={`App ${props.currentGame ? 'pad-btm-alert' : ''}`}>
       <h1>Games</h1>
       {!fetchedGames &&
         <>
@@ -61,15 +64,18 @@ export default function Games(props) {
           <h3>Saved games will show up here.</h3>
         </>
       }
-      {fetchedGames && fetchedGames.map(game => {
-
-        let date = new Date(game.createdTime).toString();
-
-        return (
-          <h3 key={date}>{date}</h3>
-        )
-
-      })}
+      <div className='game-list'>
+        {fetchedGames && fetchedGames.map(game => {
+  
+          return (
+            <GameCard
+              game={game}
+              key={game.createdTime}
+            />
+          )
+  
+        })}
+      </div>
       {lastGameDoc &&
         <div className='btn-container'>
           <button

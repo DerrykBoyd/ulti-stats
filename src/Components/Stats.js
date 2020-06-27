@@ -7,7 +7,7 @@ import { sortByName, sortOrderOptions } from '../Utils/utils';
 import * as db from '../Utils/db';
 
 import AddPlayerForm from './AddPlayerForm';
-import Scoreboard from './Scoreboard';
+import GameOptions from './GameOptions';
 
 import '../styles/Stats.css';
 import RosterList from './RosterList';
@@ -356,7 +356,7 @@ export default function Stats(props) {
           timeSecs={timeSecs}
         />
       }
-      <Scoreboard
+      <GameOptions
         activeTimeOut={activeTimeOut}
         addTimerEntry={addTimerEntry}
         currentGame={currentGame}
