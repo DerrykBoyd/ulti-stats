@@ -283,3 +283,11 @@ input:focus, select:focus {
 .logout-modal > h3 {
   margin-bottom: 0;;
 }
+
+.del-toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0.5rem;
+  color: var(--delete);
+}

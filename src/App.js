@@ -83,6 +83,7 @@ function App() {
   });
   const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
   const [logOutWarning, setLogOutWarning] = useState(false);
+  const [pendingDel, setPendingDel] = useState(false);
   const [prevEntry, setPrevEntry] = useState(JSON.parse(localStorage.getItem('prevEntry')) || {});
   const [teamOptions, setTeamOptions] = useState([]);
   const [user, setUser] = useState(null);
@@ -243,8 +244,10 @@ function App() {
           />
           <OngoingGame
             currentGame={currentGame}
+            pendingDel={pendingDel}
             removeLocalGame={removeLocalGame}
             resetGame={resetGame}
+            setPendingDel={setPendingDel}
           />
         </Route>
         <Route path='/teams' exact>
@@ -259,8 +262,10 @@ function App() {
               />
               <OngoingGame
                 currentGame={currentGame}
+                pendingDel={pendingDel}
                 removeLocalGame={removeLocalGame}
                 resetGame={resetGame}
+                setPendingDel={setPendingDel}
               />
             </> : <Redirect to='/' />
           }
@@ -275,8 +280,10 @@ function App() {
               />
               <OngoingGame
                 currentGame={currentGame}
+                pendingDel={pendingDel}
                 removeLocalGame={removeLocalGame}
                 resetGame={resetGame}
+                setPendingDel={setPendingDel}
               />
             </> : <Redirect to='/' />
           }

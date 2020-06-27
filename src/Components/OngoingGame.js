@@ -1,17 +1,52 @@
 import React from 'react'
+import { toast } from 'react-toastify';
 
 export default function OngoingGame(props) {
 
+  let undo = false;
+
+  const Undo = ({ closeToast }) => {
+    const handleClick = () => {
+      props.setPendingDel(false);
+      undo = true;
+      closeToast();
+    };
+
+    return (
+      <div className='del-toast'>
+        <h3>Game Deleted</h3>
+        <button className='btn btn-del' onClick={handleClick}>UNDO</button>
+      </div>
+    );
+  };
+
   return (
     <>
-      {props.currentGame && localStorage.getItem('user') &&
+      {localStorage.getItem('user') && props.currentGame && !props.pendingDel &&
         <div className='ongoing-game drop-shadow'>
           <h4 className='ongoing-game-title'>You have an ongoing game</h4>
           <div className='btn-container'>
             <button className='btn btn-green' onClick={() => {
               window.location.href = '/#/stats';
             }}>Resume</button>
-            <button className='btn btn-del' onClick={props.removeLocalGame}>Discard</button>
+            <button className='btn btn-del' onClick={() => {
+              props.setPendingDel(true);
+              undo = false;
+              toast(<Undo />, {
+                onClose: () => {
+                  if (!undo) {
+                    props.removeLocalGame();
+                    props.setPendingDel(false);
+                  }
+                },
+                closeOnClick: false,
+                closeButton: false,
+                hideProgressBar: false,
+                progressStyle: {
+                  background: '#c62828'
+                }
+              })
+            }}>Discard</button>
           </div>
         </div>}
     </>
