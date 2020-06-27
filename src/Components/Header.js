@@ -28,7 +28,8 @@ export default function Header(props) {
                     <button className='btn header-btn' onClick={() => {
                       // TODO - Confirmation Modal for Logout if there is an active game
                       // game will be lost
-                      props.firebaseApp.auth().signOut();
+                      if (props.currentGame) props.setLogOutWarning(true);
+                      else props.firebaseApp.auth().signOut();
                   }}>Sign Out</button>
                 }
             </div>

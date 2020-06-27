@@ -118,12 +118,20 @@ a.btn {
   border: solid 1px black;
 }
 
-.btn-del, .btn-del:hover {
+.btn-del {
   background-color: var(--delete);
 }
 
-.btn-green, .btn-green:hover {
+.btn-del:hover {
+  background-color: var(--app-red-dark);
+}
+
+.btn-green {
   background-color: var(--app-green);
+}
+
+.btn-green:hover {
+  background-color: var(--app-green-dark);
 }
 
 .btn-white, .btn-white:hover {
@@ -266,4 +274,12 @@ input:focus, select:focus {
   padding: 1rem;
   width: 80%;
   max-width: 500px;
+}
+
+.logout-modal > p {
+  margin: 1rem;
+}
+
+.logout-modal > h3 {
+  margin-bottom: 0;;
 }

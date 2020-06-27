@@ -16,7 +16,7 @@ export default function Home(props) {
 
   return (
     <div className='App'>
-      <div className="home-main">
+      <div className={`home-main ${props.currentGame && 'home-pad-btm-alert'}`}>
         {user &&
           <div className='home-btn-group'>
             <Link

@@ -10,8 +10,11 @@
   --secondary-light: #3f5c94;
   --delete: #c62828;
   --app-red: #CF1020;
+  --app-red-dark: #980B17;
   --app-green: #03C03C;
+  --app-green-dark: #028D2C;
   --app-yellow: #E0E000;
+  --app-yellow-dark: #B8B800;
   --text-dark: rgb(0, 0, 0, 0.87);
   --text-dark-med: rgba(0, 0, 0, 0.6);
   --text-dark-disabled: rgba(0, 0, 0, 0.38);

@@ -29,6 +29,7 @@ import Teams from './Components/Teams';
 
 // helper functions
 import { sortTeams } from './Utils/utils';
+import LogOutModal from './Components/LogOutModal';
 
 const Slide = cssTransition({
   enter: 'toast-in',
@@ -81,6 +82,7 @@ function App() {
     gameFormat: { value: 7, label: `7 v 7` },
   });
   const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
+  const [logOutWarning, setLogOutWarning] = useState(false);
   const [prevEntry, setPrevEntry] = useState(JSON.parse(localStorage.getItem('prevEntry')) || {});
   const [teamOptions, setTeamOptions] = useState([]);
   const [user, setUser] = useState(null);
@@ -205,6 +207,7 @@ function App() {
     setCurrentGameTime('00:00');
     setCurrentPoint(1);
     setCurrentPointLineUp([]);
+    setLogOutWarning(false);
     setPrevEntry({});
     setChangingLineUp(false);
   }
@@ -219,13 +222,22 @@ function App() {
         position='top-right'
         transition={Slide}
       />
+      {logOutWarning &&
+        <LogOutModal
+          firebaseApp={firebaseApp}
+          setLogOutWarning={setLogOutWarning}
+        />}
+      <Header
+        currentGame={currentGame}
+        firebaseApp={firebaseApp}
+        logOutWarning={logOutWarning}
+        setLogOutWarning={setLogOutWarning}
+        user={user}
+      />
       <Switch>
         <Route path='/' exact>
-          <Header
-            firebaseApp={firebaseApp}
-            user={user}
-          />
           <Home
+            currentGame={currentGame}
             firebaseApp={firebaseApp}
             uiConfig={uiConfig}
           />
@@ -238,10 +250,6 @@ function App() {
         <Route path='/teams' exact>
           {localStorage.getItem('user') ?
             <>
-              <Header
-                firebaseApp={firebaseApp}
-                user={user}
-              />
               <Teams
                 currentGame={currentGame}
                 db={db}
@@ -260,10 +268,6 @@ function App() {
         <Route path='/games' exact>
           {localStorage.getItem('user') ?
             <>
-              <Header
-                firebaseApp={firebaseApp}
-                user={user}
-              />
               <Games
                 currentGame={currentGame}
                 db={db}
@@ -280,10 +284,6 @@ function App() {
         <Route path='/newgame' exact>
           {localStorage.getItem('user') ?
             <>
-              <Header
-                firebaseApp={firebaseApp}
-                user={user}
-              />
               <NewGame
                 currentGame={currentGame}
                 gameTimer={gameTimer.current}
@@ -302,10 +302,6 @@ function App() {
         <Route path='/stats' exact>
           {currentGame ?
             <>
-              <Header
-                firebaseApp={firebaseApp}
-                user={user}
-              />
               <Stats
                 activePoint={activePoint}
                 activeTimeOut={activeTimeOut}
