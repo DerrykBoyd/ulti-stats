@@ -122,7 +122,7 @@ export default function NewGame(props) {
                       onMenuOpen={() => {
                         setTimeout(() => {
                           window.scroll({
-                            top: 290,
+                            top: 220,
                             behavior: 'smooth'
                           })
                         }, 300);
