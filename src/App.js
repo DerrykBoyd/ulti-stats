@@ -15,20 +15,23 @@ import 'firebase/auth';
 import 'firebase/firestore';
 
 // styles
-import './styles/App.css';
 import 'react-toastify/dist/ReactToastify.css';
+import './styles/App.css';
+import './styles/Modal.css';
 
 // Components
+import FinishGameModal from './Components/FinishGameModal';
+import Games from './Components/Games';
 import Header from './Components/Header';
 import Home from './Components/Home';
-import Games from './Components/Games';
-import OngoingGame from './Components/OngoingGame';
 import NewGame from './Components/NewGame';
+import OngoingGame from './Components/OngoingGame';
 import Stats from './Components/Stats';
 import Teams from './Components/Teams';
 
 // helper functions
 import { sortTeams } from './Utils/utils';
+import * as dbUtils from './Utils/db';
 import LogOutModal from './Components/LogOutModal';
 
 const Slide = cssTransition({
@@ -69,6 +72,7 @@ function App() {
   const [activeTimeOut, setActiveTimeOut] = useState(localStorage.getItem('activeTimeOut') === 'true');
   const [currentGame, setCurrentGame] = useState(JSON.parse(localStorage.getItem('currentGame')) || null);
   const [changingLineUp, setChangingLineUp] = useState(localStorage.getItem('changingLineUp') === 'true');
+  const [confirmDel, setConfirmDel] = useState(false);
   const [currentGameTime, setCurrentGameTime] = useState(localStorage.getItem('currentGameTime') || '00:00');
   const [currentGameTimeSecs, setCurrentGameTimeSecs] = useState(localStorage.getItem('curTimeSecs') || 0);
   const [currentPoint, setCurrentPoint] = useState(parseInt(localStorage.getItem('currentPoint')) || 1);
@@ -175,6 +179,18 @@ function App() {
     prevEntry,
   ]);
 
+  const finishGame = () => {
+    let newGame = {...currentGame};
+    dbUtils.saveGame(newGame);
+    if (fetchedGames && fetchedGames.length) {
+      let newGameList = [...fetchedGames];
+      newGameList.unshift(newGame);
+      setFetchedGames(newGameList);
+    }
+    removeLocalGame();
+    setConfirmDel(false);
+  }
+
   const removeLocalGame = () => {
     toast.dismiss();
     localStorage.removeItem('activePoint');
@@ -229,6 +245,11 @@ function App() {
         <LogOutModal
           firebaseApp={firebaseApp}
           setLogOutWarning={setLogOutWarning}
+        />}
+      {confirmDel &&
+        <FinishGameModal
+          finishGame={finishGame}
+          setConfirmDel={setConfirmDel}
         />}
       <Header
         currentGame={currentGame}
@@ -325,6 +346,7 @@ function App() {
                 currentPoint={currentPoint}
                 currentPointLineUp={currentPointLineUp}
                 fetchedGames={fetchedGames}
+                finishGame={finishGame}
                 gameTimer={gameTimer.current}
                 db={db}
                 dbUser={dbUser}
@@ -334,6 +356,7 @@ function App() {
                 setActivePoint={setActivePoint}
                 setActiveTimeOut={setActiveTimeOut}
                 setChangingLineUp={setChangingLineUp}
+                setConfirmDel={setConfirmDel}
                 setCurrentGame={setCurrentGame}
                 setCurrentGameTime={setCurrentGameTime}
                 setCurrentPoint={setCurrentPoint}

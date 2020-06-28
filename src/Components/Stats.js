@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {useHistory} from 'react-router-dom';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 
 import { sortByName, sortOrderOptions } from '../Utils/utils';
-import * as db from '../Utils/db';
 
 import AddPlayerForm from './AddPlayerForm';
 import GameOptions from './GameOptions';
@@ -41,8 +39,6 @@ export default function Stats(props) {
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [teamRoster, setTeamRoster] = useState([]);
   const [timerPaused, setTimerPaused] = useState(localStorage.getItem('timerPaused') === 'true');
-
-  let history = useHistory();
 
   useEffect(() => {
     localStorage.setItem('timerPaused', timerPaused);
@@ -208,18 +204,6 @@ export default function Stats(props) {
     return game;
   }
 
-  const finishGame = () => {
-    let newGame = {...currentGame};
-    db.saveGame(newGame);
-    if (props.fetchedGames && props.fetchedGames.length) {
-      let newGameList = [...props.fetchedGames];
-      newGameList.unshift(newGame);
-      props.setFetchedGames(newGameList);
-    }
-    props.removeLocalGame();
-    history.push('/games');
-  }
-
   const handleSortChange = (newValue) => {
     let newDbUser = { ...dbUser };
     newDbUser.teams[currentEditTeam].playerSortOrder = newValue.value;
@@ -361,9 +345,10 @@ export default function Stats(props) {
         addTimerEntry={addTimerEntry}
         currentGame={currentGame}
         currentGameTime={props.currentGameTime}
-        finishGame={finishGame}
+        finishGame={props.finishGame}
         gameTimer={props.gameTimer}
         setActiveTimeOut={props.setActiveTimeOut}
+        setConfirmDel={props.setConfirmDel}
         setCurrentGame={props.setCurrentGame}
         setCurrentGameTime={props.setCurrentGameTime}
         setTimerPaused={setTimerPaused}

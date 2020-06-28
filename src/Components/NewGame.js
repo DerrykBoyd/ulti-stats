@@ -231,7 +231,7 @@ export default function NewGame(props) {
                     </div>
                   </>
                   :
-                  <p>You must create at least one team before starting a new game.</p>
+                  <h3>You must create at least one team before starting a new game.</h3>
                 }
               </div>
             </div>

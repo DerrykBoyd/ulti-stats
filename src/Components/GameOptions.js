@@ -14,7 +14,7 @@ export default function GameOptions(props) {
       <div className='btn-container'>
         <button
           className='btn'
-          onClick={props.finishGame}
+          onClick={() => props.setConfirmDel(true)}
         >Finish & Save</button>
         <button
           className='btn'
