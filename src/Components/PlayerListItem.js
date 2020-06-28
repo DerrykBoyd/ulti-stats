@@ -80,7 +80,7 @@ export default function PlayerListItem(props) {
           <div className='player-name-header'>{props.player.firstName}</div>
           <div className='player-name-header'>{props.player.lastName}</div>
           <i
-            className='material-icons text-sec-light point'
+            className='material-icons text-primary-dark point'
             onClick={() => setEditing(true)}
           >edit</i>
         </div>
@@ -124,13 +124,13 @@ export default function PlayerListItem(props) {
               }}
             >Delete</button>
             <button
-              className='btn'
+              className='btn btn-primary-text'
               onClick={() => {
                 updatePlayer(props.player.playerID);
               }}
             >Done</button>
             <button
-              className='btn'
+              className='btn btn-del-text'
               onClick={() => {
                 setEditing(false);
                 resetForm();

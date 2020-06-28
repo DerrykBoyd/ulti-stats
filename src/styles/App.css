@@ -10,6 +10,14 @@
   color: var(--delete);
 }
 
+.text-primary {
+  color: var(--primary)
+}
+
+.text-primary-dark {
+  color: var(--primary-dark)
+}
+
 .text-sec-light {
   color: var(--secondary-light);
 }
@@ -66,21 +74,29 @@
 .btn {
   margin: 0.5rem;
   padding: 0.5rem;
-  height: 2rem;
-  background-color: var(--primary);
+  /* height: 2rem; */
+  background-color: white;
   border-radius: 4px;
-  border: none;
-  color: white;
+  border: solid 1px var(--input-border);
   max-width: 15rem;
   min-width: 4rem;
-  text-transform: uppercase;
+  color: var(--text-dark);
   font-weight: bold;
-  font-size: 0.85rem;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  font-size: 0.9rem;
   text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.btn:hover {
+  background-color: #f7f8f8;
+  cursor: pointer;
+}
+
+.btn:focus {
+  outline: none;
+  border-color: grey;
 }
 
 .btn>span {
@@ -91,6 +107,10 @@ a.btn {
   height: 1rem;
 }
 
+.text-btn {
+  border: none;
+}
+
 .toast-btn {
   display: flex;
   align-items: center;
@@ -98,78 +118,101 @@ a.btn {
   background-color: #9a0007;
 }
 
-.opt-btn {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  color: black;
-  background-color: var(--secondary);
-  border: solid 1px black;
-}
-
-.btn:hover {
-  background-color: var(--primary-dark);
-  cursor: pointer;
-}
-
-.opt-btn:hover {
-  color: black;
-  background-color: var(--secondary);
-  border: solid 1px black;
-}
-
 .btn-del {
   background-color: var(--delete);
+  border-color: var(--app-red-dark);
+  color: white;
+  text-transform: uppercase;
 }
 
 .btn-del:hover {
   background-color: var(--app-red-dark);
 }
 
+.btn-del-ol {
+  border-color: var(--app-red);
+  color: var(--app-red)
+}
+
+.btn-del-ol:hover {
+  background-color: white;
+}
+
+.btn-del-text {
+  border: none;
+  color: var(--app-red);
+  text-transform: uppercase;
+}
+
+.btn-del-text:hover {
+  background-color: white;
+}
+
 .btn-green {
   background-color: var(--app-green);
+  border-color: var(--app-green-dark);
+  color: white;
+  text-transform: uppercase;
 }
 
 .btn-green:hover {
   background-color: var(--app-green-dark);
 }
 
-.btn-white, .btn-white:hover {
+.btn-green-text {
+  border: none;
+  color: var(--app-green);
+  text-transform: uppercase;
+}
+
+.btn-green-text:hover {
   background-color: white;
-  color: var(--text-dark);
-  border: solid 1px var(--input-border);
-}
-
-.btn-light {
-  background-color: var(--primary-light);
-  color: var(--text-light)
-}
-
-.btn-light:hover {
-  background-color: var(--secondary-light);
 }
 
 .btn-dark, .btn-dark:hover {
   background-color: var(--secondary-dark);
-  color: var(--text-light)
+  color: white
 }
 
-
-.btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--secondary);
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  text-transform: uppercase;
 }
 
-.btn-sec, .btn-sec:hover, .btn-sec:focus {
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-primary-text {
+  border: none;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.btn-sec {
   background-color: var(--secondary);
-  color: black;
+  color: white;
+  text-transform: uppercase;
+}
+
+.btn-sec:hover {
+  background-color: var(--secondary-dark);
 }
 
 .btn-inactive, .btn-inactive:hover, .btn-inactive:focus {
-  background-color: #bdbdbd;
+  background-color: lightgray;
   color: var(--text-dark-disabled);
   box-shadow: none;
   cursor: default;
+}
+
+.btn-inactive-text, .btn-inactive-text:hover, .btn-inactive-text:focus {
+  background-color: white;
+  border: none;
+  color: var(--text-dark-disabled);
+  cursor: default;
+  text-transform: uppercase;
 }
 
 .card {

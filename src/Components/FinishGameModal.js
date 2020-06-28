@@ -14,7 +14,7 @@ export default function DelGameModal(props) {
           <div className='modal-body'>This will write the game to the database. No more statistics can be added to the game after this action.</div>
           <div className='btn-container'>
             <button
-              className='btn'
+              className='btn btn-del-text'
               onClick={() => props.setConfirmDel(false)}
             >Cancel</button>
             <button

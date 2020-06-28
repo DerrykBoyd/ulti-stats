@@ -79,7 +79,7 @@ export default function Games(props) {
       {lastGameDoc &&
         <div className='btn-container'>
           <button
-            className='btn'
+            className='btn btn-primary-text'
             onClick={loadMore}
           >Load More</button>
         </div>

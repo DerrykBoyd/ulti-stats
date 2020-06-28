@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import * as db from '../Utils/db';
@@ -50,7 +50,7 @@ export default function AddPlayerForm(props) {
     newDbUser.teams[props.currentEditTeam].unsavedChanges = true;
     props.setDbUser(newDbUser);
     if (props.currentGame) {
-      let newCurGame = {...props.currentGame};
+      let newCurGame = { ...props.currentGame };
       newPlayer.pointsPlayed = [];
       newPlayer.assist = 0;
       newPlayer.dError = 0;
@@ -90,19 +90,19 @@ export default function AddPlayerForm(props) {
 
   return (
     <div className='add-player-form'>
-        <input type='number' className='player-input player-num-input' placeholder='##' name='player-number' onChange={handleInputChange} value={newPlayerNumber} />
-        <input className='player-input' name='player-first-name' placeholder='First Name' onChange={handleInputChange} value={newPlayerFirstName} />
-        <input className='player-input' name='player-last-name' placeholder='Last Name' onChange={handleInputChange} value={newPlayerLastName} />
-        {formError.type === 'addPlayer' &&
-          <div className='form-error'>{formError.message}</div>
-        }
-        <div className='add-player-btns btn-container'>
-          <button type='submit' className='btn' onClick={addPlayer}>Add</button>
-          <button className='btn nmt' onClick={() => {
-            props.setShowAddPlayer(false);
-            resetFormError();
-          }}>Cancel</button>
-        </div>
-  </div>
+      <input type='number' className='player-input player-num-input' placeholder='##' name='player-number' onChange={handleInputChange} value={newPlayerNumber} />
+      <input className='player-input' name='player-first-name' placeholder='First Name' onChange={handleInputChange} value={newPlayerFirstName} />
+      <input className='player-input' name='player-last-name' placeholder='Last Name' onChange={handleInputChange} value={newPlayerLastName} />
+      {formError.type === 'addPlayer' &&
+        <div className='form-error'>{formError.message}</div>
+      }
+      <div className='add-player-btns btn-container'>
+        <button className='btn btn-del-text nmt' onClick={() => {
+          props.setShowAddPlayer(false);
+          resetFormError();
+        }}>Cancel</button>
+        <button type='submit' className='btn btn-primary-text' onClick={addPlayer}>Submit</button>
+      </div>
+    </div>
   )
 }

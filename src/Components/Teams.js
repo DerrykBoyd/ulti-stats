@@ -87,7 +87,7 @@ export default function Teams(props) {
             <>
               <h1>Teams</h1>
               {!showAddTeam &&
-                <button className='btn' onClick={() => setShowAddTeam(true)}>Add Team</button>
+                <button className='btn btn-primary' onClick={() => setShowAddTeam(true)}>Add Team</button>
               }
               <form className='add-team-form' onSubmit={addTeam}>
                 {showAddTeam &&
@@ -98,15 +98,15 @@ export default function Teams(props) {
                     </div>
                     {formErr.message && <div className='form-error'>{formErr.message}</div>}
                     <div className='btn-container'>
-                      {formErr.message ?
-                        <button className='btn btn-inactive' onClick={addTeam}>Save</button>
-                        :
-                        <button className='btn' onClick={addTeam}>Save</button>}
-                      <button className='btn nmt' onClick={() => {
+                      <button className='btn btn-del-text nmt' onClick={() => {
                         setFormErr({});
                         setTeamName('');
                         setShowAddTeam(false);
                       }}>Cancel</button>
+                      {formErr.message ?
+                        <button className='btn btn-inactive-text' onClick={addTeam}>Save</button>
+                        :
+                        <button className='btn btn-green-text' onClick={addTeam}>Save</button>}
                     </div>
                   </>
                 }

@@ -10,7 +10,7 @@ export default function GameOptions(props) {
   let setTimerPaused = props.setTimerPaused;
 
   return (
-    <>
+    <div className='game-options'>
       <div className='btn-container'>
         <button
           className='btn'
@@ -57,6 +57,6 @@ export default function GameOptions(props) {
         >{timerPaused ? 'Start Time' : 'Pause Time'}</button>
       </div>
       <Scoreboard game={currentGame} />
-    </>
+    </div>
   )
 }

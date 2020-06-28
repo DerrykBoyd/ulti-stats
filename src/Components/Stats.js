@@ -386,7 +386,7 @@ export default function Stats(props) {
               />
               :
               <div className='player-list-options'>
-                <button className='btn' onClick={() => setShowAddPlayer(true)}>Add Player</button>
+                <button className='btn btn-primary' onClick={() => setShowAddPlayer(true)}>Add Player</button>
                 <div className='sort-select'>
                   <span>Sort</span>
                   {dbUser && currentEditTeam &&
@@ -415,7 +415,7 @@ export default function Stats(props) {
               <button className='btn' onClick={() => {
                 addHistoryEntry('oppPoint', {}, true);
               }}
-              >Opposition Score</button>
+              >Opposition Point</button>
               <button className='btn' onClick={() => {
                 addHistoryEntry('oppTurnOver', {}, true);
               }}
@@ -434,7 +434,7 @@ export default function Stats(props) {
             setTimerPaused={setTimerPaused}
           />
           <button
-            className='btn'
+            className='btn btn-primary'
             onClick={() => {
               props.setActivePoint(false);
               props.setChangingLineUp(true);

@@ -20,16 +20,16 @@ export default function Home(props) {
         {user &&
           <div className='home-btn-group'>
             <Link
-              className='btn'
+              className='btn btn-primary'
               to='/teams'>My Teams
                                 </Link>
             <Link
-              className='btn'
+              className='btn btn-primary'
               to='/games'>My Games
                                 </Link>
             {(!localStorage.getItem('currentGame') || localStorage.getItem('currentGame') === 'null') &&
               <Link
-                className='btn'
+                className='btn btn-green'
                 to='/newgame'
               >Start New Game</Link>
             }

@@ -14,7 +14,7 @@ export default function Header(props) {
             <h1 className={props.user ? 'header-title-user' : 'header-title-nouser'}>Ultimate Stats</h1>
             <div className='header-right'>
                 {location !== '/' &&
-                    <Link className='btn' to='/'>
+                    <Link className='btn text-btn' to='/'>
                         Home
                     </Link>
                 }

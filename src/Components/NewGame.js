@@ -9,7 +9,7 @@ import * as db from '../Utils/db';
 import { sortTeams } from '../Utils/utils';
 
 import '../styles/NewGame.css';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 export default function NewGame(props) {
 
@@ -20,6 +20,8 @@ export default function NewGame(props) {
   const gameOptions = props.gameOptions;
   const setGameOptions = props.setGameOptions;
   const teamOptions = props.teamOptions;
+
+  let history = useHistory();
 
   const rsStyles = {
     container: (provided) => ({
@@ -225,7 +227,11 @@ export default function NewGame(props) {
                     ></Select>
                     <div className='game-opt-btn-container'>
                       <button
-                        className='btn'
+                        className='btn btn-del-text'
+                        onClick={() => history.push('/')}
+                      >Cancel</button>
+                      <button
+                        className='btn btn-green-text'
                         onClick={createGame}
                       >Finish Setup</button>
                     </div>

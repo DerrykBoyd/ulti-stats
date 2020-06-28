@@ -39,7 +39,7 @@ export default function OffenseButtons(props) {
                     <div className='score-badge'>{props.player.drop}</div>
             </button>
             <button
-                className={`btn stat-btn t-away-btn ${mustTouch || noThrowaway ? 'btn-inactive' : 'btn-del'}`}
+                className={`btn stat-btn t-away-btn ${mustTouch || noThrowaway ? 'btn-inactive' : 'btn'}`}
                 name='throwAway'
                 onClick={(e) => props.handleStatClick(e, props.player, true)}>
                 T-Away

@@ -28,7 +28,7 @@ export default function TimeOutModal(props) {
               <h4>{`Timeout started for ${team}`}</h4>
               <h4>{`${timeSecs - timeStarted} seconds`}</h4>
               <button
-                className='btn'
+                className='btn btn-primary-text'
                 onClick={() => {
                   props.timeOutEnd(team);
                   localStorage.removeItem('timeOutTeam');
@@ -44,7 +44,7 @@ export default function TimeOutModal(props) {
               <h4>Timeout taken by?</h4>
               <div className='btn-container'>
                 <button
-                  className={`btn ${currentGame.jerseyColour === 'Dark' ? 'btn-dark' : 'btn-white'}`}
+                  className={`btn ${currentGame.jerseyColour === 'Dark' ? 'btn-dark' : 'btn'}`}
                   onClick={() => {
                     props.startTimer();
                     props.timeOutStart(currentGame.teamName);
@@ -53,7 +53,7 @@ export default function TimeOutModal(props) {
                   }}
                 >{currentGame.teamName}</button>
                 <button
-                  className={`btn ${currentGame.jerseyColour === 'Dark' ? 'btn-white' : 'btn-dark'}`}
+                  className={`btn ${currentGame.jerseyColour === 'Dark' ? 'btn' : 'btn-dark'}`}
                   onClick={() => {
                     startTimer();
                     props.timeOutStart(currentGame.opponent);
@@ -63,7 +63,7 @@ export default function TimeOutModal(props) {
                 >{currentGame.opponent}</button>
               </div>
               <button
-                className='btn btn-del'
+                className='btn btn-del-text'
                 onClick={() => props.setActiveTimeOut(false)}
               >Cancel</button>
             </>
