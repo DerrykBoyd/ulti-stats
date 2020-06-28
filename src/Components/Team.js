@@ -122,7 +122,7 @@ export default function Team(props) {
             />
             :
             <div className='player-list-options'>
-              <button className='btn' onClick={() => setShowAddPlayer(true)}>Add Player</button>
+              <button className='btn btn-primary' onClick={() => setShowAddPlayer(true)}>Add Player</button>
               <div className='sort-select'>
                 <span>Sort</span>
                 <Select

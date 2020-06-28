@@ -228,7 +228,7 @@ export default function NewGame(props) {
                     <div className='game-opt-btn-container'>
                       <button
                         className='btn btn-del-text'
-                        onClick={() => history.push('/')}
+                        onClick={() => history.goBack()}
                       >Cancel</button>
                       <button
                         className='btn btn-green-text'
