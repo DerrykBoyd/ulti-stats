@@ -40,6 +40,13 @@
   margin: auto;
 }
 
+.App-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .App-logo {
   height: 2.5rem;
   pointer-events: none;
@@ -106,7 +113,7 @@ a.btn {
   height: 1rem;
 }
 
-.text-btn, .text-btn:hover {
+.btn-text, .btn-text:hover {
   background-color: white;
   border: none;
 }

@@ -6,7 +6,6 @@ import * as db from '../Utils/db';
 import '../styles/Teams.css';
 
 import TeamCards from './TeamCards';
-import Team from './Team';
 import { toast } from 'react-toastify';
 
 export default function Teams(props) {
@@ -16,8 +15,6 @@ export default function Teams(props) {
   // set state
   const [teamName, setTeamName] = useState('');
   const [showAddTeam, setShowAddTeam] = useState(false);
-  const [showEditTeam, setShowEditTeam] = useState(false);
-  const [currentEditTeam, setCurrentEditTeam] = useState(null);
   const [formErr, setFormErr] = useState({});
 
   const validateUnique = (teamName) => {
@@ -28,8 +25,7 @@ export default function Teams(props) {
     return true;
   }
 
-  const addTeam = (e) => {
-    e.preventDefault();
+  const addTeam = () => {
     let newFormErr = { ...formErr };
     if (!teamName) {
       newFormErr = {
@@ -62,8 +58,16 @@ export default function Teams(props) {
     db.saveTeam(newDbUser.uid, newTeam, teamID);
   }
 
+  const checkSubmit = (e) => {
+    if (e.key === 'Enter') addTeam();
+  }
+
   const handleInputChange = (e) => {
     setFormErr({});
+    if (e.key === 'Enter') {
+      addTeam();
+      return;
+    }
     if (!validateUnique(e.target.value)) {
       setFormErr({
         message: 'Team name already in use.',
@@ -80,56 +84,43 @@ export default function Teams(props) {
   }
 
   return (
-    <div className={`App teams-main btm-nav-page ${props.currentGame ? 'pad-btm-alert' : ''}`}>
+    <div className={`App App-flex btm-nav-page ${props.currentGame ? 'pad-btm-alert' : ''}`}>
       {dbUser &&
         <>
-          {!showEditTeam &&
+          <h1>Teams</h1>
+          {!showAddTeam &&
+            <button className='btn btn-primary' onClick={() => setShowAddTeam(true)}>Add Team</button>
+          }
+          {showAddTeam &&
             <>
-              <h1>Teams</h1>
-              {!showAddTeam &&
-                <button className='btn btn-primary' onClick={() => setShowAddTeam(true)}>Add Team</button>
-              }
-              <form className='add-team-form' onSubmit={addTeam}>
-                {showAddTeam &&
-                  <>
-                    <div>
-                      <label htmlFor='team-name'>Team Name: </label>
-                      <input className='player-input' name='team-name' onChange={handleInputChange} value={teamName} />
-                    </div>
-                    {formErr.message && <div className='form-error'>{formErr.message}</div>}
-                    <div className='btn-container'>
-                      <button className='btn btn-del-text nmt' onClick={() => {
-                        setFormErr({});
-                        setTeamName('');
-                        setShowAddTeam(false);
-                      }}>Cancel</button>
-                      {formErr.message ?
-                        <button className='btn btn-inactive-text' onClick={addTeam}>Save</button>
-                        :
-                        <button className='btn btn-green-text' onClick={addTeam}>Save</button>}
-                    </div>
-                  </>
-                }
-              </form>
-              <TeamCards
-                currentGame={props.currentGame}
-                teamList={dbUser.teams}
-                setCurrentEditTeam={setCurrentEditTeam}
-                setShowEditTeam={setShowEditTeam}
-              />
+              <div className='add-team-form'>
+                <span >Team Name: </span>
+                <input
+                  className='player-input'
+                  name='team-name'
+                  onChange={handleInputChange}
+                  onKeyPress={checkSubmit}
+                  value={teamName}
+                />
+              </div>
+              {formErr.message && <div className='form-error'>{formErr.message}</div>}
+              <div className='btn-container'>
+                <button className='btn btn-del-text nmt' onClick={() => {
+                  setFormErr({});
+                  setTeamName('');
+                  setShowAddTeam(false);
+                }}>Cancel</button>
+                {formErr.message ?
+                  <button className='btn btn-inactive-text' onClick={addTeam}>Save</button>
+                  :
+                  <button className='btn btn-green-text' onClick={addTeam}>Save</button>}
+              </div>
             </>
           }
-          {showEditTeam &&
-            <Team
-              currentEditTeam={currentEditTeam}
-              db={props.db}
-              dbUser={dbUser}
-              resetTeamOptions={props.resetTeamOptions}
-              setCurrentEditTeam={setCurrentEditTeam}
-              setDbUser={props.setDbUser}
-              setShowEditTeam={setShowEditTeam}
-            />
-          }
+          <TeamCards
+            currentGame={props.currentGame}
+            teamList={dbUser.teams}
+          />
         </>
       }
     </div>

@@ -12,6 +12,7 @@ export default function GameCard(props) {
       <div className='game-card-header'>{`${date.toDateString()} - ${date.toLocaleTimeString([], { hour12: true })}`}</div>
       <div className='game-card-header'>Final Score</div>
       <Scoreboard game={game} />
+      <button className='btn'>Game Details</button>
     </div>
   )
 }

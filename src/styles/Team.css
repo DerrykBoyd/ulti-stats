@@ -53,6 +53,7 @@
 .player-list {
   width: 100vw;
   max-width: 600px;
+  padding: 0.5rem 0;
 }
 
 .player-list-item {

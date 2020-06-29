@@ -20,6 +20,7 @@ import './styles/App.css';
 import './styles/Modal.css';
 
 // Components
+import ErrorPage from './Components/ErrorPage';
 import FinishGameModal from './Components/FinishGameModal';
 import Games from './Components/Games';
 import Header from './Components/Header';
@@ -28,6 +29,7 @@ import LogOutModal from './Components/LogOutModal';
 import NewGame from './Components/NewGame';
 import OngoingGame from './Components/OngoingGame';
 import Stats from './Components/Stats';
+import Team from './Components/Team';
 import Teams from './Components/Teams';
 
 // helper functions
@@ -77,7 +79,7 @@ function App() {
   const [currentGameTimeSecs, setCurrentGameTimeSecs] = useState(localStorage.getItem('curTimeSecs') || 0);
   const [currentPoint, setCurrentPoint] = useState(parseInt(localStorage.getItem('currentPoint')) || 1);
   const [currentPointLineUp, setCurrentPointLineUp] = useState(JSON.parse(localStorage.getItem('currentPointLineUp')) || []);
-  const [dbUser, setDbUser] = useState(null);
+  const [dbUser, setDbUser] = useState(JSON.parse(localStorage.getItem('dbUser')) || null);
   const [fetchedGames, setFetchedGames] = useState([]);
   const [gameOptions, setGameOptions] = useState({
     statTeam: '',
@@ -92,7 +94,7 @@ function App() {
   const [pendingDel, setPendingDel] = useState(false);
   const [prevEntry, setPrevEntry] = useState(JSON.parse(localStorage.getItem('prevEntry')) || {});
   const [teamOptions, setTeamOptions] = useState([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
 
   const gameTimer = useRef(new Timer({
     callback: (timer) => {
@@ -109,25 +111,35 @@ function App() {
   let gameOptionsRef = useRef(gameOptions);
 
   const loadUser = useCallback(() => {
+    // function set the possible team options
+    function resetTeamOptions(teams) {
+      let newTeamOptions = [];
+      for (let team of Object.values(teams)) {
+        newTeamOptions.push({ value: team.name, label: team.name, teamID: team.teamID });
+      };
+      newTeamOptions.sort((a, b) => {
+        return sortTeams(a.value, b.value)
+      });
+      setTeamOptions(newTeamOptions);
+      let newGameOptions = { ...gameOptionsRef.current };
+      newGameOptions.statTeam = newTeamOptions[0];
+      setGameOptions(gameOptions => newGameOptions);
+    }
+    // get user from localStorage if loaded already
+    if (localStorage.getItem('dbUser') !== 'null') {
+      let teams = JSON.parse(localStorage.getItem('dbUser')).teams;
+      resetTeamOptions(teams);
+      return
+    }
     // get the user from the db and load into state
     db.collection('users').where('uid', '==', user.uid)
       .get()
       .then(res => {
         res.forEach(doc => {
           setDbUser(doc.data());
+          localStorage.setItem('dbUser', JSON.stringify(doc.data()));
           console.log('User fetched from database')
-          // set the possible team options from the db
-          let newTeamOptions = [];
-          for (let team of Object.values(doc.data().teams)) {
-            newTeamOptions.push({ value: team.name, label: team.name, teamID: team.teamID });
-          };
-          newTeamOptions.sort((a, b) => {
-            return sortTeams(a.value, b.value)
-          });
-          setTeamOptions(newTeamOptions);
-          let newGameOptions = { ...gameOptionsRef.current };
-          newGameOptions.statTeam = newTeamOptions[0];
-          setGameOptions(gameOptions => newGameOptions);
+          resetTeamOptions(doc.data().teams)
         });
       })
       .catch(error => console.log('Error loading User', error))
@@ -141,6 +153,7 @@ function App() {
         setUser(user);;
       } else {
         localStorage.removeItem('user');
+        localStorage.removeItem('dbUser');
         setUser(user);
         setDbUser(null);
         setTeamOptions([]);
@@ -166,6 +179,7 @@ function App() {
     localStorage.setItem('currentGame', JSON.stringify(currentGame));
     localStorage.setItem('currentPoint', currentPoint);
     localStorage.setItem('currentPointLineUp', JSON.stringify(currentPointLineUp));
+    localStorage.setItem('dbUser', JSON.stringify(dbUser));
     localStorage.setItem('isOffence', isOffence);
     localStorage.setItem('prevEntry', JSON.stringify(prevEntry));
   }, [
@@ -175,12 +189,13 @@ function App() {
     currentGame,
     currentPoint,
     currentPointLineUp,
+    dbUser,
     isOffence,
     prevEntry,
   ]);
 
   const finishGame = () => {
-    let newGame = {...currentGame};
+    let newGame = { ...currentGame };
     dbUtils.saveGame(newGame);
     if (fetchedGames && fetchedGames.length) {
       let newGameList = [...fetchedGames];
@@ -293,6 +308,26 @@ function App() {
             </> : <Redirect to='/' />
           }
         </Route>
+        <Route path='/teams/:teamID'>
+          {localStorage.getItem('user') ?
+            <>
+              <Team
+                currentGame={currentGame}
+                db={db}
+                dbUser={dbUser}
+                resetTeamOptions={resetTeamOptions}
+                setDbUser={setDbUser}
+              />
+              <OngoingGame
+                currentGame={currentGame}
+                pendingDel={pendingDel}
+                removeLocalGame={removeLocalGame}
+                resetGame={resetGame}
+                setPendingDel={setPendingDel}
+              />
+            </> : <Redirect to='/' />
+          }
+        </Route>
         <Route path='/games' exact>
           {localStorage.getItem('user') ?
             <>
@@ -369,6 +404,7 @@ function App() {
             </> : <Redirect to='/newgame' />
           }
         </Route>
+        <Route component={ErrorPage} />
       </Switch>
     </Router>
   );

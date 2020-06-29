@@ -36,18 +36,27 @@ export default function Header(props) {
       <h1 className={props.user ? 'header-title-user' : 'header-title-nouser'}>Ultimate Stats</h1>
       <div className='header-right'>
         <div className='nav-links'>
+          {location === '/' ?
+          <div className='btn btn-text nav-link nav-active'>Home</div>
+          :
           <Link
-            className={`btn text-btn nav-link ${location === '/' ? 'nav-active' : ''}`}
+            className='btn btn-text nav-link'
             to='/'
-          >Home</Link>
+          >Home</Link>}
+          {location === '/teams' ?
+          <div className='btn btn-text nav-link nav-active'>Teams</div>
+          :
           <Link
-            className={`btn text-btn nav-link ${location === '/teams' ? 'nav-active' : ''}`}
+            className='btn btn-text nav-link'
             to='/teams'
-          >Teams</Link>
+          >Teams</Link>}
+          {location === '/games' ?
+          <div className='btn btn-text nav-link nav-active'>Games</div>
+          :
           <Link
-            className={`btn text-btn nav-link ${location === '/games' ? 'nav-active' : ''}`}
+            className='btn btn-text nav-link'
             to='/games'
-          >Games</Link>
+          >Games</Link>}
         </div>
         <div className='nav-user'>
           {props.user && props.user.photoURL &&
@@ -68,7 +77,7 @@ export default function Header(props) {
           }
           {props.user && profileMenuOpen &&
             <div ref={profileMenu} className='profile-menu card'>
-              <button className='btn text-btn header-btn' onClick={() => {
+              <button className='btn btn-text header-btn' onClick={() => {
                 // Confirmation Modal for Logout if there is an active game
                 if (props.currentGame) props.setLogOutWarning(true);
                 else props.firebaseApp.auth().signOut();

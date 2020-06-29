@@ -329,7 +329,7 @@ export default function Stats(props) {
   }
 
   return (
-    <div className='App teams-main'>
+    <div className='App App-flex'>
       {activeTimeOut &&
         <TimeOutModal
           currentGame={currentGame}

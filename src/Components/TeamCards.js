@@ -2,12 +2,15 @@ import React from 'react';
 
 // helper functions
 import { sortTeams } from '../Utils/utils';
+import { useHistory } from 'react-router-dom';
 
 export default function TeamCards(props) {
 
   const teamArr = Object.values(props.teamList).sort((a, b) => {
     return sortTeams(a.name, b.name)
   });
+
+  let history = useHistory();
 
   const teams = teamArr.map((team, ind) =>
     <div
@@ -17,8 +20,7 @@ export default function TeamCards(props) {
     >
       <h2>{team.name}</h2>
       <button className='btn' onClick={() => {
-        props.setCurrentEditTeam(team.teamID);
-        props.setShowEditTeam(true);
+        history.push(`teams/${team.teamID}`);
       }}>Edit</button>
     </div>
   );
