@@ -278,6 +278,7 @@ function App() {
           <Home
             currentGame={currentGame}
             firebaseApp={firebaseApp}
+            title='Home'
             uiConfig={uiConfig}
           />
           <OngoingGame
@@ -297,6 +298,7 @@ function App() {
                 dbUser={dbUser}
                 resetTeamOptions={resetTeamOptions}
                 setDbUser={setDbUser}
+                title='Teams'
               />
               <OngoingGame
                 currentGame={currentGame}
@@ -317,6 +319,7 @@ function App() {
                 dbUser={dbUser}
                 resetTeamOptions={resetTeamOptions}
                 setDbUser={setDbUser}
+                title='Edit Team'
               />
               <OngoingGame
                 currentGame={currentGame}
@@ -339,6 +342,7 @@ function App() {
                 lastGameDoc={lastGameDoc}
                 setFetchedGames={setFetchedGames}
                 setLastGameDoc={setLastGameDoc}
+                title='Games'
               />
               <OngoingGame
                 currentGame={currentGame}
@@ -364,6 +368,7 @@ function App() {
                 setGameOptions={setGameOptions}
                 setIsOffence={setIsOffence}
                 teamOptions={teamOptions}
+                title='New Game'
               />
             </> : <Redirect to='/' />
           }
@@ -400,6 +405,7 @@ function App() {
                 setFetchedGames={setFetchedGames}
                 setIsOffence={setIsOffence}
                 setPrevEntry={setPrevEntry}
+                title='Stats'
               />
             </> : <Redirect to='/newgame' />
           }

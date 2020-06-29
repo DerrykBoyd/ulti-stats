@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import * as db from '../Utils/db';
@@ -9,6 +9,11 @@ import TeamCards from './TeamCards';
 import { toast } from 'react-toastify';
 
 export default function Teams(props) {
+
+  // set the page title
+  useEffect(() => {
+    document.title = `Ultimate Stats - ${props.title}`
+  }, [props.title])
 
   const dbUser = props.dbUser;
 

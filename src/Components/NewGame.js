@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
@@ -12,6 +12,11 @@ import '../styles/NewGame.css';
 import { Redirect, useHistory } from 'react-router-dom';
 
 export default function NewGame(props) {
+
+  // set the page title
+  useEffect(() => {
+    document.title = `Ultimate Stats - ${props.title}`
+  }, [props.title])
 
   // set state
   const [formErr, setFormErr] = useState({});

@@ -5,6 +5,11 @@ import '../styles/Games.css';
 
 export default function Games(props) {
 
+  // set the page title
+  useEffect(() => {
+    document.title = `Ultimate Stats - ${props.title}`
+  }, [props.title])
+
   const db = props.db;
   const dbUser = props.dbUser;
   const fetchedGames = props.fetchedGames;

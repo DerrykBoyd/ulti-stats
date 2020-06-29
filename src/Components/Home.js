@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 // styles
@@ -11,6 +11,11 @@ import screenshot from '../assets/home-screenshot.svg';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 export default function Home(props) {
+
+  // set the page title
+  useEffect(() => {
+    document.title = `Ultimate Stats - ${props.title}`
+  }, [props.title])
 
   let user = JSON.parse(localStorage.getItem('user'));
 

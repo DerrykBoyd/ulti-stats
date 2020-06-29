@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Redirect } from 'react-router-dom';
 
 // helper functions
 import * as dbUtils from '../Utils/db';
 import { sortOrderOptions } from '../Utils/utils';
 
 // Components
-import ErrorPage from './ErrorPage';
 import PlayerList from './PlayerList';
 
 // import styles
@@ -16,6 +15,11 @@ import AddPlayerForm from './AddPlayerForm';
 import { toast } from 'react-toastify';
 
 export default function Team(props) {
+
+  // set the page title
+  useEffect(() => {
+    document.title = `Ultimate Stats - ${props.title}`
+  }, [props.title])
 
   const dbUser = props.dbUser;
   const currentEditTeam = useParams().teamID;
@@ -159,7 +163,7 @@ export default function Team(props) {
           }
         </div>
         :
-        <ErrorPage />}
+        <Redirect to='/teams' />}
     </>
   )
 }

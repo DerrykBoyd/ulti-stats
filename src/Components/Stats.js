@@ -14,6 +14,11 @@ import TimeOutModal from './TimeOutModal';
 
 export default function Stats(props) {
 
+  // set the page title
+  useEffect(() => {
+    document.title = `Ultimate Stats - ${props.title}`
+  }, [props.title])
+
   const activePoint = props.activePoint;
   const activeTimeOut = props.activeTimeOut;
   const currentGame = props.currentGame;
