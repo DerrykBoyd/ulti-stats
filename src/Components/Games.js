@@ -56,7 +56,7 @@ export default function Games(props) {
   }
 
   return (
-    <div className={`App ${props.currentGame ? 'pad-btm-alert' : ''}`}>
+    <div className={`App btm-nav-page ${props.currentGame ? 'pad-btm-alert' : ''}`}>
       <h1>Games</h1>
       {!fetchedGames &&
         <>

@@ -94,7 +94,7 @@ export default function NewGame(props) {
         :
         <div className='App'>
           {props.dbUser &&
-            <div className='new-game-main'>
+            <div className='new-game-main btm-nav-page'>
               <h2>Game Setup</h2>
               <div className='game-setup'>
                 {teamOptions[0] ?

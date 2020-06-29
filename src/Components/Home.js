@@ -15,8 +15,8 @@ export default function Home(props) {
   let user = JSON.parse(localStorage.getItem('user'));
 
   return (
-    <div className='App'>
-      <div className={`home-main ${props.currentGame && 'home-pad-btm-alert'}`}>
+    <div className={`App home-main`}>
+      <>
         {user &&
           <div className='home-btn-group'>
             <Link
@@ -55,7 +55,7 @@ export default function Home(props) {
             </div>
           </>
         }
-      </div>
+      </>
     </div>
   )
 }

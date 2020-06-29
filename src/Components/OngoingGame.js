@@ -24,12 +24,12 @@ export default function OngoingGame(props) {
     <>
       {localStorage.getItem('user') && props.currentGame && !props.pendingDel &&
         <div className='ongoing-game drop-shadow'>
-          <h4 className='ongoing-game-title'>You have an ongoing game</h4>
+          <span className='ongoing-game-title'>You have an ongoing game</span>
           <div className='btn-container'>
-            <button className='btn btn-green' onClick={() => {
+            <button className='btn btn-green og-btn' onClick={() => {
               window.location.href = '/#/stats';
             }}>Resume</button>
-            <button className='btn btn-del' onClick={() => {
+            <button className='btn btn-del og-btn' onClick={() => {
               props.setPendingDel(true);
               undo = false;
               toast(<Undo />, {

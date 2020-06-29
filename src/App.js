@@ -24,6 +24,7 @@ import FinishGameModal from './Components/FinishGameModal';
 import Games from './Components/Games';
 import Header from './Components/Header';
 import Home from './Components/Home';
+import LogOutModal from './Components/LogOutModal';
 import NewGame from './Components/NewGame';
 import OngoingGame from './Components/OngoingGame';
 import Stats from './Components/Stats';
@@ -32,7 +33,6 @@ import Teams from './Components/Teams';
 // helper functions
 import { sortTeams } from './Utils/utils';
 import * as dbUtils from './Utils/db';
-import LogOutModal from './Components/LogOutModal';
 
 const Slide = cssTransition({
   enter: 'toast-in',
