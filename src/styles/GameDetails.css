@@ -1,0 +1,49 @@
+.game-details-grid {
+  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.game-details-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.game-card-section {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;;
+}
+
+.game-card-title {
+  margin: 0 0 0.5rem 0;
+  color: var(--primary);
+}
+
+.game-card-subtitle {
+  margin-top: 0.75rem;
+  font-weight: bold;
+  color: var(--secondary);
+}
+
+@media (min-width:616px) {
+  .player-stats {
+    grid-column: span 2;
+  }
+}
+.stat-table-title {
+  margin-bottom: 0.5rem;
+  color: var(--secondary);
+}
+
+.stat-table tr:nth-child(even) {
+  background-color: #eee;
+}
+
+@media screen and (max-width: 600px) {
+  .stat-table {
+      font-size: x-small;
+  }
+}

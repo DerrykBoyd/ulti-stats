@@ -75,7 +75,7 @@ export default function Games(props) {
           return (
             <GameCard
               game={game}
-              key={game.createdTime}
+              key={game.gameID}
             />
           )
   

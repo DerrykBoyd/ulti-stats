@@ -22,6 +22,7 @@ import './styles/Modal.css';
 // Components
 import ErrorPage from './Components/ErrorPage';
 import FinishGameModal from './Components/FinishGameModal';
+import GameDetails from './Components/GameDetails';
 import Games from './Components/Games';
 import Header from './Components/Header';
 import Home from './Components/Home';
@@ -88,6 +89,7 @@ function App() {
     opponent: '',
     gameFormat: { value: 7, label: `7 v 7` },
   });
+  const [isMobile, setIsMobile] = useState(true);
   const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
   const [lastGameDoc, setLastGameDoc] = useState(null);
   const [logOutWarning, setLogOutWarning] = useState(false);
@@ -106,6 +108,17 @@ function App() {
       setCurrentGameTimeSecs(newTimeSecs);
     }
   }))
+
+  function updateIsMobile() {
+    setIsMobile(window.innerWidth <= 600);
+  }
+
+  // update isMobile on window resize
+  useEffect(() => {
+    window.addEventListener('resize', updateIsMobile);
+
+    return () => window.removeEventListener('resize', updateIsMobile);
+  })
 
   // store ref of gameOptions
   let gameOptionsRef = useRef(gameOptions);
@@ -343,6 +356,26 @@ function App() {
                 setFetchedGames={setFetchedGames}
                 setLastGameDoc={setLastGameDoc}
                 title='Games'
+              />
+              <OngoingGame
+                currentGame={currentGame}
+                pendingDel={pendingDel}
+                removeLocalGame={removeLocalGame}
+                resetGame={resetGame}
+                setPendingDel={setPendingDel}
+              />
+            </> : <Redirect to='/' />
+          }
+        </Route>
+        <Route path='/games/:gameID'>
+          {localStorage.getItem('user') ?
+            <>
+              <GameDetails
+                currentGame={currentGame}
+                dbUser={dbUser}
+                fetchedGames={fetchedGames}
+                isMobile={isMobile}
+                title='Game Details'
               />
               <OngoingGame
                 currentGame={currentGame}
