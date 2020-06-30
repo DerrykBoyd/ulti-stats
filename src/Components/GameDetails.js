@@ -98,11 +98,11 @@ export default function GameDetails(props) {
               <h4 className='game-card-title play-title'>Player Stats</h4>
               <span className='stat-table-title'>Touch headers to sort</span>
               {props.isMobile ?
-                <StatTableMobile stats={Object.values(game.playerStats).sort((a,b) => {
+                <StatTableMobile stats={Object.values(game.playerStats).sort((a, b) => {
                   return a.number - b.number;
                 })} />
-              :
-                <StatTable stats={Object.values(game.playerStats).sort((a,b) => {
+                :
+                <StatTable stats={Object.values(game.playerStats).sort((a, b) => {
                   return a.number - b.number;
                 })} />
               }

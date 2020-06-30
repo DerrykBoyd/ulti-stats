@@ -2,6 +2,7 @@
   padding: 0.5rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  align-items: start;
 }
 
 .game-details-card {
@@ -14,7 +15,8 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: baseline;;
+  align-items: baseline;
+  ;
 }
 
 .game-card-title {
@@ -33,17 +35,22 @@
     grid-column: span 2;
   }
 }
+
 .stat-table-title {
   margin-bottom: 0.5rem;
   color: var(--secondary);
+}
+
+.stat-table td {
+  padding: 4px 2px;
 }
 
 .stat-table tr:nth-child(even) {
   background-color: #eee;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 450px) {
   .stat-table {
-      font-size: x-small;
+    font-size: 10.5px;
   }
 }

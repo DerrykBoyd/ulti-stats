@@ -20,7 +20,6 @@ import './styles/App.css';
 import './styles/Modal.css';
 
 // Components
-import ErrorPage from './Components/ErrorPage';
 import FinishGameModal from './Components/FinishGameModal';
 import GameDetails from './Components/GameDetails';
 import Games from './Components/Games';
@@ -124,20 +123,6 @@ function App() {
   let gameOptionsRef = useRef(gameOptions);
 
   const loadUser = useCallback(() => {
-    // function set the possible team options
-    function resetTeamOptions(teams) {
-      let newTeamOptions = [];
-      for (let team of Object.values(teams)) {
-        newTeamOptions.push({ value: team.name, label: team.name, teamID: team.teamID });
-      };
-      newTeamOptions.sort((a, b) => {
-        return sortTeams(a.value, b.value)
-      });
-      setTeamOptions(newTeamOptions);
-      let newGameOptions = { ...gameOptionsRef.current };
-      newGameOptions.statTeam = newTeamOptions[0];
-      setGameOptions(gameOptions => newGameOptions);
-    }
     // get user from localStorage if loaded already
     if (localStorage.getItem('dbUser') !== 'null') {
       let teams = JSON.parse(localStorage.getItem('dbUser')).teams;
@@ -145,25 +130,28 @@ function App() {
       return
     }
     // get the user from the db and load into state
-    db.collection('users').where('uid', '==', user.uid)
+    db.collection('users').doc(user.uid)
       .get()
       .then(res => {
-        res.forEach(doc => {
-          setDbUser(doc.data());
-          localStorage.setItem('dbUser', JSON.stringify(doc.data()));
-          console.log('User fetched from database')
-          resetTeamOptions(doc.data().teams)
-        });
+        let doc = res.data();
+        setDbUser(doc);
+        console.log('User fetched from database')
+        resetTeamOptions(doc.teams)
       })
-      .catch(error => console.log('Error loading User', error))
+      .catch(error => console.error('Error loading User', error))
   }, [user]);
+
+  // update team options when teams are edited
+  useEffect(() => {
+    resetTeamOptions(dbUser.teams);
+  }, [dbUser])
 
   useEffect(() => {
     // listen for auth state changes
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(user => {
       if (user) {
+        setUser(user);
         localStorage.setItem('user', JSON.stringify(user));
-        setUser(user);;
       } else {
         localStorage.removeItem('user');
         localStorage.removeItem('dbUser');
@@ -443,7 +431,9 @@ function App() {
             </> : <Redirect to='/newgame' />
           }
         </Route>
-        <Route component={ErrorPage} />
+        <Route>
+          <Redirect to='/' />
+        </Route>
       </Switch>
     </Router>
   );
