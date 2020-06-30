@@ -28,7 +28,7 @@ export default function GameDetails(props) {
     let points = Object.values(game.pointHistory);
     let total = 0;
     for (let point of points) {
-      total = + (point.end - point.start);
+      total += (point.end - point.start);
     }
     return parseInt(total / points.length) || 0
   }
