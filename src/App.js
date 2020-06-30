@@ -34,7 +34,7 @@ import Teams from './Components/Teams';
 
 // helper functions
 import { sortTeams } from './Utils/utils';
-import * as dbUtils from './Utils/db';
+import * as dbUtils from './Utils/dbUtils';
 
 const Slide = cssTransition({
   enter: 'toast-in',

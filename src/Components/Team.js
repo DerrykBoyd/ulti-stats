@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
 
 // helper functions
-import * as dbUtils from '../Utils/db';
+import * as dbUtils from '../Utils/dbUtils';
 import { sortOrderOptions } from '../Utils/utils';
 
 // Components

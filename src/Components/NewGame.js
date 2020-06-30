@@ -5,7 +5,7 @@ import CreatableSelect from 'react-select/creatable';
 import { v4 as uuid } from 'uuid';
 
 // helper functions
-import * as db from '../Utils/db';
+import * as dbUtils from '../Utils/dbUtils';
 import { sortTeams } from '../Utils/utils';
 
 import '../styles/NewGame.css';
@@ -152,7 +152,7 @@ export default function NewGame(props) {
                           });
                           props.setDbUser(newDbUser);
                           // add to the db
-                          db.addOpponent(props.dbUser.uid, {
+                          dbUtils.addOpponent(props.dbUser.uid, {
                             value: newValue.value, label: newValue.label
                           });
                         }

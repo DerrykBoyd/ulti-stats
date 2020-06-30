@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import * as db from '../Utils/db';
+import * as dbUtils from '../Utils/dbUtils';
 
 export default function AddPlayerForm(props) {
 
@@ -45,7 +45,7 @@ export default function AddPlayerForm(props) {
     let newDbUser = { ...props.dbUser };
     newDbUser.teams[props.currentEditTeam].players[`${playerID}`] = newPlayer;
     if (props.saveToDb) {
-      db.saveTeam(newDbUser.uid, newDbUser.teams[props.currentEditTeam], props.currentEditTeam);
+      dbUtils.saveTeam(newDbUser.uid, newDbUser.teams[props.currentEditTeam], props.currentEditTeam);
     }
     newDbUser.teams[props.currentEditTeam].unsavedChanges = true;
     props.setDbUser(newDbUser);

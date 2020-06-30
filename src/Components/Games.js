@@ -42,6 +42,13 @@ export default function Games(props) {
     }
   }, [db, dbUser, fetchedGames, setFetchedGames, setLastGameDoc])
 
+  const delGameFromState = (gameID) => {
+    let gameInd = fetchedGames.findIndex(game => game.gameID === gameID);
+    let newGames = [...fetchedGames];
+    newGames.splice(gameInd, 1);
+    setFetchedGames(newGames);
+  }
+
   const loadMore = () => {
     db.collection('users').doc(dbUser.uid)
       .collection('games')
@@ -61,34 +68,37 @@ export default function Games(props) {
   }
 
   return (
-    <div className={`App btm-nav-page ${props.currentGame ? 'pad-btm-alert' : ''}`}>
-      <h1>Games</h1>
-      {!fetchedGames &&
-        <>
-          <h3>You don't have any saved games.</h3>
-          <h3>Saved games will show up here.</h3>
-        </>
-      }
-      <div className='game-list'>
-        {fetchedGames && fetchedGames.map(game => {
-  
-          return (
-            <GameCard
-              game={game}
-              key={game.gameID}
-            />
-          )
-  
-        })}
-      </div>
-      {lastGameDoc &&
-        <div className='btn-container'>
-          <button
-            className='btn btn-primary-text'
-            onClick={loadMore}
-          >Load More</button>
+    <>
+      <div className={`App btm-nav-page ${props.currentGame ? 'pad-btm-alert' : ''}`}>
+        <h1>Games</h1>
+        {!fetchedGames &&
+          <>
+            <h3>You don't have any saved games.</h3>
+            <h3>Saved games will show up here.</h3>
+          </>
+        }
+        <div className='game-list'>
+          {fetchedGames && fetchedGames.map(game => {
+    
+            return (
+              <GameCard
+                delGameFromState={delGameFromState}
+                game={game}
+                key={game.gameID}
+              />
+            )
+    
+          })}
         </div>
-      }
-    </div>
+        {lastGameDoc &&
+          <div className='btn-container'>
+            <button
+              className='btn btn-primary-text'
+              onClick={loadMore}
+            >Load More</button>
+          </div>
+        }
+      </div>
+    </>
   )
 }

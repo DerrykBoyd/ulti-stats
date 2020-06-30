@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import * as db from '../Utils/db';
+import * as dbUtils from '../Utils/dbUtils';
 
 import '../styles/Teams.css';
 
@@ -60,7 +60,7 @@ export default function Teams(props) {
     props.resetTeamOptions(newDbUser.teams);
     setTeamName('');
     // add team to DB
-    db.saveTeam(newDbUser.uid, newTeam, teamID);
+    dbUtils.saveTeam(newDbUser.uid, newTeam, teamID);
   }
 
   const checkSubmit = (e) => {
