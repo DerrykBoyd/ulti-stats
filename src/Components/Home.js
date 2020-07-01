@@ -41,7 +41,7 @@ export default function Home(props) {
           </div>
         }
         {!user &&
-          <>
+          <div className='home-no-login'>
             <div id='home-info'>
               <div>
                 <p className='home-primary'>Statistics for Ultimate games. </p>
@@ -58,7 +58,7 @@ export default function Home(props) {
                             </p>
               <img id='home-screenshot' className='scaled-img' src={screenshot} alt="Home Screenshot" />
             </div>
-          </>
+          </div>
         }
       </>
     </div>

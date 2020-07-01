@@ -14,10 +14,10 @@ export default function Header(props) {
   useEffect(() => {
 
     function handleClick(e) {
-      if (profileMenuOpen && 
+      if (profileMenuOpen &&
         (profileMenu.current.contains(e.target) || profileImg.current.contains(e.target))) {
-          return;
-        }
+        return;
+      }
       else setProfileMenuOpen(false);
     }
 
@@ -35,29 +35,30 @@ export default function Header(props) {
       <img className="App-logo" src={Logo} alt='Site Logo'></img>
       <h1 className={props.user ? 'header-title-user' : 'header-title-nouser'}>Ultimate Stats</h1>
       <div className='header-right'>
-        <div className='nav-links'>
-          {location === '/' ?
-          <div className='btn btn-text nav-link nav-active'>Home</div>
-          :
-          <Link
-            className='btn btn-text nav-link'
-            to='/'
-          >Home</Link>}
-          {location === '/teams' ?
-          <div className='btn btn-text nav-link nav-active'>Teams</div>
-          :
-          <Link
-            className='btn btn-text nav-link'
-            to='/teams'
-          >Teams</Link>}
-          {location === '/games' ?
-          <div className='btn btn-text nav-link nav-active'>Games</div>
-          :
-          <Link
-            className='btn btn-text nav-link'
-            to='/games'
-          >Games</Link>}
-        </div>
+        {props.user &&
+          <div className='nav-links'>
+            {location === '/' ?
+              <div className='btn btn-text nav-link nav-active'>Home</div>
+              :
+              <Link
+                className='btn btn-text nav-link'
+                to='/'
+              >Home</Link>}
+            {location === '/teams' ?
+              <div className='btn btn-text nav-link nav-active'>Teams</div>
+              :
+              <Link
+                className='btn btn-text nav-link'
+                to='/teams'
+              >Teams</Link>}
+            {location === '/games' ?
+              <div className='btn btn-text nav-link nav-active'>Games</div>
+              :
+              <Link
+                className='btn btn-text nav-link'
+                to='/games'
+              >Games</Link>}
+          </div>}
         <div className='nav-user'>
           {props.user && props.user.photoURL &&
             <img
@@ -86,7 +87,7 @@ export default function Header(props) {
           }
         </div>
       </div>
-      {location !== '/stats' &&
+      {location !== '/stats' && props.user &&
         <div className='btm-nav'>
           <Link to='/' className={`btm-nav-item ${location === '/' ? 'nav-btm-active' : ''}`}>
             <span className='material-icons'>home</span>
