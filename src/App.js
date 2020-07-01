@@ -35,6 +35,7 @@ import Teams from './Components/Teams';
 // helper functions
 import { sortTeams } from './Utils/utils';
 import * as dbUtils from './Utils/dbUtils';
+import Profile from './Components/Profile';
 
 const Slide = cssTransition({
   enter: 'toast-in',
@@ -396,6 +397,14 @@ function App() {
                 title='New Game'
               />
             </> : <Redirect to='/' />
+          }
+        </Route>
+        <Route path='/profile' exact>
+          {localStorage.getItem('user') ?
+            <Profile
+              dbUser={dbUser}
+            /> :
+            <Redirect to='/' />
           }
         </Route>
         <Route path='/stats' exact>

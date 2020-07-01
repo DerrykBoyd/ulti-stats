@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import '../styles/Header.css';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 
 import Logo from '../assets/ult-stats-favicon.svg'
 
@@ -30,6 +30,7 @@ export default function Header(props) {
   })
 
   let location = useLocation().pathname;
+  let history = useHistory();
 
   return (
     <header className='App-header'>
@@ -79,6 +80,10 @@ export default function Header(props) {
           }
           {props.user && profileMenuOpen &&
             <div ref={profileMenu} className='profile-menu card'>
+               <button className='btn btn-text header-btn' onClick={() => {
+                history.push('/profile');
+                setProfileMenuOpen(false);
+              }}>Edit Profile</button>
               <button className='btn btn-text header-btn' onClick={() => {
                 // Confirmation Modal for Logout if there is an active game
                 if (props.currentGame) props.setLogOutWarning(true);
