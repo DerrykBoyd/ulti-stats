@@ -132,13 +132,29 @@ function App() {
       return
     }
     // get the user from the db and load into state
+    // add the user to the database if doesn't exist
     db.collection('users').doc(user.uid)
       .get()
-      .then(res => {
-        let doc = res.data();
-        setDbUser(doc);
-        console.log('User fetched from database')
-        resetTeamOptions(doc.teams)
+      .then(doc => {
+        if (doc.exists) {
+          let newDbUser = doc.data();
+          setDbUser(newDbUser);
+          console.log('User fetched from database')
+          resetTeamOptions(newDbUser.teams)
+        } else {
+          let newDbUser = {
+            creationTime: user.metadata.creationTime,
+            email: user.email,
+            name: user.displayName || '',
+            opponents: [],
+            profileURL: user.photoURL || 'https://firebasestorage.googleapis.com/v0/b/ultimate-stats-3bdf2.appspot.com/o/default-profiles%2F050-rapper.png?alt=media',
+            teams: {},
+            uid: user.uid,
+          }
+          db.collection('users').doc(user.uid)
+            .set(newDbUser);
+          setDbUser(newDbUser)
+        }
       })
       .catch(error => console.error('Error loading User', error))
   }, [user]);
@@ -152,6 +168,7 @@ function App() {
     // listen for auth state changes
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(user => {
       if (user) {
+        // user signed in
         setUser(user);
         localStorage.setItem('user', JSON.stringify(user));
       } else {
@@ -272,12 +289,12 @@ function App() {
         />}
       <Header
         currentGame={currentGame}
+        dbUser={dbUser}
         firebaseApp={firebaseApp}
         logOutWarning={logOutWarning}
         profileMenuOpen={profileMenuOpen}
         setLogOutWarning={setLogOutWarning}
         setProfileMenuOpen={setProfileMenuOpen}
-        user={user}
       />
       <Switch>
         <Route path='/' exact>

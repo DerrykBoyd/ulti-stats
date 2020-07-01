@@ -11,21 +11,6 @@ admin.initializeApp();
 //  response.send("Hello from Firebase!");
 // });
 
-exports.createUserRecord = functions.auth.user().onCreate((user) => {
-
-    const userRecord = {
-        creationTime: user.metadata.creationTime,
-        email: user.email,
-        name: user.name || '',
-        opponents: [],
-        teams: {},
-        uid: user.uid,
-    }
-
-    return admin.firestore().collection('users').doc(user.uid).set(userRecord);
-
-})
-
 exports.deleteUserRecord = functions.auth.user().onDelete((user) => {
 
     return admin.firestore().collection('users').doc(user.uid).delete();

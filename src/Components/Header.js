@@ -35,9 +35,9 @@ export default function Header(props) {
   return (
     <header className='App-header'>
       <img className="App-logo" src={Logo} alt='Site Logo'></img>
-      <h1 className={props.user ? 'header-title-user' : 'header-title-nouser'}>Ultimate Stats</h1>
+      <h1 className={props.dbUser ? 'header-title-user' : 'header-title-nouser'}>Ultimate Stats</h1>
       <div className='header-right'>
-        {props.user &&
+        {props.dbUser &&
           <div className='nav-links'>
             {location === '/' ?
               <div className='btn btn-text nav-link nav-active'>Home</div>
@@ -62,25 +62,26 @@ export default function Header(props) {
               >Games</Link>}
           </div>}
         <div className='nav-user'>
-          {props.user && props.user.photoURL &&
+          {props.dbUser && props.dbUser.profileURL &&
             <img
               className='profile-img'
-              src={props.user.photoURL}
+              src={props.dbUser.profileURL}
               alt='Profile'
               onClick={() => setProfileMenuOpen(!profileMenuOpen)}
               ref={profileImg}
             />
           }
-          {props.user && !props.user.photoURL &&
+          {props.dbUser && !props.dbUser.profileURL &&
             <span
               className='material-icons md-36 profile-img'
               onClick={() => setProfileMenuOpen(!profileMenuOpen)}
               ref={profileImg}
             >account_circle</span>
           }
-          {props.user && profileMenuOpen &&
+          {props.dbUser && profileMenuOpen &&
             <div ref={profileMenu} className='profile-menu card'>
-               <button className='btn btn-text header-btn' onClick={() => {
+              <p>{props.dbUser.email}</p>
+              <button className='btn btn-text header-btn' onClick={() => {
                 history.push('/profile');
                 setProfileMenuOpen(false);
               }}>Edit Profile</button>
@@ -93,7 +94,7 @@ export default function Header(props) {
           }
         </div>
       </div>
-      {location !== '/stats' && props.user &&
+      {location !== '/stats' && props.dbUser &&
         <div className='btm-nav'>
           <Link to='/' className={`btm-nav-item ${location === '/' ? 'nav-btm-active' : ''}`}>
             <span className='material-icons'>home</span>
