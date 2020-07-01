@@ -143,7 +143,7 @@ function App() {
 
   // update team options when teams are edited
   useEffect(() => {
-    resetTeamOptions(dbUser.teams);
+    if (dbUser) resetTeamOptions(dbUser.teams);
   }, [dbUser])
 
   useEffect(() => {
