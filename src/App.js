@@ -94,6 +94,7 @@ function App() {
   const [logOutWarning, setLogOutWarning] = useState(false);
   const [pendingDel, setPendingDel] = useState(false);
   const [prevEntry, setPrevEntry] = useState(JSON.parse(localStorage.getItem('prevEntry')) || {});
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [teamOptions, setTeamOptions] = useState([]);
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
 
@@ -158,6 +159,7 @@ function App() {
         setUser(user);
         setDbUser(null);
         setTeamOptions([]);
+        setProfileMenuOpen(false);
         removeLocalGame();
       }
     })
@@ -271,7 +273,9 @@ function App() {
         currentGame={currentGame}
         firebaseApp={firebaseApp}
         logOutWarning={logOutWarning}
+        profileMenuOpen={profileMenuOpen}
         setLogOutWarning={setLogOutWarning}
+        setProfileMenuOpen={setProfileMenuOpen}
         user={user}
       />
       <Switch>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import '../styles/Header.css';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -6,7 +6,8 @@ import Logo from '../assets/ult-stats-favicon.svg'
 
 export default function Header(props) {
 
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuOpen = props.profileMenuOpen;
+  const setProfileMenuOpen = props.setProfileMenuOpen;
 
   // check for mouseClick outside of profile menu to close
   const profileMenu = useRef();
