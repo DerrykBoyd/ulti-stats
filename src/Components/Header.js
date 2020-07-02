@@ -83,7 +83,7 @@ export default function Header(props) {
               <div className='profile-menu-name'>{props.dbUser.name}</div>
               <div className='profile-menu-email'>{props.dbUser.email}</div>
               <button className='btn header-btn' onClick={() => {
-                history.push('/profile');
+                location !== '/profile' && history.push('/profile');
                 setProfileMenuOpen(false);
               }}>Edit Profile</button>
               <button className='btn header-btn' onClick={() => {

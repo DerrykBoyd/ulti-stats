@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import '../styles/Home.css';
 
 // images
-import screenshot from '../assets/home-screenshot.svg';
+import screenshot from '../assets/screenshot1.png';
+import screenshotMobile from '../assets/screenshot-mobile.png';
 
 // Firebase
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
@@ -53,10 +54,10 @@ export default function Home(props) {
               </div>
             </div>
             <div className='card home-screenshot-card'>
-              <p className='card-title'>
-                Screenshot Here
-                            </p>
-              <img id='home-screenshot' className='scaled-img' src={screenshot} alt="Home Screenshot" />
+              {props.isMobile ?
+                <img id='home-screenshot' className='scaled-img' src={screenshotMobile} alt="Home Screenshot" />
+                :
+                <img id='home-screenshot' className='scaled-img' src={screenshot} alt="Home Screenshot" />}
             </div>
           </div>
         }

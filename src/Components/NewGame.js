@@ -148,12 +148,12 @@ export default function NewGame(props) {
                           // update state with new opponent
                           let newDbUser = { ...props.dbUser };
                           newDbUser.opponents.push({
-                            value: newValue.value, label: newValue.label
+                            value: newValue.value, label: newValue.value
                           });
                           props.setDbUser(newDbUser);
                           // add to the db
                           dbUtils.addOpponent(props.dbUser.uid, {
-                            value: newValue.value, label: newValue.label
+                            value: newValue.value, label: newValue.value
                           });
                         }
                       })}

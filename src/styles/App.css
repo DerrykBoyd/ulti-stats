@@ -159,7 +159,6 @@ a.btn {
   background-color: var(--app-green);
   border-color: var(--app-green-dark);
   color: white;
-  text-transform: uppercase;
 }
 
 .btn-green:hover {
@@ -305,7 +304,7 @@ input:focus, select:focus {
     padding-bottom: 5.5rem;
   }
   .btm-nav-page{
-    padding-bottom: 0;
+    padding-bottom: 0.5rem;
   }
 }
 

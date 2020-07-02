@@ -63,3 +63,13 @@ export function saveTeam(userID, newTeam, teamID) {
     })
     .catch(e => console.error('Error updating teams', e))
 }
+
+export function updateUser(userID, newUser) {
+  db.collection('users').doc(userID)
+    .set(newUser)
+    .then(() => {
+      console.log('Database user doc updated');
+      toast.success('User saved to database');
+    })
+    .catch(e => console.error('Error updating user', e));
+}

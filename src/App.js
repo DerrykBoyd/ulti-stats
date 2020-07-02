@@ -89,7 +89,7 @@ function App() {
     opponent: '',
     gameFormat: { value: 7, label: `7 v 7` },
   });
-  const [isMobile, setIsMobile] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 600 ? true : false);
   const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
   const [lastGameDoc, setLastGameDoc] = useState(null);
   const [logOutWarning, setLogOutWarning] = useState(false);
@@ -163,6 +163,20 @@ function App() {
   useEffect(() => {
     if (dbUser) resetTeamOptions(dbUser.teams);
   }, [dbUser])
+
+  // listen for realtime updates to dbUser if loaded
+  useEffect(() => {
+    let updateUser = null;
+    if (dbUser) {
+      updateUser = db.collection('users').doc(dbUser.uid)
+        .onSnapshot((doc) => {
+          setDbUser(doc.data())
+        })
+    }
+    return () => {
+      if (updateUser !== null) updateUser();
+    }
+  })
 
   useEffect(() => {
     // listen for auth state changes
@@ -301,6 +315,7 @@ function App() {
           <Home
             currentGame={currentGame}
             firebaseApp={firebaseApp}
+            isMobile={isMobile}
             title='Home'
             uiConfig={uiConfig}
           />
@@ -420,6 +435,8 @@ function App() {
           {localStorage.getItem('user') ?
             <Profile
               dbUser={dbUser}
+              setDbUser={setDbUser}
+              user={user}
             /> :
             <Redirect to='/' />
           }
