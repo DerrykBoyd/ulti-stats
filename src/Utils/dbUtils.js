@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 import { db } from '../App';
 
-export function addOpponent (userID, opponent) {
+export function addOpponent(userID, opponent) {
   db.collection('users').doc(userID)
     .update({
       opponents: firestore.FieldValue.arrayUnion(opponent)
@@ -15,7 +15,7 @@ export function addOpponent (userID, opponent) {
     .catch(e => console.error('Error adding opponent', e));
 }
 
-export function delGame (game) {
+export function delGame(game) {
   db.collection('users').doc(game.createdBy).collection('games')
     .doc(game.gameID)
     .delete()
@@ -39,7 +39,7 @@ export function delTeam(userID, teamID) {
     .catch(e => console.error('Error deleting team', e))
 }
 
-export function saveGame (game) {
+export function saveGame(game) {
   db.collection('users').doc(game.createdBy).collection('games')
     .doc(game.gameID)
     .set(game)
@@ -50,7 +50,7 @@ export function saveGame (game) {
     .catch(e => console.error('Error saving game', e));
 }
 
-export function saveTeam (userID, newTeam, teamID) {
+export function saveTeam(userID, newTeam, teamID) {
   // update the User in the db from local state
   db.collection('users').doc(userID)
     .update({
