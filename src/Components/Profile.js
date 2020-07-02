@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { db } from '../App';
 
@@ -45,9 +45,9 @@ export default function Profile(props) {
           ></input>
         </div>
         <div><p>TODO - Change Profile Photo</p></div>
-        {urlsLoaded &&
-          <div className='profile-img-grid'>
-            {profileURLs.map(url => {
+        <div className='profile-img-grid'>
+          {urlsLoaded ?
+            profileURLs.map(url => {
               return (
                 <img
                   className='profile-display'
@@ -56,9 +56,11 @@ export default function Profile(props) {
                   alt='default profile'
                 >
                 </img>)
-            })}
-          </div>
-        }
+            })
+            :
+            <div className="img-loader"><div></div><div></div><div></div><div></div></div>
+          }
+        </div>
         <div>Profile icons by <a
           href="https://www.flaticon.com/authors/freepik"
           title="Freepik"
