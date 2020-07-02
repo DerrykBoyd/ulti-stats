@@ -17,8 +17,17 @@
 }
 
 .profile-display {
-  width: 120px;
-  height: 120px;
+  width: 5rem;
+  height: 5rem;
   border-radius: 50%;
-  margin: 1rem;
+  margin: 0.5rem;
+  cursor: pointer;
+}
+
+.profile-img-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+  justify-items: center;
+  width: calc(100% - 2rem);
+  padding: 1rem;
 }

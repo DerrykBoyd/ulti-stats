@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 
 import { db } from '../App';
 
@@ -9,6 +9,7 @@ export default function Profile(props) {
   const [displayName, setDisplayName] = useState(props.dbUser.name || '');
   const [isChanged, setIsChanged] = useState(false);
   const [profileURLs, setProfileURLs] = useState(JSON.parse(sessionStorage.getItem('profileURLs')) || [])
+  const [urlsLoaded, setUrlsLoaded] = useState(false);
 
   const handleChange = (e) => {
     setDisplayName(e.target.value);
@@ -21,17 +22,19 @@ export default function Profile(props) {
       db.collection('public').doc('settings')
         .get()
         .then(doc => {
-          console.log('urls fetched')
           let urlArr = doc.data().defaultProfileURLs;
           setProfileURLs(urlArr);
           sessionStorage.setItem('profileURLs', JSON.stringify(urlArr))
+          setUrlsLoaded(true);
         })
         .catch(e => console.log('Error getting profile URLs', e))
+    } else {
+      setUrlsLoaded(true);
     }
   }, [profileURLs])
 
   return (
-    <div className='App'>
+    <div className='App btm-nav-page'>
       <h2>TODO - Edit Profile</h2>
       <div className='profile-main'>
         <div className='profile-section'>
@@ -42,18 +45,26 @@ export default function Profile(props) {
           ></input>
         </div>
         <div><p>TODO - Change Profile Photo</p></div>
-        <img
-          className='profile-display'
-          src={profileURLs[1]}
-          alt='default profile'
-        >
-        </img>
-        <div>Profile icons by <a 
+        {urlsLoaded &&
+          <div className='profile-img-grid'>
+            {profileURLs.map(url => {
+              return (
+                <img
+                  className='profile-display'
+                  key={url}
+                  src={url}
+                  alt='default profile'
+                >
+                </img>)
+            })}
+          </div>
+        }
+        <div>Profile icons by <a
           href="https://www.flaticon.com/authors/freepik"
           title="Freepik"
           target='_blank'
           rel='noopener noreferrer'
-          >Freepik</a></div>
+        >Freepik</a></div>
       </div>
     </div>
   )
