@@ -29,6 +29,12 @@ export default function Profile(props) {
           alt='default profile'
           >
         </img>
+        <div>Profile icons by <a 
+          href="https://www.flaticon.com/authors/freepik"
+          title="Freepik"
+          target='_blank'
+          rel='noopener noreferrer'
+          >Freepik</a></div>
       </div>
     </div>
   )

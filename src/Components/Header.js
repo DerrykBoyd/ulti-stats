@@ -80,12 +80,13 @@ export default function Header(props) {
           }
           {props.dbUser && profileMenuOpen &&
             <div ref={profileMenu} className='profile-menu card'>
-              <p>{props.dbUser.email}</p>
-              <button className='btn btn-text header-btn' onClick={() => {
+              <div className='profile-menu-name'>{props.dbUser.name}</div>
+              <div className='profile-menu-email'>{props.dbUser.email}</div>
+              <button className='btn header-btn' onClick={() => {
                 history.push('/profile');
                 setProfileMenuOpen(false);
               }}>Edit Profile</button>
-              <button className='btn btn-text header-btn' onClick={() => {
+              <button className='btn header-btn' onClick={() => {
                 // Confirmation Modal for Logout if there is an active game
                 if (props.currentGame) props.setLogOutWarning(true);
                 else props.firebaseApp.auth().signOut();
