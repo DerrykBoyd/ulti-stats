@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
-import CreatableSelect from 'react-select/creatable';
 
 import { v4 as uuid } from 'uuid';
 
@@ -20,25 +18,27 @@ export default function NewGame(props) {
 
   // set state
   const [formErr, setFormErr] = useState({});
+  const [newOpp, setNewOpp] = useState('');
+  const [showAddOpp, setShowAddOpp] = useState(false);
 
   const dbUser = props.dbUser;
   const gameOptions = props.gameOptions;
+  const isTeams = dbUser ? Object.values(dbUser.teams).length : false;
   const setGameOptions = props.setGameOptions;
-  const teamOptions = props.teamOptions;
 
   let history = useHistory();
 
-  const rsStyles = {
-    container: (provided) => ({
-      ...provided,
-      width: '100%',
-    })
-  }
-
   const createGame = () => {
+    if (!gameOptions.statTeam) {
+      setFormErr({
+        type: 'team',
+        message: 'Please select a team',
+      })
+      return
+    }
     if (!gameOptions.opponent) {
       setFormErr({
-        type: 'missing-field',
+        type: 'opponent',
         message: 'Please select an opponent',
       })
       return;
@@ -47,7 +47,9 @@ export default function NewGame(props) {
     if (gameOptions.startingOn === 'Offence') isOffence = true;
     props.setIsOffence(isOffence);
     let stats = {};
-    for (let player of Object.values(dbUser.teams[gameOptions.statTeam.teamID].players)) {
+    // add each player to the game data
+    let teamData = Object.values(dbUser.teams).find(team => team.name === gameOptions.statTeam);
+    Object.values(teamData.players).map(player =>
       stats[player.playerID] = {
         firstName: player.firstName,
         lastName: player.lastName,
@@ -62,34 +64,49 @@ export default function NewGame(props) {
         throwAway: 0,
         touch: 0,
       }
-    }
+    );
+    // set the game data
     let newGame = {
       createdBy: dbUser.uid,
       createdTime: Date.now(),
       creatorEmail: dbUser.email,
       creatorName: dbUser.name || '',
       gameID: uuid(),
-      gameFormat: gameOptions.gameFormat,
+      gameFormat: parseInt(gameOptions.gameFormat),
       gameHistory: [],
       jerseyColour: gameOptions.jerseyColour,
       opponent: gameOptions.opponent,
       playerStats: stats,
       pointHistory: {},
       score: {
-        [gameOptions.statTeam.value]: 0,
+        [gameOptions.statTeam]: 0,
         [gameOptions.opponent]: 0,
       },
       startingOn: gameOptions.startingOn,
-      teamName: gameOptions.statTeam.value,
-      teamID: gameOptions.statTeam.teamID,
+      teamName: gameOptions.statTeam,
+      teamID: teamData.teamID,
       timeOuts: {
-        [gameOptions.statTeam.value]: [],
+        [gameOptions.statTeam]: [],
         [gameOptions.opponent]: [],
       },
       timerHistory: [],
     }
     // set the current game to the new game
     props.setCurrentGame(newGame);
+  }
+
+  const addOpp = () => {
+    // add to state
+    let newDbUser = { ...dbUser };
+    newDbUser.opponents.push(newOpp);
+    props.setDbUser(newDbUser);
+    let newGameOptions = { ...gameOptions };
+    newGameOptions.opponent = newOpp;
+    setGameOptions(newGameOptions);
+    // update the database
+    dbUtils.addOpponent(dbUser.uid, newOpp)
+    setNewOpp('');
+    setShowAddOpp(false);
   }
 
   return (
@@ -102,134 +119,128 @@ export default function NewGame(props) {
             <div className='new-game-main btm-nav-page'>
               <h2>Game Setup</h2>
               <div className='game-setup'>
-                {teamOptions[0] ?
+                {isTeams ?
                   <>
                     <h4 className='rs-title'>Team</h4>
-                    <Select
-                      defaultValue={gameOptions.statTeam || teamOptions[0]}
-                      isSearchable={false}
-                      onChange={(newValue => {
+                    <select
+                      value={gameOptions.statTeam}
+                      name='team-select'
+                      id='team-select'
+                      onChange={(e) => {
                         let newGameOptions = { ...gameOptions };
-                        newGameOptions.statTeam = newValue;
+                        newGameOptions.statTeam = e.target.value;
                         setGameOptions(newGameOptions);
-                      })}
-                      options={teamOptions}
-                      styles={rsStyles}
-                    ></Select>
-                                        <h4 className='rs-title'>Opponent
-                  <span className='text-dis'> (Type to search or add)</span></h4>
-                    <CreatableSelect
-                      isClearable
-                      defaultValue={gameOptions.opponent ?
-                        {
-                          value: gameOptions.opponent,
-                          label: gameOptions.opponent,
-                        } : ''}
-                      onMenuOpen={() => {
-                        setTimeout(() => {
-                          window.scroll({
-                            top: 220,
-                            behavior: 'smooth'
-                          })
-                        }, 300);
                       }}
-                      onChange={(newValue => {
-                        setFormErr({});
-                        if (!newValue) {
-                          let newGameOptions = { ...gameOptions };
-                          newGameOptions.opponent = '';
-                          setGameOptions(newGameOptions);
-                          return;
-                        }
+                    >
+                      <option value=''></option>
+                      {Object.values(dbUser.teams).sort((a, b) => {
+                        return sortTeams(a.name, b.name)
+                      }).map((team, ind) => {
+                        return (
+                          <option
+                            value={team.name}
+                            key={team.name}
+                          >{team.name}</option>
+                        )
+                      })}
+                    </select>
+                    {formErr.type === 'team' && <div className='form-error'>{formErr.message}</div>}
+                    <h4 className='rs-title'>Opponent</h4>
+                    <select
+                      value={gameOptions.opponent}
+                      name='opponent-select'
+                      id='opponent-select'
+                      onChange={e => {
                         let newGameOptions = { ...gameOptions };
-                        newGameOptions.opponent = newValue.value;
+                        newGameOptions.opponent = e.target.value;
                         setGameOptions(newGameOptions);
-                        if (newValue.__isNew__) {
-                          // update state with new opponent
-                          let newDbUser = { ...props.dbUser };
-                          newDbUser.opponents.push({
-                            value: newValue.value, label: newValue.value
-                          });
-                          props.setDbUser(newDbUser);
-                          // add to the db
-                          dbUtils.addOpponent(props.dbUser.uid, {
-                            value: newValue.value, label: newValue.value
-                          });
-                        }
+                      }}
+                    >
+                      <option value=''></option>
+                      {dbUser.opponents.map(opponent => {
+                        return (
+                          <option
+                            value={opponent}
+                            key={`opponent ${opponent}`}
+                          >{opponent}</option>
+                        )
                       })}
-                      options={dbUser.opponents.sort((a, b) => {
-                        return sortTeams(a.value, b.value)
-                      })}
-                      styles={rsStyles}
-                    ></CreatableSelect>
-                    {formErr.message && <div className='form-error'>{formErr.message}</div>}
+                    </select>
+                    {showAddOpp ?
+                      <div className='btn-container'>
+                        <input
+                          className='player-input'
+                          value={newOpp}
+                          onChange={e => {
+                            setNewOpp(e.target.value);
+                          }}
+                        ></input>
+                        <button
+                          className='btn btn-green-text'
+                          onClick={addOpp}
+                        >Add</button>
+                        <button
+                          className='btn btn-del-text'
+                          onClick={() => setShowAddOpp(false)}
+                        >Cancel</button>
+                      </div>
+                      :
+                      <div className='btn-container'>
+                        <button
+                          className='btn'
+                          onClick={() => setShowAddOpp(true)}
+                        >Add Opponent</button>
+                      </div>
+                    }
+                    {formErr.type === 'opponent' && <div className='form-error'>{formErr.message}</div>}
                     <div className='rs-options-2'>
                       <div className='rs-options-2-1 rs-left'>
                         <h4 className='rs-title'>Jersey Colour</h4>
-                        <Select
-                          defaultValue={{
-                            value: gameOptions.jerseyColour,
-                            label: gameOptions.jerseyColour,
-                          }}
-                          isSearchable={false}
-                          onChange={(newValue => {
+                        <select
+                          name='jersey-select'
+                          value={gameOptions.jerseyColour}
+                          onChange={e => {
                             let newGameOptions = { ...gameOptions };
-                            newGameOptions.jerseyColour = newValue.value;
+                            newGameOptions.jerseyColour = e.target.value;
                             setGameOptions(newGameOptions);
-                          })}
-                          options={
-                            [
-                              { value: 'Light', label: 'Light' },
-                              { value: 'Dark', label: 'Dark' }
-                            ]
-                          }
-                          styles={rsStyles}
-                        ></Select>
+                          }}
+                        >
+                          <option value='Light'>Light</option>
+                          <option value='Dark'>Dark</option>
+                        </select>
                       </div>
                       <div className='rs-options-2-1 rs-right'>
                         <h4 className='rs-title'>Starting On</h4>
-                        <Select
-                          defaultValue={{
-                            value: gameOptions.startingOn,
-                            label: gameOptions.startingOn,
-                          }}
-                          isSearchable={false}
-                          onChange={(newValue => {
+                        <select
+                          name='offence-select'
+                          value={gameOptions.startingOn}
+                          onChange={e => {
                             let newGameOptions = { ...gameOptions };
-                            newGameOptions.startingOn = newValue.value;
+                            newGameOptions.startingOn = e.target.value;
                             setGameOptions(newGameOptions);
-                          })}
-                          options={
-                            [
-                              { value: 'Offence', label: 'Offence' },
-                              { value: 'Defence', label: 'Defence' }
-                            ]
-                          }
-                          styles={rsStyles}
-                        ></Select>
+                          }}
+                        >
+                          <option value='Offence'>Offence</option>
+                          <option value='Defence'>Defence</option>
+                        </select>
                       </div>
                     </div>
                     <h4 className='rs-title'>Game Format</h4>
-                    <Select
-                      defaultValue={gameOptions.gameFormat || {
-                        value: 7,
-                        label: '7 v 7'
-                      }}
-                      isSearchable={false}
-                      onChange={(newValue => {
+                    <select
+                      value={gameOptions.gameFormat}
+                      name='format-select'
+                      onChange={e => {
                         let newGameOptions = { ...gameOptions };
-                        newGameOptions.gameFormat = newValue;
+                        newGameOptions.gameFormat = e.target.value;
                         setGameOptions(newGameOptions);
-                      })}
-                      options={[
-                        { value: 7, label: `7 v 7` },
-                        { value: 6, label: `6 v 6` },
-                        { value: 5, label: `5 v 5` },
-                        { value: 4, label: `4 v 4` },
-                        { value: 3, label: `3 v 3` },
-                      ]}
-                      styles={rsStyles}
-                    ></Select>
+                      }}
+                    >
+                      <option value={'7'}>7 v 7</option>
+                      <option value={'6'}>6 v 6</option>
+                      <option value={'5'}>5 v 5</option>
+                      <option value={'4'}>4 v 4</option>
+                      <option value={'3'}>3 v 3</option>
+                    </select>
                     <div className='game-opt-btn-container'>
                       <button
                         className='btn btn-del-text'

@@ -12,6 +12,18 @@
   max-width: 90vw;
 }
 
+.game-setup select {
+  padding: 6px;
+}
+
+.game-setup select, .game-setup .btn-container {
+  width: 100%;
+}
+
+.btn-container > .player-input {
+  flex-grow: 3;
+}
+
 .rs-options-2 {
   display: flex;
   width: 100%;

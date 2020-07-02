@@ -33,7 +33,6 @@ import Team from './Components/Team';
 import Teams from './Components/Teams';
 
 // helper functions
-import { sortTeams } from './Utils/utils';
 import * as dbUtils from './Utils/dbUtils';
 import Profile from './Components/Profile';
 
@@ -80,14 +79,14 @@ function App() {
   const [currentGameTimeSecs, setCurrentGameTimeSecs] = useState(localStorage.getItem('curTimeSecs') || 0);
   const [currentPoint, setCurrentPoint] = useState(parseInt(localStorage.getItem('currentPoint')) || 1);
   const [currentPointLineUp, setCurrentPointLineUp] = useState(JSON.parse(localStorage.getItem('currentPointLineUp')) || []);
-  const [dbUser, setDbUser] = useState(JSON.parse(localStorage.getItem('dbUser')) || null);
+  const [dbUser, setDbUser] = useState(null);
   const [fetchedGames, setFetchedGames] = useState([]);
   const [gameOptions, setGameOptions] = useState({
     statTeam: '',
     jerseyColour: 'Light',
     startingOn: 'Offence',
     opponent: '',
-    gameFormat: { value: 7, label: `7 v 7` },
+    gameFormat: '7',
   });
   const [isMobile, setIsMobile] = useState(window.innerWidth < 600 ? true : false);
   const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
@@ -121,14 +120,9 @@ function App() {
     return () => window.removeEventListener('resize', updateIsMobile);
   })
 
-  // store ref of gameOptions
-  let gameOptionsRef = useRef(gameOptions);
-
   const loadUser = useCallback(() => {
     // get user from localStorage if loaded already
     if (localStorage.getItem('dbUser') !== 'null') {
-      let teams = JSON.parse(localStorage.getItem('dbUser')).teams;
-      resetTeamOptions(teams);
       return
     }
     // get the user from the db and load into state
@@ -140,7 +134,6 @@ function App() {
           let newDbUser = doc.data();
           setDbUser(newDbUser);
           console.log('User fetched from database')
-          resetTeamOptions(newDbUser.teams)
         } else {
           let newDbUser = {
             creationTime: user.metadata.creationTime,
@@ -158,11 +151,6 @@ function App() {
       })
       .catch(error => console.error('Error loading User', error))
   }, [user]);
-
-  // update team options when teams are edited
-  useEffect(() => {
-    if (dbUser) resetTeamOptions(dbUser.teams);
-  }, [dbUser])
 
   // listen for realtime updates to dbUser if loaded
   useEffect(() => {
@@ -195,6 +183,7 @@ function App() {
         localStorage.removeItem('dbUser');
         setUser(user);
         setDbUser(null);
+        setFetchedGames([]);
         setTeamOptions([]);
         setProfileMenuOpen(false);
         removeLocalGame();
@@ -258,20 +247,6 @@ function App() {
     localStorage.setItem('timerPaused', 'true');
     // reset the state variables
     resetGame();
-  }
-
-  const resetTeamOptions = (newTeams) => {
-    let newTeamOptions = [];
-    for (let team of Object.values(newTeams)) {
-      newTeamOptions.push({ value: team.name, label: team.name, teamID: team.teamID });
-    };
-    newTeamOptions.sort((a, b) => {
-      return sortTeams(a.value, b.value)
-    });
-    setTeamOptions(newTeamOptions);
-    let newGameOptions = { ...gameOptionsRef.current };
-    newGameOptions.statTeam = newTeamOptions[0];
-    setGameOptions(newGameOptions);
   }
 
   const resetGame = () => {
@@ -339,7 +314,6 @@ function App() {
                 currentGame={currentGame}
                 db={db}
                 dbUser={dbUser}
-                resetTeamOptions={resetTeamOptions}
                 setDbUser={setDbUser}
                 title='Teams'
               />
@@ -360,7 +334,6 @@ function App() {
                 currentGame={currentGame}
                 db={db}
                 dbUser={dbUser}
-                resetTeamOptions={resetTeamOptions}
                 setDbUser={setDbUser}
                 title='Edit Team'
               />

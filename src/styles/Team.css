@@ -24,7 +24,8 @@
 }
 
 .player-input {
-  margin: 0.25rem;
+  margin: 1rem 0;
+  padding: 6px;
 }
 
 .form-error {
@@ -101,14 +102,18 @@
 }
 
 .player-name-input {
-  flex: 0 1 280px;
+  flex: 3 1 0;
   margin: 0.25rem 0.5rem;
-  min-width: 5rem;
+  padding: 6px;
+  min-width: 0;
 }
 
 .player-num-input {
+  flex: 1 1 0px;
   width: 2.5rem;
   margin-left: 0.5rem;
+  padding: 6px;
+  min-width: 0;
 }
 
 .player-num-input::-webkit-inner-spin-button,

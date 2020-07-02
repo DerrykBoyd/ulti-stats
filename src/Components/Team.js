@@ -23,7 +23,7 @@ export default function Team(props) {
 
   const dbUser = props.dbUser;
   const currentEditTeam = useParams().teamID;
-  const teamExists = Object.keys(dbUser.teams).includes(currentEditTeam);
+  const teamExists = dbUser ? Object.keys(dbUser.teams).includes(currentEditTeam) : false;
 
   let history = useHistory();
 
@@ -55,8 +55,6 @@ export default function Team(props) {
       let newDbUser = { ...dbUser };
       delete newDbUser.teams[`${currentEditTeam}`];
       props.setDbUser(newDbUser);
-      // update the teamOptions and gameOptions
-      props.resetTeamOptions(newDbUser.teams);
       // update the DB
       dbUtils.delTeam(newDbUser.uid, currentEditTeam);
       // redirect to the teams page after delete

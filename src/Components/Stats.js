@@ -364,13 +364,13 @@ export default function Stats(props) {
       {!activePoint ?
         <>
           <div className='roster-list-header'>
-            {lineUp.length === currentGame.gameFormat.value ?
+            {lineUp.length === currentGame.gameFormat ?
               <button
                 className='btn btn-green'
                 onClick={startPoint}
               >{props.changingLineUp ? `Resume Point` : `Start Point`}</button>
               :
-              <h3>{`${lineUp.length} out of ${currentGame.gameFormat.value} players selected for ${props.isOffence ? 'Offence' : 'Defence'}`}</h3>
+              <h3>{`${lineUp.length} out of ${currentGame.gameFormat} players selected for ${props.isOffence ? 'Offence' : 'Defence'}`}</h3>
             }
           </div>
           <RosterList
