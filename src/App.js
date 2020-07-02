@@ -167,16 +167,21 @@ function App() {
   // listen for realtime updates to dbUser if loaded
   useEffect(() => {
     let updateUser = null;
-    if (dbUser) {
-      updateUser = db.collection('users').doc(dbUser.uid)
+    if (user) {
+      console.log('Adding snapshot listener')
+      updateUser = db.collection('users').doc(user.uid)
         .onSnapshot((doc) => {
+          console.log('firestore snapshot read')
           setDbUser(doc.data())
         })
     }
     return () => {
-      if (updateUser !== null) updateUser();
+      if (updateUser !== null) {
+        console.log('Removing snapshot listener')
+        updateUser();
+      }
     }
-  })
+  }, [user])
 
   useEffect(() => {
     // listen for auth state changes
