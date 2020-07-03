@@ -60,13 +60,17 @@ const uiConfig = {
     firebase.auth.EmailAuthProvider.PROVIDER_ID,
   ],
   credentialHelper: 'none',
-  signInFlow: 'redirect',
-  signInSuccessUrl: '/',
+  signInFlow: 'popup',
+  callbacks: {
+    // Avoid redirects after sign-in.
+    signInSuccessWithAuthResult: () => false
+  }
 }
 
 // Instantiate a Firebase app and database
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 export const db = firebaseApp.firestore();
+// enable the offline database capability
 db.enablePersistence()
   .then(() => console.log('Offline Database Active'))
   .catch(err => {
