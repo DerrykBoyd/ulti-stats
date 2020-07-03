@@ -7,12 +7,12 @@ import '../styles/Profile.css';
 
 export default function Profile(props) {
 
-  const OrigDispName = props.dbUser.name || '';
+  const OrigDispName = props.dbUser ? props.dbUser.name : '';
   const userURL = props.user.photoURL;
 
-  const [displayName, setDisplayName] = useState(props.dbUser.name);
+  const [displayName, setDisplayName] = useState(props.dbUser ? props.dbUser.name : '');
   const [isChanged, setIsChanged] = useState(false);
-  const [newProfile, setNewProfile] = useState(props.dbUser.profileURL);
+  const [newProfile, setNewProfile] = useState(props.dbUser ? props.dbUser.profileURL : '');
   const [profileURLs, setProfileURLs] = useState(JSON.parse(sessionStorage.getItem('profileURLs')) || [])
   const [urlsLoaded, setUrlsLoaded] = useState(false);
 
@@ -44,9 +44,11 @@ export default function Profile(props) {
 
   // update the dbUser details for remote changes
   useEffect(() => {
-    setDisplayName(props.dbUser.name);
-    setNewProfile(props.dbUser.profileURL);
-  }, [props.dbUser.name, props.dbUser.profileURL])
+    if (props.dbUser) {
+      setDisplayName(props.dbUser.name);
+      setNewProfile(props.dbUser.profileURL);
+    }
+  }, [props.dbUser])
 
   useEffect(() => {
     // get the profile URLs from the db if not in session storage
