@@ -62,7 +62,7 @@ export default function GameDetails(props) {
               </div>
               <div className='game-card-section'>
                 <span className='game-card-subtitle'>Game Format</span>
-                <span>{`${game.gameFormat}`}</span>
+                <span>{`${game.gameFormat} vs ${game.gameFormat}`}</span>
               </div>
               <span className='game-card-subtitle'>Final Score</span>
               <Scoreboard game={game} />
