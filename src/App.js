@@ -67,6 +67,15 @@ const uiConfig = {
 // Instantiate a Firebase app and database
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 export const db = firebaseApp.firestore();
+db.enablePersistence()
+  .then(() => console.log('Offline Database Active'))
+  .catch(err => {
+    if (err.code === 'failed-precondition') {
+      console.error('Multiple tabs open, persistence can only be enabled in one tab at a a time.', err)
+    } else if (err.code === 'unimplemented') {
+      console.error('The current browser does not support all of the features required to enable persistence', err)
+    }
+  })
 
 function App() {
 
