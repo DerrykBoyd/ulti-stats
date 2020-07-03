@@ -59,8 +59,9 @@ const uiConfig = {
     firebase.auth.FacebookAuthProvider.PROVIDER_ID,
     firebase.auth.EmailAuthProvider.PROVIDER_ID,
   ],
-  'credentialHelper': 'none',
-  'signInFlow': 'popup'
+  credentialHelper: 'none',
+  signInFlow: 'redirect',
+  signInSuccessUrl: '/',
 }
 
 // Instantiate a Firebase app and database
