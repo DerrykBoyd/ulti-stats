@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
 import { toast } from 'react-toastify';
 
-import { sortByName, sortOrderOptions } from '../Utils/utils';
+import { sortByName } from '../Utils/utils';
 
 import AddPlayerForm from './AddPlayerForm';
 import GameOptions from './GameOptions';
@@ -32,13 +31,6 @@ export default function Stats(props) {
   const timer = props.gameTimer;
   const timeStr = props.currentGameTime || '00:00';
   const timeSecs = props.currentGameTimeSecs || 0;
-
-  const rsStyles = {
-    container: (provided) => ({
-      ...provided,
-      'minWidth': '140px',
-    })
-  }
 
   // set state
   const [showAddPlayer, setShowAddPlayer] = useState(false);
@@ -209,9 +201,9 @@ export default function Stats(props) {
     return game;
   }
 
-  const handleSortChange = (newValue) => {
+  const handleSortChange = (e) => {
     let newDbUser = { ...dbUser };
-    newDbUser.teams[currentEditTeam].playerSortOrder = newValue.value;
+    newDbUser.teams[currentEditTeam].playerSortOrder = e.target.value;
     props.setDbUser(newDbUser);
   }
 
@@ -393,18 +385,19 @@ export default function Stats(props) {
               <div className='player-list-options'>
                 <button className='btn btn-primary' onClick={() => setShowAddPlayer(true)}>Add Player</button>
                 <div className='sort-select'>
-                  <span>Sort</span>
                   {dbUser && currentEditTeam &&
-                    <Select
-                      defaultValue={{
-                        value: dbUser.teams[currentEditTeam].playerSortOrder,
-                        label: dbUser.teams[currentEditTeam].playerSortOrder,
-                      }}
-                      isSearchable={false}
-                      onChange={handleSortChange}
-                      options={sortOrderOptions}
-                      styles={rsStyles}
-                    />
+                    <>
+                      <span>Sort</span>
+                      <select
+                        name='sort-select'
+                        value={dbUser.teams[currentEditTeam].playerSortOrder}
+                        onChange={handleSortChange}
+                      >
+                        <option value='Number'>Number</option>
+                        <option value='First Name'>First Name</option>
+                        <option value='Last Name'>Last Name</option>
+                      </select>
+                    </>
                   }
                 </div>
               </div>

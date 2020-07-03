@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
 
 // helper functions
 import * as dbUtils from '../Utils/dbUtils';
-import { sortOrderOptions } from '../Utils/utils';
 
 // Components
 import PlayerList from './PlayerList';
@@ -40,13 +38,6 @@ export default function Team(props) {
     props.setDbUser(newDbUser);
   }
 
-  const rsStyles = {
-    container: (provided) => ({
-      ...provided,
-      'minWidth': '140px',
-    })
-  }
-
   // helper functions
   const delTeam = (e) => {
     let teamName = dbUser.teams[`${currentEditTeam}`].name;
@@ -72,9 +63,9 @@ export default function Team(props) {
     }
   }
 
-  const handleSortChange = (newValue) => {
+  const handleSortChange = (e) => {
     let newDbUser = { ...dbUser };
-    newDbUser.teams[currentEditTeam].playerSortOrder = newValue.value;
+    newDbUser.teams[currentEditTeam].playerSortOrder = e.target.value;
     newDbUser.teams[currentEditTeam].unsavedChanges = true;
     props.setDbUser(newDbUser);
   }
@@ -129,16 +120,15 @@ export default function Team(props) {
                   <button className='btn btn-primary' onClick={() => setShowAddPlayer(true)}>Add Player</button>
                   <div className='sort-select'>
                     <span>Sort</span>
-                    <Select
-                      defaultValue={{
-                        value: dbUser.teams[currentEditTeam].playerSortOrder,
-                        label: dbUser.teams[currentEditTeam].playerSortOrder,
-                      }}
-                      isSearchable={false}
+                    <select
+                      name='sort-select'
+                      value={dbUser.teams[currentEditTeam].playerSortOrder}
                       onChange={handleSortChange}
-                      options={sortOrderOptions}
-                      styles={rsStyles}
-                    />
+                    >
+                      <option value='Number'>Number</option>
+                      <option value='First Name'>First Name</option>
+                      <option value='Last Name'>Last Name</option>
+                    </select>
                   </div>
                 </div>
               }
