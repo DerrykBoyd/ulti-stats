@@ -34,12 +34,12 @@
 }
 
 .home-screenshot-card {
-  display: flex;
   flex-basis: 500px;
   flex-grow: 1;
   max-width: 750px;
   margin: 0 1rem;
   padding: 1rem;
+  justify-content: center;
 }
 
 .home-btn-group {
