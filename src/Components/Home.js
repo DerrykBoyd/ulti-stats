@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+// components
+import Credits from './Credits';
+
 // styles
 import '../styles/Home.css';
 
@@ -24,22 +27,25 @@ export default function Home(props) {
     <div className={`App home-main`}>
       <>
         {user &&
-          <div className='home-btn-group'>
-            <Link
-              className='btn btn-primary'
-              to='/teams'>My Teams
-                                </Link>
-            <Link
-              className='btn btn-primary'
-              to='/games'>My Games
-                                </Link>
-            {(!localStorage.getItem('currentGame') || localStorage.getItem('currentGame') === 'null') &&
+          <>
+            <div className='home-btn-group'>
               <Link
-                className='btn btn-green'
-                to='/newgame'
-              >Start New Game</Link>
-            }
-          </div>
+                className='btn btn-primary'
+                to='/teams'>My Teams
+                                  </Link>
+              <Link
+                className='btn btn-primary'
+                to='/games'>My Games
+                                  </Link>
+              {(!localStorage.getItem('currentGame') || localStorage.getItem('currentGame') === 'null') &&
+                <Link
+                  className='btn btn-green'
+                  to='/newgame'
+                >Start New Game</Link>
+              }
+            </div>
+            <Credits />
+          </>
         }
         {!user &&
           <div className='home-no-login'>
@@ -52,6 +58,7 @@ export default function Home(props) {
               <div id="login-form" className="login-form">
                 <StyledFirebaseAuth uiConfig={props.uiConfig} firebaseAuth={props.firebaseApp.auth()} />
               </div>
+              <Credits />
             </div>
             <div className='card home-screenshot-card'>
               {props.isMobile ?
