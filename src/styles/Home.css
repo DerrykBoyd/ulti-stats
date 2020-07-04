@@ -63,13 +63,22 @@
 }
 
 .credits-nouser {
-  display: flex;
-  align-items: center;
   font-size: 1rem;
   margin: 0.5rem;
 }
 
 #github-link {
+  text-decoration: inherit;
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+
+#credit-text {
+  text-decoration: none;
+}
+
+#github-mark {
   margin: 0 0.5rem;
 }
 

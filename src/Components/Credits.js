@@ -7,11 +7,13 @@ const Credits = () => {
 
   return (
     <div className={`credits${loggedIn ? '-user' : '-nouser'}`}>
-      <span>Developed by dboydgit</span>
       <a href="https://github.com/dboydgit"
         target='_blank'
         rel='noopener noreferrer'
-        id='github-link'><img src={githubLogo} alt='github-progile-link' /></a>
+        id='github-link'>
+        <span id='credit-text'>Developed by dboydgit</span>
+        <img id="github-mark" src={githubLogo} alt='github-progile-link' />
+      </a>
     </div>
   );
 }
