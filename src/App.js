@@ -239,6 +239,13 @@ function App() {
 
   const finishGame = () => {
     let newGame = { ...currentGame };
+    newGame.endTime = currentGameTime;
+    newGame.endTimeSecs = currentGameTimeSecs;
+    if (activePoint) {
+      let lastPoint = Object.keys(newGame.pointHistory).pop();
+      newGame.pointHistory[lastPoint].end = currentGameTimeSecs;
+      newGame.pointHistory[lastPoint].scored = false;
+    }
     dbUtils.saveGame(newGame);
     let newGameList = fetchedGames ? [...fetchedGames] : [];
     newGameList.unshift(newGame);

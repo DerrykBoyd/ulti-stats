@@ -54,7 +54,7 @@ export default function GameDetails(props) {
               </div>
               <div className='game-card-section'>
                 <span className='game-card-subtitle'>Time Started</span>
-                <span>{`${gameDate.getHours()}:${gameDate.getMinutes()}`}</span>
+                <span>{`${gameDate.getHours().toString().padStart(2,0)}:${gameDate.getMinutes().toString().padStart(2,0)}`}</span>
               </div>
               <div className='game-card-section'>
                 <span className='game-card-subtitle'>Started on</span>
