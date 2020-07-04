@@ -88,7 +88,7 @@ function App() {
   const [activeTimeOut, setActiveTimeOut] = useState(localStorage.getItem('activeTimeOut') === 'true');
   const [currentGame, setCurrentGame] = useState(JSON.parse(localStorage.getItem('currentGame')) || null);
   const [changingLineUp, setChangingLineUp] = useState(localStorage.getItem('changingLineUp') === 'true');
-  const [confirmDel, setConfirmDel] = useState(false);
+  const [confirmFinish, setConfirmFinish] = useState(false);
   const [currentGameTime, setCurrentGameTime] = useState(localStorage.getItem('currentGameTime') || '00:00');
   const [currentGameTimeSecs, setCurrentGameTimeSecs] = useState(localStorage.getItem('curTimeSecs') || 0);
   const [currentPoint, setCurrentPoint] = useState(parseInt(localStorage.getItem('currentPoint')) || 1);
@@ -240,13 +240,11 @@ function App() {
   const finishGame = () => {
     let newGame = { ...currentGame };
     dbUtils.saveGame(newGame);
-    if (fetchedGames && fetchedGames.length) {
-      let newGameList = [...fetchedGames];
-      newGameList.unshift(newGame);
-      setFetchedGames(newGameList);
-    }
+    let newGameList = fetchedGames ? [...fetchedGames] : [];
+    newGameList.unshift(newGame);
+    setFetchedGames(newGameList);
     removeLocalGame();
-    setConfirmDel(false);
+    setConfirmFinish(false);
   }
 
   const removeLocalGame = () => {
@@ -290,10 +288,10 @@ function App() {
           firebaseApp={firebaseApp}
           setLogOutWarning={setLogOutWarning}
         />}
-      {confirmDel &&
+      {confirmFinish &&
         <FinishGameModal
           finishGame={finishGame}
-          setConfirmDel={setConfirmDel}
+          setConfirmFinish={setConfirmFinish}
         />}
       <Header
         currentGame={currentGame}
@@ -456,7 +454,7 @@ function App() {
                 setActivePoint={setActivePoint}
                 setActiveTimeOut={setActiveTimeOut}
                 setChangingLineUp={setChangingLineUp}
-                setConfirmDel={setConfirmDel}
+                setConfirmFinish={setConfirmFinish}
                 setCurrentGame={setCurrentGame}
                 setCurrentGameTime={setCurrentGameTime}
                 setCurrentPoint={setCurrentPoint}

@@ -104,7 +104,6 @@ export default function Stats(props) {
         toast.error('Throwaway can only be recorded following a touch');
         return;
       } else if (lastEntry.playerID !== player.playerID) {
-        console.log(lastEntry.player)
         toast.error(`Only player in possession can throwaway`);
         return;
       }
@@ -212,8 +211,6 @@ export default function Stats(props) {
     startTimer();
     // start point when roster confirmed (pull released)
     let newCurGame = { ...currentGame };
-    //check size of currentGame Object - REMOVE
-    console.log(JSON.stringify(newCurGame).length);
     // set active point to true
     props.setActivePoint(true);
     // record start of point in game history
@@ -345,7 +342,7 @@ export default function Stats(props) {
         finishGame={props.finishGame}
         gameTimer={props.gameTimer}
         setActiveTimeOut={props.setActiveTimeOut}
-        setConfirmDel={props.setConfirmDel}
+        setConfirmFinish={props.setConfirmFinish}
         setCurrentGame={props.setCurrentGame}
         setCurrentGameTime={props.setCurrentGameTime}
         setTimerPaused={setTimerPaused}

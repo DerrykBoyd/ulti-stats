@@ -15,12 +15,12 @@ export default function DelGameModal(props) {
           <div className='btn-container'>
             <button
               className='btn btn-del-text'
-              onClick={() => props.setConfirmDel(false)}
+              onClick={() => props.setConfirmFinish(false)}
             >Cancel</button>
             <button
               className='btn btn-green'
               onClick={() => {
-                props.finishGame();
+                props.finishGame()
                 history.push('/games');
               }}
             >Confirm & Save</button>
