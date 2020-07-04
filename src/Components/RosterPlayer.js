@@ -15,7 +15,6 @@ export default function RosterPlayer(props) {
     <div
       className={`player-list-item ${selected ? 'selected' : ''}`}
       onClick={() => {
-        console.log('clicked')
         props.togglePlayer(player, selected)
       }}
     >

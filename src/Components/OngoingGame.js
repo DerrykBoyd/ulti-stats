@@ -1,9 +1,12 @@
 import React from 'react'
 import { toast } from 'react-toastify';
+import { useHistory } from 'react-router-dom';
 
 export default function OngoingGame(props) {
 
   let undo = false;
+
+  let history = useHistory();
 
   const Undo = ({ closeToast }) => {
     const handleClick = () => {
@@ -27,7 +30,7 @@ export default function OngoingGame(props) {
           <span className='ongoing-game-title'>You have an ongoing game</span>
           <div className='btn-container'>
             <button className='btn btn-green og-btn' onClick={() => {
-              window.location.href = '/#/stats';
+              history.push('/stats');
             }}>Resume</button>
             <button className='btn btn-del og-btn' onClick={() => {
               props.setPendingDel(true);
