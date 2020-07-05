@@ -1,0 +1,31 @@
+.stat-table-title {
+  margin-bottom: 0.5rem;
+  color: var(--secondary);
+}
+
+.stat-table {
+  display: grid;
+  gap: 2px;
+  grid-template-columns: repeat(10, auto);
+  overflow-x: auto;
+}
+
+.st-header {
+  font-weight: bold;
+  padding: 4px 2px;
+  align-self: center;
+}
+
+.row {
+  padding: 4px 2px;
+}
+
+.row-even {
+  background-color: #eee;
+}
+
+@media screen and (max-width: 600px) {
+  .stat-table {
+    font-size: 10.5px;
+  }
+}

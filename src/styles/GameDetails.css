@@ -8,7 +8,7 @@
 .game-details-card {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 .game-card-section {
@@ -16,7 +16,6 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  ;
 }
 
 .game-card-title {
@@ -33,24 +32,5 @@
 @media (min-width:616px) {
   .player-stats {
     grid-column: span 2;
-  }
-}
-
-.stat-table-title {
-  margin-bottom: 0.5rem;
-  color: var(--secondary);
-}
-
-.stat-table td {
-  padding: 4px 2px;
-}
-
-.stat-table tr:nth-child(even) {
-  background-color: #eee;
-}
-
-@media screen and (max-width: 450px) {
-  .stat-table {
-    font-size: 10.5px;
   }
 }

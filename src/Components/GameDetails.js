@@ -4,7 +4,6 @@ import { useParams, Redirect } from 'react-router-dom'
 import '../styles/GameDetails.css';
 import Scoreboard from './Scoreboard';
 import StatTable from './StatTable';
-import StatTableMobile from './StatTableMobile';
 
 export default function GameDetails(props) {
 
@@ -54,7 +53,7 @@ export default function GameDetails(props) {
               </div>
               <div className='game-card-section'>
                 <span className='game-card-subtitle'>Time Started</span>
-                <span>{`${gameDate.getHours().toString().padStart(2,0)}:${gameDate.getMinutes().toString().padStart(2,0)}`}</span>
+                <span>{`${gameDate.getHours().toString().padStart(2, 0)}:${gameDate.getMinutes().toString().padStart(2, 0)}`}</span>
               </div>
               <div className='game-card-section'>
                 <span className='game-card-subtitle'>Started on</span>
@@ -97,15 +96,9 @@ export default function GameDetails(props) {
             <div className='player-stats game-details-card card'>
               <h4 className='game-card-title play-title'>Player Stats</h4>
               <span className='stat-table-title'>Touch headers to sort</span>
-              {props.isMobile ?
-                <StatTableMobile stats={Object.values(game.playerStats).sort((a, b) => {
-                  return a.number - b.number;
-                })} />
-                :
-                <StatTable stats={Object.values(game.playerStats).sort((a, b) => {
-                  return a.number - b.number;
-                })} />
-              }
+              <StatTable stats={Object.values(game.playerStats).sort((a, b) => {
+                return a.number - b.number;
+              })} />
             </div>
           </div>
         </>

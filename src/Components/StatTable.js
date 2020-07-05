@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react'
 import { useTable, useSortBy } from 'react-table';
 
+import '../styles/StatTable.css';
+
 export default function StatTable(props) {
 
   const columns = useMemo(() => [
@@ -18,7 +20,7 @@ export default function StatTable(props) {
 
   const data = useMemo(() => props.stats, [props.stats])
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+  const { getTableProps, headerGroups, rows, prepareRow } = useTable(
     {
       columns,
       data,
@@ -28,45 +30,37 @@ export default function StatTable(props) {
 
   return (
     <>
-      <table className='stat-table' {...getTableProps()}>
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                // Add the sorting props to control sorting. For this example
-                // we can add them into the header props
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render('Header')}
-                  {/* Add a sort direction indicator */}
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? <i className="material-icons md-18">arrow_drop_down</i>
-                        : <i className="material-icons md-18">arrow_drop_up</i>
-                      : ''}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map(
-            (row, i) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map(cell => {
-                    return (
-                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                    )
-                  })}
-                </tr>
-              )
-            }
-          )}
-        </tbody>
-      </table>
+      <div className='stat-table' {...getTableProps()}>
+        {headerGroups.map(headerGroup => (
+          headerGroup.headers.map(column => (
+            // Add the sorting props to control sorting. For this example
+            // we can add them into the header props
+            <div className='st-header' {...column.getHeaderProps(column.getSortByToggleProps())}>
+              {column.render('Header')}
+              {/* Add a sort direction indicator */}
+              <span>
+                {column.isSorted
+                  ? column.isSortedDesc
+                    ? <i className="material-icons md-18">arrow_drop_down</i>
+                    : <i className="material-icons md-18">arrow_drop_up</i>
+                  : ''}
+              </span>
+            </div>
+          ))
+        ))}
+        {rows.map(
+          (row, y) => {
+            prepareRow(row);
+            return (
+              row.cells.map((cell, x) => {
+                return (
+                  <div className={`row ${y % 2 ? 'row-odd' : 'row-even'} col-${x}`} {...cell.getCellProps()}>{cell.render('Cell')}</div>
+                )
+              })
+            )
+          }
+        )}
+      </div>
     </>
   )
 }
