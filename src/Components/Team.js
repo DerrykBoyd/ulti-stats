@@ -14,23 +14,40 @@ import { toast } from 'react-toastify';
 
 export default function Team(props) {
 
+  const dbUser = props.dbUser;
+  const currentEditTeam = useParams().teamID;
+
+  let history = useHistory();
+
+  // set state
+  const [formError, setFormError] = useState({ message: '' });
+  const [newTeamName, setNewTeamName] = useState('');
+  const [noTeamFound, setNoTeamFound] = useState(false);
+
+  const teamExists = dbUser && dbUser.teams[currentEditTeam];
+  const unsavedChanges = teamExists ? dbUser.teams[currentEditTeam].unsavedChanges : null;
+
   // set the page title
   useEffect(() => {
     document.title = `Ultimate Stats - ${props.title}`
   }, [props.title])
 
-  const dbUser = props.dbUser;
-  const currentEditTeam = useParams().teamID;
-  const teamExists = dbUser ? Object.keys(dbUser.teams).includes(currentEditTeam) : false;
+  // set the team name
+  useEffect(() => {
+    if (teamExists) {
+      setNewTeamName(dbUser.teams[currentEditTeam].name);
+    }
+  }, [dbUser, currentEditTeam, teamExists])
 
-  let history = useHistory();
-
-  // set state
-  const [showAddPlayer, setShowAddPlayer] = useState(false);
-  const [formError, setFormError] = useState({ message: '' });
-  const [newTeamName, setNewTeamName] = useState(teamExists ? dbUser.teams[currentEditTeam].name : '');
-
-  const unsavedChanges = teamExists ? dbUser.teams[currentEditTeam].unsavedChanges : null;
+  // change state if no team found
+  useEffect(() => {
+    if (dbUser) {
+      if (!Object.keys(dbUser.teams).includes(currentEditTeam)) {
+        setNoTeamFound(true);
+        toast.error('Team not found');
+      }
+    }
+  }, [dbUser, currentEditTeam])
 
   const setUnsaved = (value) => {
     let newDbUser = { ...dbUser };
@@ -42,14 +59,13 @@ export default function Team(props) {
   const delTeam = (e) => {
     let teamName = dbUser.teams[`${currentEditTeam}`].name;
     if (window.confirm(`Delete Team (${teamName})?`)) {
+      history.push('/teams');
       // remove team from state
       let newDbUser = { ...dbUser };
       delete newDbUser.teams[`${currentEditTeam}`];
       props.setDbUser(newDbUser);
       // update the DB
       dbUtils.delTeam(newDbUser.uid, currentEditTeam);
-      // redirect to the teams page after delete
-      window.location.href = '/#/teams';
     }
   }
 
@@ -89,9 +105,9 @@ export default function Team(props) {
 
   return (
     <>
-      {teamExists ?
+      {!noTeamFound ?
         <div className={`App App-flex btm-nav-page ${props.currentGame ? 'pad-btm-alert' : ''}`}>
-          {dbUser &&
+          {dbUser && dbUser.teams[currentEditTeam] &&
             <>
               <div className='team-title-container'>
                 <input
@@ -108,31 +124,28 @@ export default function Team(props) {
                 <button className='btn btn-primary' onClick={() => history.goBack()}>Back</button>
               </div>
               <h2>Team Roster</h2>
-              {showAddPlayer ?
+
+              <div className='player-list-options'>
+                <div className='sort-select'>
+                  <span>Sort</span>
+                  <select
+                    name='sort-select'
+                    value={dbUser.teams[currentEditTeam].playerSortOrder}
+                    onChange={handleSortChange}
+                  >
+                    <option value='Number'>Number</option>
+                    <option value='First Name'>First Name</option>
+                    <option value='Last Name'>Last Name</option>
+                  </select>
+                </div>
+              </div>
+              <div className='player-list'>
+                <h4 id='add-player-header'>Add a new player</h4>
                 <AddPlayerForm
                   currentEditTeam={currentEditTeam}
                   dbUser={dbUser}
                   setDbUser={props.setDbUser}
-                  setShowAddPlayer={setShowAddPlayer}
                 />
-                :
-                <div className='player-list-options'>
-                  <button className='btn btn-primary' onClick={() => setShowAddPlayer(true)}>Add Player</button>
-                  <div className='sort-select'>
-                    <span>Sort</span>
-                    <select
-                      name='sort-select'
-                      value={dbUser.teams[currentEditTeam].playerSortOrder}
-                      onChange={handleSortChange}
-                    >
-                      <option value='Number'>Number</option>
-                      <option value='First Name'>First Name</option>
-                      <option value='Last Name'>Last Name</option>
-                    </select>
-                  </div>
-                </div>
-              }
-              <div className='player-list'>
                 <div className='player-list-item player-list-headers'>
                   <div className='player-num-header'>##</div>
                   <div className='player-name-header'>First Name</div>

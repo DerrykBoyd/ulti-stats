@@ -14,8 +14,7 @@ export default function AddPlayerForm(props) {
     type: '',
   })
 
-  const addPlayer = (e) => {
-    e.preventDefault();
+  const addPlayer = () => {
     // reset the error messages
     resetFormError();
     let newFormError = { ...formError };
@@ -64,7 +63,7 @@ export default function AddPlayerForm(props) {
     setNewPlayerFirstName('');
     setNewPlayerLastName('');
     setNewPlayerNumber('');
-    props.setShowAddPlayer(false);
+    document.getElementById('player-num-input').focus();
   }
 
   const handleInputChange = (e) => {
@@ -89,20 +88,30 @@ export default function AddPlayerForm(props) {
   }
 
   return (
-    <div className='add-player-form'>
-      <input type='number' className='player-input player-num-input' placeholder='##' name='player-number' onChange={handleInputChange} value={newPlayerNumber} />
-      <input className='player-input' name='player-first-name' placeholder='First Name' onChange={handleInputChange} value={newPlayerFirstName} />
-      <input className='player-input' name='player-last-name' placeholder='Last Name' onChange={handleInputChange} value={newPlayerLastName} />
-      {formError.type === 'addPlayer' &&
+    <>
+      <div className='add-player-form'>
+        <form>
+          <input type='number' id='player-num-input' className='player-input player-num-input' placeholder='##' name='player-number' onChange={handleInputChange} value={newPlayerNumber} />
+          <input className='player-input' name='player-first-name' placeholder='First Name' onChange={handleInputChange} value={newPlayerFirstName} />
+          <input
+            className='player-input'
+            name='player-last-name'
+            placeholder='Last Name'
+            onChange={handleInputChange}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                addPlayer();
+              }
+            }}
+            value={newPlayerLastName}
+          />
+        </form>
+        <button className='btn btn-primary-text' onClick={addPlayer}>Add</button>
+      </div>
+      {
+        formError.type === 'addPlayer' &&
         <div className='form-error'>{formError.message}</div>
       }
-      <div className='add-player-btns btn-container'>
-        <button className='btn btn-del-text nmt' onClick={() => {
-          props.setShowAddPlayer(false);
-          resetFormError();
-        }}>Cancel</button>
-        <button type='submit' className='btn btn-primary-text' onClick={addPlayer}>Submit</button>
-      </div>
-    </div>
+    </>
   )
 }

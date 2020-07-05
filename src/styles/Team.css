@@ -17,14 +17,23 @@
   margin: 1rem;
 }
 
+#add-player-header {
+  color: var(--text-dark-med);
+  margin: 0.5rem;
+}
+
 .add-player-form {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
 .player-input {
-  margin: 1rem 0;
+  flex: 3 1 0px;
+  margin: 0.5rem;
   padding: 6px;
 }
 
@@ -53,7 +62,7 @@
 
 .player-list {
   width: 100vw;
-  max-width: 600px;
+  max-width: 800px;
   padding: 0.5rem 0;
 }
 
@@ -72,11 +81,11 @@
 }
 
 .player-num-header {
-  flex: 0 0 2.5rem;
+  flex: 1 1 2.5rem;
 }
 
 .player-name-header {
-  flex: 0 1 280px;
+  flex: 3 1 280px;
 }
 
 .i-placeholder {

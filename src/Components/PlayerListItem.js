@@ -55,7 +55,7 @@ export default function PlayerListItem(props) {
     setNewNumber(props.player.number);
     setNewFirstName(props.player.firstName);
     setNewLastName(props.player.lastName);
-    setPlayerFormError({message: ''})
+    setPlayerFormError({ message: '' })
   }
 
   const updatePlayer = (playerID) => {
@@ -124,18 +124,18 @@ export default function PlayerListItem(props) {
               }}
             >Delete</button>
             <button
-              className='btn btn-primary-text'
-              onClick={() => {
-                updatePlayer(props.player.playerID);
-              }}
-            >Done</button>
-            <button
               className='btn btn-del-text'
               onClick={() => {
                 setEditing(false);
                 resetForm();
               }}
             >Cancel</button>
+            <button
+              className='btn btn-primary-text'
+              onClick={() => {
+                updatePlayer(props.player.playerID);
+              }}
+            >Done</button>
           </div>
         </div>
       }
