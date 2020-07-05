@@ -222,6 +222,11 @@ function App() {
   }, [user])
 
   useEffect(() => {
+    // show toast for successful update
+    if (localStorage.getItem('serviceWorkerUpdated') === 'true') {
+      toast.success('Site Updated');
+      localStorage.setItem('serviceWorkerUpdated', 'false');
+    }
     // listen for auth state changes
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(user => {
       if (user) {

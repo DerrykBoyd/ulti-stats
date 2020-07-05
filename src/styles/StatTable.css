@@ -27,5 +27,9 @@
 @media screen and (max-width: 600px) {
   .stat-table {
     font-size: 10.5px;
+    grid-template-columns: repeat(9, auto);
+  }
+  .first-name {
+    display: none;
   }
 }

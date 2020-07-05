@@ -8,6 +8,7 @@ export default function ServiceWorkerToast(props) {
       registrationWaiting.postMessage({ type: 'SKIP_WAITING' });
       registrationWaiting.addEventListener('statechange', e => {
         if (e.target.state === 'activated') {
+          localStorage.setItem('serviceWorkerUpdated', 'true');
           window.location.reload();
         }
       });
