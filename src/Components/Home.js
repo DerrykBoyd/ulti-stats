@@ -43,6 +43,7 @@ export default function Home(props) {
                   to='/newgame'
                 >Start New Game</Link>
               }
+              <div>{process.env.REACT_APP_TEST}</div>
             </div>
             <Credits />
           </>

@@ -43,14 +43,14 @@ const Slide = cssTransition({
 })
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBqJvH9x13wUFJhaBjCqkxUPesQ7Fm0YXg",
-  authDomain: "ultimate-stats-3bdf2.firebaseapp.com",
-  databaseURL: "https://ultimate-stats-3bdf2.firebaseio.com",
-  projectId: "ultimate-stats-3bdf2",
-  storageBucket: "ultimate-stats-3bdf2.appspot.com",
-  messagingSenderId: "499792401385",
-  appId: "1:499792401385:web:2336eacc08c88a3fb8b178",
-  measurementId: "G-ZSK5SCD0YF"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DB_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MSG_SEND_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 const uiConfig = {
