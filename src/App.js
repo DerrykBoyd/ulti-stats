@@ -1,4 +1,3 @@
-// React
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   HashRouter as Router,
@@ -8,6 +7,7 @@ import {
 } from "react-router-dom";
 import { ToastContainer, cssTransition, toast } from 'react-toastify';
 import Timer from 'easytimer.js';
+import * as serviceWorker from './serviceWorker';
 
 // Firebase
 import firebase from 'firebase/app';
@@ -18,6 +18,7 @@ import 'firebase/firestore';
 import 'react-toastify/dist/ReactToastify.css';
 import './styles/App.css';
 import './styles/Modal.css';
+import './styles/Toast.css';
 
 // Components
 import FinishGameModal from './Components/FinishGameModal';
@@ -35,6 +36,7 @@ import Teams from './Components/Teams';
 // helper functions
 import * as dbUtils from './Utils/dbUtils';
 import Profile from './Components/Profile';
+import ServiceWorkerToast from './Components/Toasts/ServiceWorkerToast';
 
 const Slide = cssTransition({
   enter: 'toast-in',
@@ -109,8 +111,42 @@ function App() {
   const [pendingDel, setPendingDel] = useState(false);
   const [prevEntry, setPrevEntry] = useState(JSON.parse(localStorage.getItem('prevEntry')) || {});
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [serviceWorkerInit, setServiceWorkerInit] = useState(false);
+  const [serviceWorkerReg, setServiceWorkerReg] = useState(null);
   const [teamOptions, setTeamOptions] = useState([]);
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
+
+  // If you want your app to work offline and load faster, you can change
+  // unregister() to register() below. Note this comes with some pitfalls.
+  // Learn more about service workers: https://bit.ly/CRA-PWA
+  serviceWorker.register({
+    onSuccess: () => setServiceWorkerInit(true),
+    onUpdate: reg => {
+      setServiceWorkerReg(reg);
+    },
+  });
+
+  // show service worker toast on first install
+  useEffect(() => {
+    if (serviceWorkerInit) {
+      toast.success('App available for offline use.')
+    }
+  }, [serviceWorkerInit]);
+
+  // allow user to update site when service worker changes and no active game
+  useEffect(() => {
+    if (!currentGame && serviceWorkerReg && serviceWorkerReg.waiting) {
+      toast.info(
+        <ServiceWorkerToast
+          serviceWorkerReg={serviceWorkerReg}
+        />,
+        {
+          closeOnClick: false,
+          autoClose: false
+        }
+      );
+    }
+  }, [currentGame, serviceWorkerReg])
 
   const gameTimer = useRef(new Timer({
     callback: (timer) => {
