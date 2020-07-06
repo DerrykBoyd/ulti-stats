@@ -1,5 +1,6 @@
 import React from 'react';
 import Scoreboard from './Scoreboard';
+import { useHistory } from 'react-router-dom';
 
 export default function GameOptions(props) {
 
@@ -8,6 +9,8 @@ export default function GameOptions(props) {
   let timer = props.gameTimer;
   let timerPaused = props.timerPaused;
   let setTimerPaused = props.setTimerPaused;
+
+  let history = useHistory();
 
   return (
     <div className='game-options'>
@@ -27,16 +30,9 @@ export default function GameOptions(props) {
           onClick={props.undoAction}
         >Undo<span className='material-icons md-18'>undo</span></button>
       </div>
-      
+
       <div className='timer-controls'>
-        {!currentGame.started && timerPaused ?
-          <button className='btn btn-del' onClick={() => {
-            props.setCurrentGameTime('00:00');
-            localStorage.setItem('currentGameTime', '00:00');
-            props.addTimerEntry('timer-reset');
-          }}>Reset Time</button>
-          :
-          <button className='btn btn-inactive'>Reset Time</button>}
+        <button className='btn' onClick={() => history.push('/')}>Exit Game</button>
         <h1 className='game-clock'>{`${timeStr}`}</h1>
         <button className={`btn`} onClick={() => {
           if (timer.isRunning()) {

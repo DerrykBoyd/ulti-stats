@@ -37,8 +37,3 @@ h1, h2 {
 .Toastify__toast {
   margin-bottom: 0;
 }
-
-.Toastify__toast-container--top-right {
-  top: 0.5em;
-  right: 0.5em;
-}

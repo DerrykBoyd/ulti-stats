@@ -475,11 +475,21 @@ function App() {
         </Route>
         <Route path='/profile' exact>
           {localStorage.getItem('user') ?
-            <Profile
-              dbUser={dbUser}
-              setDbUser={setDbUser}
-              user={user}
-            /> :
+            <>
+              <Profile
+                dbUser={dbUser}
+                setDbUser={setDbUser}
+                user={user}
+              />
+              <OngoingGame
+                currentGame={currentGame}
+                pendingDel={pendingDel}
+                removeLocalGame={removeLocalGame}
+                resetGame={resetGame}
+                setPendingDel={setPendingDel}
+              />
+            </>
+            :
             <Redirect to='/' />
           }
         </Route>
