@@ -12,8 +12,8 @@ export default function Header(props) {
   // check for mouseClick outside of profile menu to close
   const profileMenu = useRef();
   const profileImg = useRef();
-  useEffect(() => {
 
+  useEffect(() => {
     function handleClick(e) {
       if (profileMenuOpen &&
         (profileMenu.current.contains(e.target) || profileImg.current.contains(e.target))) {

@@ -16,6 +16,34 @@
   width: 100%;
 }
 
+#opponent-input {
+  width: calc(100% - 12px);
+  padding: 4px 6px;
+  text-align: left;
+}
+
+.input-filter {
+  margin: 0;
+  width: calc(100vw - 3rem);
+  max-width: calc(480px - 1rem);
+  max-height: 200px;
+  overflow: auto;
+}
+
+.filtered-opp {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 2rem;
+  padding: 0 0.5rem;
+}
+
+.filtered-opp:hover {
+  background-color: var(--primary-select);
+  cursor: pointer;
+}
+
 .btn-container > .player-input {
   flex-grow: 3;
 }

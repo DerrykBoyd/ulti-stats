@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { v4 as uuid } from 'uuid';
 
@@ -11,15 +11,35 @@ import { Redirect, useHistory } from 'react-router-dom';
 
 export default function NewGame(props) {
 
+  // set state
+  const [formErr, setFormErr] = useState({});
+  const [filteredOpponents, setFilteredOpponents] = useState([]);
+  const [renderFilter, setRenderFilter] = useState(false);
+
   // set the page title
   useEffect(() => {
     document.title = `Ultimate Stats - ${props.title}`
   }, [props.title])
 
-  // set state
-  const [formErr, setFormErr] = useState({});
-  const [newOpp, setNewOpp] = useState('');
-  const [showAddOpp, setShowAddOpp] = useState(false);
+  // check for mouseClick outside of profile menu to close
+  const filterList = useRef();
+  const oppInput = useRef();
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (renderFilter && filterList.current &&
+          (filterList.current.contains(e.target) || oppInput.current.contains(e.target))) {
+        return;
+      }
+      else setRenderFilter(false);
+    }
+
+    document.addEventListener('mousedown', handleClick)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+    }
+  })
 
   const dbUser = props.dbUser;
   const gameOptions = props.gameOptions;
@@ -27,6 +47,16 @@ export default function NewGame(props) {
   const setGameOptions = props.setGameOptions;
 
   let history = useHistory();
+
+  // update the filtered opponents on state change
+  useEffect(() => {
+    if (!dbUser || !gameOptions ) return;
+    let options = { ...gameOptions };
+    let newFiltered = [...dbUser.opponents].filter(opp => {
+      return opp.toLowerCase().includes(options.opponent.toLowerCase())
+    }).sort();
+    setFilteredOpponents(newFiltered);
+  }, [gameOptions, dbUser])
 
   const createGame = () => {
     if (!gameOptions.statTeam) {
@@ -39,10 +69,11 @@ export default function NewGame(props) {
     if (!gameOptions.opponent) {
       setFormErr({
         type: 'opponent',
-        message: 'Please select an opponent',
+        message: 'Please set an opponent',
       })
       return;
     }
+    addOpp();
     let isOffence = false;
     if (gameOptions.startingOn === 'Offence') isOffence = true;
     props.setIsOffence(isOffence);
@@ -98,15 +129,23 @@ export default function NewGame(props) {
   const addOpp = () => {
     // add to state
     let newDbUser = { ...dbUser };
-    newDbUser.opponents.push(newOpp);
+    newDbUser.opponents.indexOf(gameOptions.opponent) === -1 ?
+      newDbUser.opponents.push(gameOptions.opponent)
+      :
+      console.log('Opponent already exists');
     props.setDbUser(newDbUser);
-    let newGameOptions = { ...gameOptions };
-    newGameOptions.opponent = newOpp;
-    setGameOptions(newGameOptions);
     // update the database
-    dbUtils.addOpponent(dbUser.uid, newOpp)
-    setNewOpp('');
-    setShowAddOpp(false);
+    dbUtils.addOpponent(dbUser.uid, gameOptions.opponent)
+  }
+
+  function showFilter() {
+    setRenderFilter(true);
+  }
+
+  function setOpp(name) {
+    let newGameOptions = { ...gameOptions };
+    newGameOptions.opponent = name;
+    setGameOptions(newGameOptions);
   }
 
   return (
@@ -117,7 +156,6 @@ export default function NewGame(props) {
         <div className='App'>
           {props.dbUser &&
             <div className='new-game-main btm-nav-page'>
-              <h2>Game Setup</h2>
               <div className='game-setup'>
                 {isTeams ?
                   <>
@@ -146,50 +184,40 @@ export default function NewGame(props) {
                     </select>
                     {formErr.type === 'team' && <div className='form-error'>{formErr.message}</div>}
                     <h4 className='rs-title'>Opponent</h4>
-                    <select
+                    <input
                       value={gameOptions.opponent}
-                      name='opponent-select'
-                      id='opponent-select'
+                      ref={oppInput}
+                      name='opponent-input'
+                      id='opponent-input'
+                      autoComplete="off"
+                      onFocus={showFilter}
                       onChange={e => {
-                        let newGameOptions = { ...gameOptions };
-                        newGameOptions.opponent = e.target.value;
-                        setGameOptions(newGameOptions);
+                        setOpp(e.target.value);
+                        setRenderFilter(true);
                       }}
-                    >
-                      <option value=''></option>
-                      {dbUser.opponents.map(opponent => {
-                        return (
-                          <option
-                            value={opponent}
-                            key={`opponent ${opponent}`}
-                          >{opponent}</option>
-                        )
-                      })}
-                    </select>
-                    {showAddOpp ?
-                      <div className='btn-container'>
-                        <input
-                          className='player-input'
-                          value={newOpp}
-                          onChange={e => {
-                            setNewOpp(e.target.value);
-                          }}
-                        ></input>
-                        <button
-                          className='btn btn-green-text'
-                          onClick={addOpp}
-                        >Add</button>
-                        <button
-                          className='btn btn-del-text'
-                          onClick={() => setShowAddOpp(false)}
-                        >Cancel</button>
-                      </div>
-                      :
-                      <div className='btn-container'>
-                        <button
-                          className='btn'
-                          onClick={() => setShowAddOpp(true)}
-                        >Add Opponent</button>
+                      onKeyDown={e => {
+                        if (e.key === 'Tab' || e.key === 'Enter') {
+                          setRenderFilter(false);
+                        }
+                      }}
+                    ></input>
+                    {renderFilter && filteredOpponents.length > 0 &&
+                      <div ref={filterList} className='card input-filter'>
+                        {
+                          filteredOpponents.map((opp) => {
+                            return (
+                              <div
+                                key={opp}
+                                name={opp}
+                                className='filtered-opp'
+                                onClick={e => {
+                                  setOpp(e.target.getAttribute('name'))
+                                  setRenderFilter(false);
+                                }}
+                              >{opp}</div>
+                            )
+                          })
+                        }
                       </div>
                     }
                     {formErr.type === 'opponent' && <div className='form-error'>{formErr.message}</div>}
