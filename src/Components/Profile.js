@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-import { db } from '../App';
 import { updateUser } from '../Utils/dbUtils';
 
 import '../styles/Profile.css';
@@ -9,12 +8,11 @@ export default function Profile(props) {
 
   const OrigDispName = props.dbUser ? props.dbUser.name : '';
   const userURL = props.user.photoURL;
+  const profileURLs = importAll(require.context('../assets/profile-avatars', false, /\.(png|jpe?g|svg)$/))
 
   const [displayName, setDisplayName] = useState(props.dbUser ? props.dbUser.name : '');
   const [isChanged, setIsChanged] = useState(false);
   const [newProfile, setNewProfile] = useState(props.dbUser ? props.dbUser.profileURL : '');
-  const [profileURLs, setProfileURLs] = useState(JSON.parse(sessionStorage.getItem('profileURLs')) || [])
-  const [urlsLoaded, setUrlsLoaded] = useState(false);
 
   const updateChanged = (name, profile) => {
     setIsChanged(OrigDispName !== name ||
@@ -27,7 +25,7 @@ export default function Profile(props) {
   }
 
   const handleImgClick = (e) => {
-    setNewProfile(e.target.src);
+    setNewProfile(e.target.name);
     updateChanged(displayName, e.target.src);
   }
 
@@ -42,6 +40,12 @@ export default function Profile(props) {
     setIsChanged(false);
   }
 
+  function importAll(r) {
+    let images = {};
+    r.keys().forEach((item, index) => { images[item.replace('./', '')] = r(item); });
+    return images;
+  }
+
   // update the dbUser details for remote changes
   useEffect(() => {
     if (props.dbUser) {
@@ -49,23 +53,6 @@ export default function Profile(props) {
       setNewProfile(props.dbUser.profileURL);
     }
   }, [props.dbUser])
-
-  useEffect(() => {
-    // get the profile URLs from the db if not in session storage
-    if (profileURLs && !profileURLs.length) {
-      db.collection('public').doc('settings')
-        .get()
-        .then(doc => {
-          let urlArr = doc.data().defaultProfileURLs;
-          setProfileURLs(urlArr);
-          sessionStorage.setItem('profileURLs', JSON.stringify(urlArr))
-          setUrlsLoaded(true);
-        })
-        .catch(e => console.log('Error getting profile URLs', e))
-    } else {
-      setUrlsLoaded(true);
-    }
-  }, [profileURLs])
 
   return (
     <div className='App btm-nav-page'>
@@ -95,25 +82,23 @@ export default function Profile(props) {
             <img
               className={`profile-display ${userURL === newProfile ? 'img-selected' : ''}`}
               src={userURL}
+              name={userURL}
               alt='default profile'
               onClick={handleImgClick}
             >
             </img>}
-          {urlsLoaded ?
-            profileURLs.map(url => {
+            {Object.values(profileURLs).map(url => {
               return (
                 <img
                   className={`profile-display ${url === newProfile ? 'img-selected' : ''}`}
                   key={url}
                   src={url}
+                  name={url}
                   alt='default profile'
                   onClick={handleImgClick}
                 >
                 </img>)
-            })
-            :
-            <div className="img-loader"></div>
-          }
+            })}
         </div>
         <div>Profile avatars by <a
           href="https://www.flaticon.com/authors/freepik"
