@@ -104,6 +104,7 @@ function App() {
     opponent: '',
     gameFormat: '7',
   });
+  const [gameStateHistory, setGameStateHistory] = useState(JSON.parse(localStorage.getItem('gameStateHistory')) || []);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 600 ? true : false);
   const [isOffence, setIsOffence] = useState(localStorage.getItem('isOffence') === 'true');
   const [lastGameDoc, setLastGameDoc] = useState(null);
@@ -264,6 +265,7 @@ function App() {
     localStorage.setItem('currentPoint', currentPoint);
     localStorage.setItem('currentPointLineUp', JSON.stringify(currentPointLineUp));
     localStorage.setItem('dbUser', JSON.stringify(dbUser));
+    localStorage.setItem('gameStateHistory', JSON.stringify(gameStateHistory))
     localStorage.setItem('isOffence', isOffence);
     localStorage.setItem('prevEntry', JSON.stringify(prevEntry));
   }, [
@@ -274,6 +276,7 @@ function App() {
     currentPoint,
     currentPointLineUp,
     dbUser,
+    gameStateHistory,
     isOffence,
     prevEntry,
   ]);
@@ -303,6 +306,7 @@ function App() {
     localStorage.removeItem('currentGameTime');
     localStorage.removeItem('currentPoint');
     localStorage.removeItem('curTimeSecs');
+    localStorage.removeItem('gameStateHistory');
     localStorage.removeItem('prevLineUp');
     localStorage.setItem('timerPaused', 'true');
     // reset the state variables
@@ -316,6 +320,7 @@ function App() {
     setCurrentGameTime('00:00');
     setCurrentPoint(1);
     setCurrentPointLineUp([]);
+    setGameStateHistory([]);
     setLogOutWarning(false);
     setPrevEntry({});
     setChangingLineUp(false);
@@ -328,7 +333,6 @@ function App() {
         draggable={false}
         hideProgressBar
         newestOnTop={false}
-        position='top-right'
         transition={Slide}
       />
       {logOutWarning &&
@@ -491,14 +495,12 @@ function App() {
                 currentGameTimeSecs={currentGameTimeSecs}
                 currentPoint={currentPoint}
                 currentPointLineUp={currentPointLineUp}
-                fetchedGames={fetchedGames}
-                finishGame={finishGame}
-                gameTimer={gameTimer.current}
-                db={db}
                 dbUser={dbUser}
+                finishGame={finishGame}
+                gameStateHistory={gameStateHistory}
+                gameTimer={gameTimer.current}
                 isOffence={isOffence}
                 prevEntry={prevEntry}
-                removeLocalGame={removeLocalGame}
                 setActivePoint={setActivePoint}
                 setActiveTimeOut={setActiveTimeOut}
                 setChangingLineUp={setChangingLineUp}
@@ -509,6 +511,7 @@ function App() {
                 setCurrentPointLineUp={setCurrentPointLineUp}
                 setDbUser={setDbUser}
                 setFetchedGames={setFetchedGames}
+                setGameStateHistory={setGameStateHistory}
                 setIsOffence={setIsOffence}
                 setPrevEntry={setPrevEntry}
                 title='Stats'
