@@ -110,6 +110,7 @@ function App() {
   const [lastGameDoc, setLastGameDoc] = useState(null);
   const [logOutWarning, setLogOutWarning] = useState(false);
   const [pendingDel, setPendingDel] = useState(false);
+  const [pointTouches, setPointTouches] = useState(localStorage.getItem('pointTouches') || 0);
   const [prevEntry, setPrevEntry] = useState(JSON.parse(localStorage.getItem('prevEntry')) || {});
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [serviceWorkerInit, setServiceWorkerInit] = useState(false);
@@ -267,6 +268,7 @@ function App() {
     localStorage.setItem('dbUser', JSON.stringify(dbUser));
     localStorage.setItem('gameStateHistory', JSON.stringify(gameStateHistory))
     localStorage.setItem('isOffence', isOffence);
+    localStorage.setItem('pointTouches', pointTouches);
     localStorage.setItem('prevEntry', JSON.stringify(prevEntry));
   }, [
     activePoint,
@@ -278,6 +280,7 @@ function App() {
     dbUser,
     gameStateHistory,
     isOffence,
+    pointTouches,
     prevEntry,
   ]);
 
@@ -307,7 +310,7 @@ function App() {
     localStorage.removeItem('currentPoint');
     localStorage.removeItem('curTimeSecs');
     localStorage.removeItem('gameStateHistory');
-    localStorage.removeItem('prevLineUp');
+    localStorage.removeItem('pointTouches');
     localStorage.setItem('timerPaused', 'true');
     // reset the state variables
     resetGame();
@@ -322,6 +325,7 @@ function App() {
     setCurrentPointLineUp([]);
     setGameStateHistory([]);
     setLogOutWarning(false);
+    setPointTouches(0);
     setPrevEntry({});
     setChangingLineUp(false);
   }
@@ -510,6 +514,7 @@ function App() {
                 gameStateHistory={gameStateHistory}
                 gameTimer={gameTimer.current}
                 isOffence={isOffence}
+                pointTouches={pointTouches}
                 prevEntry={prevEntry}
                 setActivePoint={setActivePoint}
                 setActiveTimeOut={setActiveTimeOut}
@@ -523,6 +528,7 @@ function App() {
                 setFetchedGames={setFetchedGames}
                 setGameStateHistory={setGameStateHistory}
                 setIsOffence={setIsOffence}
+                setPointTouches={setPointTouches}
                 setPrevEntry={setPrevEntry}
                 title='Stats'
               />

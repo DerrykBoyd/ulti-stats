@@ -40,6 +40,34 @@ export default function GameDetails(props) {
     return `${pointsScored.length} / ${filteredPoints.length} (${percentScored}%)`
   }
 
+  function touchesPerPoint(points, isOffence = '') {
+    let initialVal = 0;
+    if (!points.length) return 0;
+    switch (isOffence) {
+      case '':
+        let totalTouches = points.reduce((acc, point) => {
+          return acc + point.touches;
+        }, initialVal)
+        return (totalTouches / points.length).toFixed(1);
+      case 'offence':
+        let offencePoints = points.filter(point => point.isOffence);
+        if (!offencePoints.length) return 0
+        let offenceTouches = offencePoints.reduce((acc, point) => {
+          return acc + point.touches;
+        }, initialVal)
+        return (offenceTouches / offencePoints.length).toFixed(1);
+      case 'defence':
+        let defencePoints = points.filter(point => !point.isOffence);
+        if (!defencePoints.length) return 0;
+        let defenceTouches = defencePoints.reduce((acc, point) => {
+          return acc + point.touches;
+        }, initialVal)
+        return (defenceTouches / defencePoints.length).toFixed(1);
+      default:
+        return 0;
+    }
+  }
+
   return (
     <div className={`App btm-nav-page ${props.currentGame ? 'pad-btm-alert' : ''}`}>
       {game ?
@@ -91,6 +119,19 @@ export default function GameDetails(props) {
               <div className='game-card-section'>
                 <span className='game-card-subtitle'>Timeouts taken opposition</span>
                 <span>{game.timeOuts[game.opponent].length}</span>
+              </div>
+              <h4 className='game-card-section-title'>Touches Per Point</h4>
+              <div className='game-card-section'>
+                <span className='game-card-subtitle'>Overall</span>
+                <span>{touchesPerPoint(Object.values(game.pointHistory))}</span>
+              </div>
+              <div className='game-card-section'>
+                <span className='game-card-subtitle'>Offence</span>
+                <span>{touchesPerPoint(Object.values(game.pointHistory), 'offence')}</span>
+              </div>
+              <div className='game-card-section'>
+                <span className='game-card-subtitle'>Defence</span>
+                <span>{touchesPerPoint(Object.values(game.pointHistory), 'defence')}</span>
               </div>
             </div>
             <div className='player-stats game-details-card card'>

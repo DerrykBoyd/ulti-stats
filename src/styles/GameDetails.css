@@ -2,13 +2,13 @@
   padding: 0.5rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  align-items: start;
 }
 
 .game-details-card {
   display: flex;
   flex-direction: column;
   padding: 0.5rem;
+  justify-content: space-between;
 }
 
 .game-card-section {
@@ -16,6 +16,16 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+}
+
+.game-card-section-title {
+  color: var(--primary-dark);
+  width: 100%;
+  margin: 0.5rem 0 0 0;
+  padding-top: 0.5rem;
+  display: flex;
+  justify-content: flex-start;
+  border-top: solid 1px var(--input-border);
 }
 
 .game-card-title {

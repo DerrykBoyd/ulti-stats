@@ -68,6 +68,7 @@ export default function Stats(props) {
     histEntry.currentPoint = props.currentPoint;
     histEntry.currentPointLineUp = [...props.currentPointLineUp];
     histEntry.isOffence = props.isOffence;
+    histEntry.pointTouches = props.pointTouches;
     histEntry.prevEntry = props.prevEntry;
 
     return histEntry;
@@ -80,7 +81,7 @@ export default function Stats(props) {
     // start timer if not started already
     startTimer();
 
-    // add an entry to the game history for undo
+    // add an entry to the gameStateHistory for undo
     let stateHistoryEntry = generateHistoryEntry();
     let newGameStateHistory = [...props.gameStateHistory];
     newGameStateHistory.push(stateHistoryEntry);
@@ -119,12 +120,10 @@ export default function Stats(props) {
     if (action === 'point') {
       newCurGame.score[newCurGame.teamName]++;
       newCurGame = finishPoint(true, newCurGame);
-      localStorage.setItem('prevLineUp', JSON.stringify(props.currentPointLineUp));
     }
     if (action === 'oppPoint') {
       newCurGame.score[newCurGame.opponent]++;
       newCurGame = finishPoint(false, newCurGame);
-      localStorage.setItem('prevLineUp', JSON.stringify(props.currentPointLineUp));
     }
     // create a new historyEntry
     let entry = {
@@ -143,12 +142,20 @@ export default function Stats(props) {
       if (action === 'point') entry.assistID = lastEntry.playerID;
     }
     newCurGame.gameHistory.push(entry);
+    if (action === 'touch') {
+      let newTouches = parseInt(props.pointTouches) + 1;
+      props.setPointTouches(newTouches);
+    }
     // update the playerStats
     if (player.playerID) {
       // add stat from button click
       newCurGame.playerStats[player.playerID][action]++;
       // add a touch for a drop
-      if (action === 'drop') newCurGame.playerStats[player.playerID].touch++;
+      if (action === 'drop') {
+        newCurGame.playerStats[player.playerID].touch++;
+        let newTouches = parseInt(props.pointTouches) + 1;
+        props.setPointTouches(newTouches);
+      }
       // add touch for a point if not added by user
       if (action === 'point' && lastEntry.playerID !== player.playerID) {
         newCurGame.playerStats[player.playerID].touch++;
@@ -188,7 +195,9 @@ export default function Stats(props) {
     // finish point when point scored
     game.pointHistory[props.currentPoint].end = timeSecs;
     game.pointHistory[props.currentPoint].scored = scored;
+    game.pointHistory[props.currentPoint].touches = parseInt(props.pointTouches) + 1;
     props.setActivePoint(false);
+    props.setPointTouches(0);
     let newCurPoint = props.currentPoint;
     newCurPoint++;
     props.setCurrentPoint(newCurPoint);
@@ -280,7 +289,7 @@ export default function Stats(props) {
       return;
     }
     // show user undo toast
-    let undoEntry = {...props.currentGame}.gameHistory.pop();
+    let undoEntry = { ...props.currentGame }.gameHistory.pop();
     toast.info(`UNDO: ${undoEntry.action} ${undoEntry.playerNum ? `by #${undoEntry.playerNum}` : ''}`);
     // process undo state change
     props.setActivePoint(true);
@@ -288,6 +297,7 @@ export default function Stats(props) {
     props.setCurrentPoint(lastState.currentPoint)
     props.setCurrentPointLineUp(lastState.currentPointLineUp);
     props.setIsOffence(lastState.isOffence);
+    props.setPointTouches(lastState.pointTouches);
     props.setPrevEntry(lastState.prevEntry);
     props.setGameStateHistory(newStateHistory);
   }
