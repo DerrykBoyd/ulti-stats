@@ -129,10 +129,8 @@ export default function NewGame(props) {
   const addOpp = () => {
     // add to state
     let newDbUser = { ...dbUser };
-    newDbUser.opponents.indexOf(gameOptions.opponent) === -1 ?
-      newDbUser.opponents.push(gameOptions.opponent)
-      :
-      console.log('Opponent already exists');
+    if (newDbUser.opponents.indexOf(gameOptions.opponent) !== -1) return;
+    newDbUser.opponents.push(gameOptions.opponent)
     props.setDbUser(newDbUser);
     // update the database
     dbUtils.addOpponent(dbUser.uid, gameOptions.opponent)
