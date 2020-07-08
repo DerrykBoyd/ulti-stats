@@ -95,15 +95,12 @@
   justify-content: center;
 }
 
-.btn:hover {
+.btn:hover, .btn:focus {
+  outline: none;
+  border-color: var(--primary-dark);
   background-color: #f7f8f8;
   cursor: pointer;
-}
-
-.btn:focus {
-  outline: none;
-  border-color: grey;
-}
+} 
 
 .btn>span {
   margin-left: 0.5rem;
@@ -127,22 +124,13 @@ a.btn {
 
 .btn-del {
   background-color: var(--delete);
-  border-color: var(--app-red-dark);
   color: white;
-  text-transform: uppercase;
+  border-color: var(--app-red-dark);
 }
 
-.btn-del:hover {
+.btn-del:hover, .btn-del:focus {
   background-color: var(--app-red-dark);
-}
-
-.btn-del-ol {
-  border-color: var(--app-red);
-  color: var(--app-red)
-}
-
-.btn-del-ol:hover {
-  background-color: white;
+  border-color: var(--app-red-dark);
 }
 
 .btn-del-text {
@@ -151,8 +139,8 @@ a.btn {
   text-transform: uppercase;
 }
 
-.btn-del-text:hover {
-  background-color: white;
+.btn-del-text:hover, .btn-del-text:focus {
+  background-color: #FEECED;
 }
 
 .btn-green {
@@ -161,18 +149,18 @@ a.btn {
   color: white;
 }
 
-.btn-green:hover {
+.btn-green:hover, .btn-green:focus {
   background-color: var(--app-green-dark);
 }
 
 .btn-green-text {
   border: none;
-  color: var(--app-green);
+  color: var(--app-green-dark);
   text-transform: uppercase;
 }
 
-.btn-green-text:hover {
-  background-color: white;
+.btn-green-text:hover, .btn-green-text:focus {
+  background-color: #EBFFF0;
 }
 
 .btn-dark, .btn-dark:hover {
@@ -180,13 +168,16 @@ a.btn {
   color: white
 }
 
+.btn-dark:hover, .btn-dark:focus {
+  border-color: var(--primary-light);
+}
+
 .btn-primary {
   background-color: var(--primary);
   color: white;
-  text-transform: uppercase;
 }
 
-.btn-primary:hover {
+.btn-primary:hover, .btn-primary:focus {
   background-color: var(--primary-dark);
 }
 
@@ -202,7 +193,7 @@ a.btn {
   text-transform: uppercase;
 }
 
-.btn-sec:hover {
+.btn-sec:hover, .btn-sec:focus {
   background-color: var(--secondary-dark);
 }
 
@@ -211,6 +202,7 @@ a.btn {
   color: var(--text-dark-disabled);
   box-shadow: none;
   cursor: default;
+  border: none;
 }
 
 .btn-inactive-text, .btn-inactive-text:hover, .btn-inactive-text:focus {
