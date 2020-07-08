@@ -39,9 +39,10 @@
   padding: 0 0.5rem;
 }
 
-.filtered-opp:hover {
+.filtered-opp:hover, .filtered-opp:focus {
   background-color: var(--primary-select);
   cursor: pointer;
+  outline: none;
 }
 
 .btn-container > .player-input {

@@ -28,7 +28,7 @@ export default function NewGame(props) {
   useEffect(() => {
     function handleClick(e) {
       if (renderFilter && filterList.current &&
-          (filterList.current.contains(e.target) || oppInput.current.contains(e.target))) {
+        (filterList.current.contains(e.target) || oppInput.current.contains(e.target))) {
         return;
       }
       else setRenderFilter(false);
@@ -50,7 +50,7 @@ export default function NewGame(props) {
 
   // update the filtered opponents on state change
   useEffect(() => {
-    if (!dbUser || !gameOptions ) return;
+    if (!dbUser || !gameOptions) return;
     let options = { ...gameOptions };
     let newFiltered = [...dbUser.opponents].filter(opp => {
       return opp.toLowerCase().includes(options.opponent.toLowerCase())
@@ -167,6 +167,9 @@ export default function NewGame(props) {
                         newGameOptions.statTeam = e.target.value;
                         setGameOptions(newGameOptions);
                       }}
+                      onFocus={e => {
+                        setRenderFilter(false)
+                      }}
                     >
                       <option value=''></option>
                       {Object.values(dbUser.teams).sort((a, b) => {
@@ -193,42 +196,71 @@ export default function NewGame(props) {
                         setOpp(e.target.value);
                         setRenderFilter(true);
                       }}
+                      onClick={showFilter}
                       onKeyDown={e => {
-                        if (e.key === 'Tab' || e.key === 'Enter') {
+                        if (e.key === 'Enter') {
                           setRenderFilter(false);
+                        }
+                        if (e.key === 'ArrowDown') {
+                          e.preventDefault();
+                          let option = document.getElementById(`opp0`);
+                          if (option) option.focus();
                         }
                       }}
                     ></input>
                     {renderFilter && filteredOpponents.length > 0 &&
-                      <div ref={filterList} className='card input-filter'>
+                      <datalist ref={filterList} className='card input-filter'>
                         {
-                          filteredOpponents.map((opp) => {
+                          filteredOpponents.map((opp, ind) => {
                             return (
-                              <div
-                                key={opp}
+                              <option
+                                id={'opp' + ind}
+                                key={opp + ind}
                                 name={opp}
                                 className='filtered-opp'
+                                tabIndex='0'
                                 onClick={e => {
                                   setOpp(e.target.getAttribute('name'))
                                   setRenderFilter(false);
                                 }}
-                              >{opp}</div>
+                                onKeyDown={e => {
+                                  if (e.key === 'Enter') {
+                                    setOpp(e.target.getAttribute('name'));
+                                    setRenderFilter(false);
+                                  }
+                                  if (e.key === 'ArrowDown') {
+                                    e.preventDefault();
+                                    let next = document.getElementById(`opp${ind+1}`);
+                                    if (next) next.focus();
+                                  }
+                                  if (e.key === 'ArrowUp') {
+                                    e.preventDefault();
+                                    let prev = document.getElementById(`opp${ind-1}`);
+                                    let oppInput = document.getElementById('opponent-input');
+                                    prev ? prev.focus() : oppInput.focus();
+                                  }
+                                }}
+                              >{opp}</option>
                             )
                           })
                         }
-                      </div>
+                      </datalist>
                     }
                     {formErr.type === 'opponent' && <div className='form-error'>{formErr.message}</div>}
                     <div className='rs-options-2'>
                       <div className='rs-options-2-1 rs-left'>
                         <h4 className='rs-title'>Jersey Colour</h4>
                         <select
+                          id="jersey-select"
                           name='jersey-select'
                           value={gameOptions.jerseyColour}
                           onChange={e => {
                             let newGameOptions = { ...gameOptions };
                             newGameOptions.jerseyColour = e.target.value;
                             setGameOptions(newGameOptions);
+                          }}
+                          onFocus={e => {
+                            setRenderFilter(false)
                           }}
                         >
                           <option value='Light'>Light</option>
