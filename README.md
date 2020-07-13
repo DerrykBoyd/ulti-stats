@@ -1,8 +1,10 @@
 ## Ultimate Stats
 
-Ultimate stats is a progressive web application to record in game statistics for Ultimate (Frisbee).
+Ultimate stats is a progressive web application (PWA) to record in game statistics for [Ultimate](https://en.wikipedia.org/wiki/Ultimate_(sport)) (Frisbee).
 
-The application is built using react and runs a serverless backend using [Google Firebase](https://firebase.google.com/).
+The application is built using [React](https://reactjs.org/) and runs a serverless backend using [Google Firebase](https://firebase.google.com/).
+
+See the production app at [https://ulti-stats.web.app/](https://ulti-stats.web.app/)
 
 ## To run locally
 
