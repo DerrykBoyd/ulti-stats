@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
-  HashRouter as Router,
+  BrowserRouter as Router,
   Route,
   Switch,
   Redirect,
@@ -37,6 +37,9 @@ import Teams from './Components/Teams';
 import * as dbUtils from './Utils/dbUtils';
 import Profile from './Components/Profile';
 import ServiceWorkerToast from './Components/Toasts/ServiceWorkerToast';
+
+// assets
+import defaultProfile from './assets/profile-avatars/050.svg';
 
 const Slide = cssTransition({
   enter: 'toast-in',
@@ -192,7 +195,7 @@ function App() {
             email: user.email,
             name: user.displayName || '',
             opponents: [],
-            profileURL: user.photoURL || 'https://firebasestorage.googleapis.com/v0/b/ultimate-stats-3bdf2.appspot.com/o/default-profiles%2F050-rapper.png?alt=media',
+            profileURL: user.photoURL || defaultProfile,
             teams: {},
             uid: user.uid,
           }

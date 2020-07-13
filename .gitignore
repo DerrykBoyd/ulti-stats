@@ -21,6 +21,7 @@
 .env.production.local
 
 # firebase
+.firebase
 .firebaserc
 firebase.json
 firestore.rules
