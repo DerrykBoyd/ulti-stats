@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import '../styles/Header.css';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 
-import Logo from '../assets/ult-stats-favicon.svg'
+import Logo from '../assets/ult-stats-logo.svg'
 
 export default function Header(props) {
 
