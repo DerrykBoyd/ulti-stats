@@ -37,7 +37,8 @@ export default function Team(props) {
     if (teamExists) {
       setNewTeamName(dbUser.teams[currentEditTeam].name);
     }
-  }, [dbUser, currentEditTeam, teamExists])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [teamExists])
 
   // change state if no team found
   useEffect(() => {
@@ -70,7 +71,7 @@ export default function Team(props) {
   }
 
   const handleTeamNameChange = (e) => {
-    e.preventDefault();
+    // debugger
     setFormError({ message: '' });
     setNewTeamName(e.target.value);
     setUnsaved(true);
