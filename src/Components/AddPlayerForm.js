@@ -92,7 +92,7 @@ export default function AddPlayerForm(props) {
   return (
     <>
       <div className='add-player-form'>
-        <form>
+        <>
           <input type='number' id='player-num-input' className='player-input player-num-input' placeholder='##' name='player-number' onChange={handleInputChange} value={newPlayerNumber} />
           <input className='player-input' name='player-first-name' placeholder='First Name' onChange={handleInputChange} value={newPlayerFirstName} />
           <input
@@ -107,7 +107,7 @@ export default function AddPlayerForm(props) {
             }}
             value={newPlayerLastName}
           />
-        </form>
+        </>
         <button className='btn btn-primary-text' onClick={addPlayer}>Add</button>
       </div>
       {
