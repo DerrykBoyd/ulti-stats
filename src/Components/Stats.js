@@ -350,7 +350,7 @@ export default function Stats(props) {
           <form>
             {showAddPlayer ?
               <AddPlayerForm
-                currentEditTeam={props.currentEditTeam}
+                currentEditTeam={props.currentGame.teamID}
                 currentGame={props.currentGame}
                 dbUser={props.dbUser}
                 saveToDb={true}

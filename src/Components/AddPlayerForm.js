@@ -14,7 +14,8 @@ export default function AddPlayerForm(props) {
     type: '',
   })
 
-  const addPlayer = () => {
+  const addPlayer = (e) => {
+    e.preventDefault();
     // reset the error messages
     resetFormError();
     let newFormError = { ...formError };
@@ -63,7 +64,8 @@ export default function AddPlayerForm(props) {
     setNewPlayerFirstName('');
     setNewPlayerLastName('');
     setNewPlayerNumber('');
-    document.getElementById('player-num-input').focus();
+    props.setShowAddPlayer ? props.setShowAddPlayer(false) :
+      document.getElementById('player-num-input').focus();
   }
 
   const handleInputChange = (e) => {
@@ -100,7 +102,7 @@ export default function AddPlayerForm(props) {
             onChange={handleInputChange}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                addPlayer();
+                addPlayer(e);
               }
             }}
             value={newPlayerLastName}
